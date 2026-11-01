@@ -1,0 +1,213 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main artisan-dashboard-page">
+  <div class="container">
+    <!-- Breadcrumb & Header -->
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li aria-current="page">Bảng điều khiển Nghệ nhân</li>
+      </ol>
+    </nav>
+
+    <!-- Account Status Banner -->
+    <% if (currentUser && currentUser.status === 'pending') { %>
+      <div class="alert alert-warning" role="alert">
+        <div class="alert-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="alert-content">
+          <h4 class="alert-heading">Tài khoản Nghệ nhân đang chờ Ban quản trị phê duyệt</h4>
+          <p>
+            Hồ sơ nghệ nhân của bạn đang được kiểm duyệt. Trong thời gian này, bạn có thể hoàn thiện thông tin xưởng nhưng chưa thể công khai tác phẩm hoặc nhận báo giá từ khách hàng.
+          </p>
+        </div>
+      </div>
+    <% } else if (currentUser && currentUser.status === 'suspended') { %>
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Tài khoản Nghệ nhân tạm thời bị khóa</h4>
+        <p>Vui lòng liên hệ với ban quản trị hệ thống để biết thêm chi tiết.</p>
+      </div>
+    <% } %>
+
+    <section class="editorial-page-hero editorial-page-hero--dashboard">
+      <div class="editorial-page-hero__inner">
+        <span class="editorial-page-hero__eyebrow slide-kicker">Không Gian Nghệ Nhân</span>
+        <h1 class="editorial-page-hero__title">
+          Quản lý Xưởng &amp; Tác phẩm
+          <span class="editorial-page-hero__script display-script">Nghề xưa</span>
+        </h1>
+        <div class="editorial-rule"></div>
+        <p class="editorial-page-hero__desc">
+          <% if (profile && profile.workshop_name) { %>
+            Xưởng: <strong><%= profile.workshop_name %></strong> — Nghệ nhân <%= currentUser ? currentUser.fullName : '' %>
+          <% } else { %>
+            Chào mừng bạn đến với khu vực quản lý xưởng nghệ nhân vCraft.
+          <% } %>
+        </p>
+        <div class="header-action-group">
+          <a href="/artisan/profile" class="btn btn-outline">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Hồ sơ Xưởng
+          </a>
+          <% if (currentUser && currentUser.status === 'approved') { %>
+            <a href="/artisan/products/new" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Đăng tác phẩm mới
+            </a>
+          <% } %>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stat Metric Cards -->
+    <section class="dashboard-stats-grid" aria-label="Thống kê tác phẩm">
+      <div class="stat-card paper-panel">
+        <div class="stat-label">Tổng tác phẩm</div>
+        <div class="stat-value"><%= totalProducts %></div>
+        <div class="stat-sub">Trong bộ sưu tập của xưởng</div>
+      </div>
+      <div class="stat-card paper-panel">
+        <div class="stat-label">Đã xuất bản</div>
+        <div class="stat-value text-success"><%= publishedCount %></div>
+        <div class="stat-sub">Hiển thị công khai trên catalog</div>
+      </div>
+      <div class="stat-card paper-panel">
+        <div class="stat-label">Bản nháp</div>
+        <div class="stat-value text-warning"><%= draftCount %></div>
+        <div class="stat-sub">Đang hoàn thiện nội dung</div>
+      </div>
+      <div class="stat-card paper-panel">
+        <div class="stat-label">Trạng thái tài khoản</div>
+        <div class="stat-value">
+          <span class="badge <%= currentUser && currentUser.status === 'approved' ? 'badge-success' : 'badge-warning' %>">
+            <%= currentUser && currentUser.status === 'approved' ? 'Đã phê duyệt' : 'Chờ duyệt' %>
+          </span>
+        </div>
+        <div class="stat-sub">
+          <% if (profile && profile.slug) { %>
+            <a href="/workshops/<%= profile.slug %>" target="_blank">Xem trang xưởng &rarr;</a>
+          <% } else { %>
+            Chưa có trang công khai
+          <% } %>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Management Table Section -->
+    <section class="dashboard-table-section paper-panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Danh sách tác phẩm của xưởng</h2>
+        </div>
+        <% if (currentUser && currentUser.status === 'approved') { %>
+          <a href="/artisan/products/new" class="btn btn-sm btn-outline">+ Thêm tác phẩm</a>
+        <% } %>
+      </div>
+
+      <% if (products && products.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th scope="col" class="table-thumbnail-cell">Ảnh</th>
+                <th scope="col">Tên tác phẩm</th>
+                <th scope="col">Danh mục</th>
+                <th scope="col">Giá bán</th>
+                <th scope="col">Tồn kho</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Tư liệu</th>
+                <th scope="col" class="text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% products.forEach(function(product) { %>
+                <tr>
+                  <td class="table-thumbnail-cell">
+                    <img
+                      src="<%= product.hero_image || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=100&q=80' %>"
+                      alt="<%= product.name %>"
+                      class="table-thumbnail"
+                    >
+                  </td>
+                  <td>
+                    <strong class="product-row-name"><%= product.name %></strong>
+                    <% if (product.status === 'published') { %>
+                      <div>
+                        <a href="/products/<%= product.slug %>" target="_blank" class="table-sublink">Xem trang công khai &rarr;</a>
+                      </div>
+                    <% } %>
+                  </td>
+                  <td><span class="badge badge-outline"><%= product.category %></span></td>
+                  <td>
+                    <%= typeof formatCurrency === 'function' ? formatCurrency(product.price) : Number(product.price).toLocaleString('vi-VN') + ' ₫' %>
+                  </td>
+                  <td>
+                    <span class="<%= product.inventory > 0 ? 'text-success' : 'text-danger' %>">
+                      <%= product.inventory %> chiếc
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge <%= product.status === 'published' ? 'badge-success' : 'badge-warning' %>">
+                      <%= product.status === 'published' ? 'Đã xuất bản' : 'Bản nháp' %>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="step-count-badge" title="Số công đoạn nhật ký chế tác">
+                      <%= product.step_count || 0 %> công đoạn
+                    </span>
+                  </td>
+                  <td class="text-right">
+                    <div class="action-btn-group">
+                      <a href="/artisan/products/<%= product.id %>/edit" class="btn btn-sm btn-outline">
+                        Sửa & Nhật ký
+                      </a>
+                      <form
+                        action="/artisan/products/<%= product.id %>/delete"
+                        method="POST"
+                        class="d-inline"
+                        data-confirm="Bạn có chắc chắn muốn xóa tác phẩm này? Mọi hình ảnh và công đoạn chế tác liên quan sẽ bị xóa vĩnh viễn."
+                      >
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+          </div>
+          <h3 class="empty-state-title">Chưa có tác phẩm nào</h3>
+          <p class="empty-state-desc">Hãy bắt đầu bằng cách đăng tải tác phẩm đầu tiên của xưởng lên nền tảng.</p>
+          <% if (currentUser && currentUser.status === 'approved') { %>
+            <div class="empty-state-action">
+              <a href="/artisan/products/new" class="btn btn-primary">Đăng tác phẩm đầu tiên</a>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </section>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

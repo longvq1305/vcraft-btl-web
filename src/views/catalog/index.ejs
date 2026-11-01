@@ -1,0 +1,189 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main catalog-page">
+  <div class="container">
+    <!-- Breadcrumb & Header -->
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li aria-current="page">Bộ sưu tập Tác phẩm</li>
+      </ol>
+    </nav>
+
+    <section class="editorial-page-hero editorial-page-hero--catalog">
+      <div class="editorial-page-hero__inner">
+        <span class="editorial-page-hero__eyebrow slide-kicker">Di sản &amp; Tinh hoa Thủ công</span>
+        <h1 class="editorial-page-hero__title">
+          Bộ sưu tập Tác phẩm Thủ công
+          <span class="editorial-page-hero__script display-script">Tuyệt tác</span>
+        </h1>
+        <div class="editorial-rule"></div>
+        <p class="editorial-page-hero__desc">
+          Khám phá các tuyệt tác chế tác thủ công độc bản từ những nghệ nhân và xưởng nghề truyền thống trên khắp Việt Nam.
+        </p>
+      </div>
+      <div class="editorial-page-hero__visual" aria-hidden="true">
+        <div class="image-frame">
+          <img src="/images/heritage/pottery-hands.webp" alt="" loading="lazy">
+        </div>
+        <div class="image-frame">
+          <img src="/images/heritage/silk-yarn.webp" alt="" loading="lazy">
+        </div>
+        <div class="image-frame">
+          <img src="/images/heritage/rattan-master.webp" alt="" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter & Search Toolbar -->
+    <section class="catalog-filters-section paper-panel" aria-label="Bộ lọc tìm kiếm">
+      <form action="/catalog" method="GET" class="filter-form">
+        <div class="filter-row">
+          <!-- Search input -->
+          <div class="filter-group filter-search">
+            <label for="catalog-search" class="filter-label">Tìm kiếm tác phẩm</label>
+            <div class="search-input-wrap">
+              <input
+                type="text"
+                id="catalog-search"
+                name="q"
+                value="<%= searchQuery %>"
+                placeholder="Tìm theo tên tác phẩm, xưởng nghề, chất liệu..."
+                class="form-control"
+              >
+              <% if (searchQuery) { %>
+                <a href="/catalog<%= selectedCategory ? '?category=' + encodeURIComponent(selectedCategory) : '' %>" class="clear-search-btn" title="Xóa tìm kiếm">&times;</a>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Category select -->
+          <div class="filter-group">
+            <label for="catalog-category" class="filter-label">Danh mục</label>
+            <select id="catalog-category" name="category" class="form-control form-select">
+              <option value="">Tất cả danh mục</option>
+              <% categories.forEach(function(cat) { %>
+                <option value="<%= cat %>" <%= selectedCategory === cat ? 'selected' : '' %>><%= cat %></option>
+              <% }); %>
+            </select>
+          </div>
+
+          <!-- Workshop select -->
+          <div class="filter-group">
+            <label for="catalog-workshop" class="filter-label">Xưởng chế tác</label>
+            <select id="catalog-workshop" name="workshop" class="form-control form-select">
+              <option value="">Tất cả các xưởng</option>
+              <% workshops.forEach(function(ws) { %>
+                <option value="<%= ws.slug %>" <%= selectedWorkshop === ws.slug ? 'selected' : '' %>>
+                  <%= ws.workshop_name %> (<%= ws.artisan_name %>)
+                </option>
+              <% }); %>
+            </select>
+          </div>
+
+          <!-- Sort select -->
+          <div class="filter-group">
+            <label for="catalog-sort" class="filter-label">Sắp xếp theo</label>
+            <select id="catalog-sort" name="sort" class="form-control form-select">
+              <option value="newest" <%= selectedSort === 'newest' ? 'selected' : '' %>>Mới nhất</option>
+              <option value="price_asc" <%= selectedSort === 'price_asc' ? 'selected' : '' %>>Giá: Thấp đến Cao</option>
+              <option value="price_desc" <%= selectedSort === 'price_desc' ? 'selected' : '' %>>Giá: Cao đến Thấp</option>
+            </select>
+          </div>
+
+          <!-- Filter Action Buttons -->
+          <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">Áp dụng</button>
+            <% if (selectedCategory || selectedWorkshop || searchQuery || selectedSort !== 'newest') { %>
+              <a href="/catalog" class="btn btn-outline">Đặt lại</a>
+            <% } %>
+          </div>
+        </div>
+      </form>
+
+      <!-- Category quick pills -->
+      <% if (categories && categories.length > 0) { %>
+        <div class="category-quick-pills">
+          <a href="/catalog<%= selectedWorkshop ? '?workshop=' + encodeURIComponent(selectedWorkshop) : '' %>" class="quick-pill <%= !selectedCategory ? 'active' : '' %>">
+            Tất cả (<%= totalCount %>)
+          </a>
+          <% categories.forEach(function(cat) { %>
+            <a
+              href="/catalog?category=<%= encodeURIComponent(cat) %><%= selectedWorkshop ? '&workshop=' + encodeURIComponent(selectedWorkshop) : '' %>"
+              class="quick-pill <%= selectedCategory === cat ? 'active' : '' %>"
+            >
+              <%= cat %>
+            </a>
+          <% }); %>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Results Status Bar -->
+    <div class="catalog-status-bar">
+      <span class="results-count">
+        Tìm thấy <strong><%= totalCount %></strong> tác phẩm phù hợp
+        <% if (selectedCategory) { %> trong danh mục "<em><%= selectedCategory %></em>"<% } %>
+        <% if (searchQuery) { %> với từ khóa "<em><%= searchQuery %></em>"<% } %>
+      </span>
+    </div>
+
+    <!-- Product Grid -->
+    <% if (products && products.length > 0) { %>
+      <div class="grid grid-4 product-grid">
+        <% products.forEach(function(product) { %>
+          <article class="product-card">
+            <a href="/products/<%= product.slug %>" class="product-card-media">
+              <img
+                src="<%= product.hero_image || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80' %>"
+                alt="<%= product.name %>"
+                class="product-card-img"
+                loading="lazy"
+              >
+              <span class="product-category-badge"><%= product.category %></span>
+              <% if (product.inventory <= 0) { %>
+                <span class="product-stock-tag out-of-stock">Tạm hết hàng</span>
+              <% } %>
+            </a>
+            <div class="product-card-body">
+              <div class="product-workshop-name">
+                <% if (product.workshop_slug) { %>
+                  <a href="/workshops/<%= product.workshop_slug %>"><%= product.workshop_name || product.artisan_name %></a>
+                <% } else { %>
+                  <span><%= product.artisan_name %></span>
+                <% } %>
+              </div>
+              <h2 class="product-card-title">
+                <a href="/products/<%= product.slug %>"><%= product.name %></a>
+              </h2>
+              <div class="product-card-footer">
+                <span class="product-price">
+                  <%= typeof formatCurrency === 'function' ? formatCurrency(product.price) : Number(product.price).toLocaleString('vi-VN') + ' ₫' %>
+                </span>
+                <a href="/products/<%= product.slug %>" class="btn btn-sm btn-outline">Xem chi tiết</a>
+              </div>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <h3 class="empty-state-title">Không tìm thấy tác phẩm phù hợp</h3>
+        <p class="empty-state-desc">Hãy thử thay đổi danh mục, từ khóa tìm kiếm hoặc đặt lại toàn bộ bộ lọc.</p>
+        <div class="empty-state-action">
+          <a href="/catalog" class="btn btn-primary">Xem tất cả tác phẩm</a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

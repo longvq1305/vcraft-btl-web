@@ -1,0 +1,203 @@
+<%- include('../partials/head', { title: title || 'Đăng ký tài khoản - vCraft' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main auth-main">
+  <section class="editorial-page-hero editorial-page-hero--auth">
+    <div class="container">
+      <div class="editorial-page-hero__inner">
+        <span class="editorial-page-hero__eyebrow slide-kicker">Khởi Đầu Đồng Hành</span>
+        <h1 class="editorial-page-hero__title">
+          Đăng ký tài khoản mới
+          <span class="editorial-page-hero__script display-script">Gia nhập</span>
+        </h1>
+        <div class="editorial-rule"></div>
+        <p class="editorial-page-hero__desc">Tham gia cộng đồng tôn vinh và phát triển tinh hoa thủ công truyền thống.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container auth-container">
+    <div class="auth-card register-card paper-panel">
+
+      <% if (errors && errors.length > 0) { %>
+        <div class="alert alert-error" role="alert">
+          <ul class="error-list">
+            <% errors.forEach(function(err) { %>
+              <li><%= err %></li>
+            <% }); %>
+          </ul>
+        </div>
+      <% } %>
+
+      <!-- Role Selector Tabs -->
+      <div class="register-role-tabs" role="tablist" aria-label="Chọn loại tài khoản">
+        <button
+          type="button"
+          class="role-tab <%= role !== 'artisan' ? 'active' : '' %>"
+          data-register-role="buyer"
+          role="tab"
+          aria-selected="<%= role !== 'artisan' ? 'true' : 'false' %>"
+        >
+          <span class="role-tab-title">Người mua / Khách hàng</span>
+          <span class="role-tab-desc">Đặt mua sản phẩm & yêu cầu chế tác độc bản</span>
+        </button>
+        <button
+          type="button"
+          class="role-tab <%= role === 'artisan' ? 'active' : '' %>"
+          data-register-role="artisan"
+          role="tab"
+          aria-selected="<%= role === 'artisan' ? 'true' : 'false' %>"
+        >
+          <span class="role-tab-title">Nghệ nhân / Xưởng thủ công</span>
+          <span class="role-tab-desc">Mở gian hàng làng nghề & nhận đơn đặt hàng</span>
+        </button>
+      </div>
+
+      <form action="/auth/register" method="POST" class="auth-form" novalidate id="registerForm">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" name="role" id="roleInput" value="<%= role || 'buyer' %>">
+
+        <div class="form-row">
+          <div class="form-group col-12">
+            <label for="fullName" class="form-label">Họ và tên <span class="required">*</span></label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              class="form-control"
+              value="<%= values.fullName || '' %>"
+              placeholder="Nguyễn Văn An"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-12">
+            <label for="email" class="form-label">Địa chỉ email <span class="required">*</span></label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-control"
+              value="<%= values.email || '' %>"
+              placeholder="an.nguyen@example.com"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="password" class="form-label">Mật khẩu <span class="required">*</span></label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              placeholder="Tối thiểu 6 ký tự"
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu <span class="required">*</span></label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              class="form-control"
+              placeholder="Nhập lại mật khẩu"
+              required
+            >
+          </div>
+        </div>
+
+        <!-- Artisan Specific Fields -->
+        <div id="artisanFields" class="artisan-fields-section" <%= role === 'artisan' ? '' : 'hidden' %>>
+          <div class="section-divider">
+            <span class="divider-text">Thông tin xưởng thủ công & Làng nghề</span>
+          </div>
+
+          <div class="form-group">
+            <label for="workshopName" class="form-label">Tên xưởng / Thương hiệu làng nghề <span class="required">*</span></label>
+            <input
+              type="text"
+              id="workshopName"
+              name="workshopName"
+              class="form-control"
+              value="<%= values.workshopName || '' %>"
+              placeholder="Ví dụ: Xưởng Gốm Tinh Hoa Bát Tràng"
+            >
+          </div>
+
+          <div class="form-row-2col">
+            <div class="form-group">
+              <label for="categories" class="form-label">Nhóm ngành nghề <span class="required">*</span></label>
+              <input
+                type="text"
+                id="categories"
+                name="categories"
+                class="form-control"
+                value="<%= values.categories || '' %>"
+                placeholder="Ví dụ: Gốm sứ, Lụa tơ tằm, Mây tre đan"
+              >
+              <small class="form-hint">Phân cách các nhóm nghề bằng dấu phẩy</small>
+            </div>
+            <div class="form-group">
+              <label for="phone" class="form-label">Số điện thoại liên hệ</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                class="form-control"
+                value="<%= values.phone || '' %>"
+                placeholder="0912 345 678"
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="address" class="form-label">Địa chỉ làng nghề / Xưởng sản xuất <span class="required">*</span></label>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              class="form-control"
+              value="<%= values.address || '' %>"
+              placeholder="Thôn 1 Làng cổ Bát Tràng, Gia Lâm, Hà Nội"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="story" class="form-label">Câu chuyện nghề & Tinh hoa truyền thống</label>
+            <textarea
+              id="story"
+              name="story"
+              class="form-control"
+              rows="3"
+              placeholder="Giới thiệu đôi nét về lịch sử làng nghề, thế hệ kế thừa và phương pháp chế tác thủ công..."
+            ><%= values.story || '' %></textarea>
+          </div>
+
+          <div class="info-notice">
+            <p><strong>Lưu ý:</strong> Tài khoản nghệ nhân sau khi đăng ký sẽ ở trạng thái <em>Chờ xét duyệt</em>. Ban quản trị sẽ xác minh thông tin làng nghề và kích hoạt hồ sơ trong vòng 24 giờ làm việc.</p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitBtn">
+            <%= role === 'artisan' ? 'Đăng ký hồ sơ Nghệ nhân' : 'Đăng ký tài khoản Người mua' %>
+          </button>
+        </div>
+      </form>
+
+      <div class="auth-footer">
+        <p>Đã có tài khoản vCraft? <a href="/auth/login" class="link-primary">Đăng nhập</a></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+<%- include('../partials/footer') %>

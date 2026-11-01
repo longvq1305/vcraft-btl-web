@@ -1,0 +1,167 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main quotes-new-page">
+  <div class="container">
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li><a href="/quotes">Yêu cầu Báo giá</a></li>
+        <li aria-current="page">Tạo yêu cầu mới</li>
+      </ol>
+    </nav>
+
+    <div class="page-header">
+      <span class="slide-kicker">Khởi Tạo Đơn Hàng</span>
+      <h1 class="page-title">Đặt hàng Chế tác &amp; Yêu cầu Báo giá</h1>
+      <div class="editorial-rule"></div>
+      <p class="page-subtitle">
+        Cung cấp thông tin chi tiết về sản phẩm bạn mong muốn đặt làm. Yêu cầu sẽ được tạo dưới dạng bản nháp để bạn kiểm tra trước khi gửi tới các nghệ nhân trong làng nghề.
+      </p>
+    </div>
+
+    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+      <div class="alert alert-error" role="alert">
+        <span class="alert-icon">!</span>
+        <span class="alert-text"><%= errorMessage %></span>
+      </div>
+    <% } %>
+
+    <div class="grid grid-sidebar">
+      <div class="main-column">
+        <div class="card form-card paper-panel">
+          <form action="/quotes" method="POST" class="form-standard" novalidate>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div class="form-group">
+              <label for="title" class="form-label">
+                Tiêu đề yêu cầu <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                class="form-control"
+                placeholder="Ví dụ: Đặt 500 ấm trà gốm mộc in họa tiết hoa sen kỷ niệm 70 năm"
+                value="<%= formData.title || '' %>"
+                required
+                minlength="3"
+                maxlength="200"
+              >
+              <span class="form-help">Tiêu đề vắn tắt, rõ ràng về chủng loại sản phẩm và mục đích sử dụng.</span>
+            </div>
+
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="category" class="form-label">
+                  Ngành nghề / Phân loại <span class="required" aria-hidden="true">*</span>
+                </label>
+                <select id="category" name="category" class="form-control form-select" required>
+                  <option value="">-- Chọn danh mục thủ công --</option>
+                  <% categories.forEach(function(cat) { %>
+                    <option value="<%= cat %>" <%= formData.category === cat ? 'selected' : '' %>><%= cat %></option>
+                  <% }); %>
+                </select>
+                <span class="form-help">Hệ thống sẽ tự động ghép nối với các xưởng có thế mạnh này.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="quantity" class="form-label">
+                  Số lượng mong muốn <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  class="form-control"
+                  placeholder="Ví dụ: 100"
+                  value="<%= formData.quantity || '' %>"
+                  min="1"
+                  step="1"
+                  required
+                >
+                <span class="form-help">Số lượng (chiếc, bộ, mét...). Nhập số nguyên dương.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="deadline" class="form-label">
+                Hạn chót các xưởng nộp báo giá <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="date"
+                id="deadline"
+                name="deadline"
+                class="form-control"
+                value="<%= formData.deadline || '' %>"
+                min="<%= minDate %>"
+                required
+              >
+              <span class="form-help">Sau ngày này, hệ thống sẽ đóng phiên tiếp nhận chào giá mới.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="description" class="form-label">
+                Mô tả chi tiết kỹ thuật & yêu cầu chế tác <span class="required" aria-hidden="true">*</span>
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                class="form-control form-textarea"
+                rows="6"
+                placeholder="Mô tả chi tiết kích thước, chất liệu (men mộc, gốm nung củi, lụa tơ tằm dệt tay...), yêu cầu khắc/in logo, bao bì đóng gói hộp quà, tiêu chuẩn nghiệm thu..."
+                required
+              ><%= formData.description || '' %></textarea>
+              <span class="form-help">Mô tả càng chi tiết giúp các nghệ nhân tính toán đơn giá và tiến độ chính xác nhất.</span>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Tạo yêu cầu (Lưu bản nháp) &rarr;
+              </button>
+              <a href="/quotes" class="btn btn-outline btn-lg">Hủy bỏ</a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <aside class="sidebar-column">
+        <div class="card info-card paper-panel">
+          <h2 class="card-title">Quy trình Điều phối Báo giá</h2>
+          <ol class="workflow-steps-list">
+            <li class="workflow-step">
+              <strong>1. Khởi tạo Bản nháp:</strong>
+              <p>Yêu cầu được lưu riêng tư cho bạn rà soát lại thông tin trước khi phát lệnh.</p>
+            </li>
+            <li class="workflow-step">
+              <strong>2. Gửi tới các Xưởng nghề:</strong>
+              <p>Hệ thống tìm kiếm các nghệ nhân đã được chứng nhận và gửi thông báo trực tiếp.</p>
+            </li>
+            <li class="workflow-step">
+              <strong>3. Các Nghệ nhân Chào giá:</strong>
+              <p>Các xưởng đưa ra mức giá tốt nhất, thời gian hoàn thành và giải pháp kỹ thuật.</p>
+            </li>
+            <li class="workflow-step">
+              <strong>4. Bạn Chốt Đơn hàng:</strong>
+              <p>Chọn báo giá ưng ý nhất. Hệ thống tự động khóa đơn và từ chối các chào giá khác.</p>
+            </li>
+            <li class="workflow-step">
+              <strong>5. Chế tác & Giao hàng:</strong>
+              <p>Xưởng bắt đầu thực hiện theo tiến độ cam kết và bàn giao thành phẩm.</p>
+            </li>
+          </ol>
+        </div>
+
+        <div class="card help-card mt-4 paper-panel">
+          <h3 class="card-subtitle">Cam kết từ Làng nghề</h3>
+          <p class="text-sm text-muted">
+            100% nghệ nhân tham gia hệ thống đều được Ban Quản trị kiểm duyệt danh tính và chứng chỉ tay nghề làng nghề truyền thống.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

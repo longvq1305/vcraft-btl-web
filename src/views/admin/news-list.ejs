@@ -1,0 +1,91 @@
+<%- include('../partials/head', { title: title || 'Quản Lý Bản Tin - Quản Trị' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main admin-main">
+  <div class="container">
+    <div class="admin-page-header">
+      <div>
+        <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+          <ol class="breadcrumb-list">
+            <li><a href="/admin">Bàn làm việc Quản trị</a></li>
+            <li aria-current="page">Quản lý bản tin làng nghề</li>
+          </ol>
+        </nav>
+        <span class="slide-kicker">Truyền Thông Di Sản</span>
+        <h1 class="page-title">Quản Lý Bản Tin &amp; Văn Hóa Làng Nghề</h1>
+        <div class="editorial-rule"></div>
+        <p class="page-subtitle">Đăng tải, chỉnh sửa và quản lý các bài viết truyền thông di sản văn hóa.</p>
+      </div>
+      <div class="admin-header-actions">
+        <a href="/admin" class="btn btn-outline">&larr; Bàn làm việc</a>
+        <a href="/admin/news/new" class="btn btn-primary">+ Soạn bản tin mới</a>
+      </div>
+    </div>
+
+    <% if (articles && articles.length > 0) { %>
+      <div class="table-responsive paper-panel">
+        <table class="table admin-table">
+          <thead>
+            <tr>
+              <th>Ảnh bìa</th>
+              <th>Tiêu đề bài viết</th>
+              <th>Tóm tắt ngắn</th>
+              <th>Trạng thái</th>
+              <th>Thời gian xuất bản</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% articles.forEach(function(article) { %>
+              <tr>
+                <td class="table-thumbnail-cell">
+                  <% if (article.cover_image) { %>
+                    <img src="<%= article.cover_image %>" alt="<%= article.title %>" class="table-thumbnail">
+                  <% } else { %>
+                    <div class="table-thumbnail-placeholder">Tin</div>
+                  <% } %>
+                </td>
+                <td>
+                  <strong><%= article.title %></strong><br>
+                  <small class="text-muted">Slug: <%= article.slug %></small>
+                </td>
+                <td><%= article.excerpt ? (article.excerpt.length > 80 ? article.excerpt.substring(0, 80) + '...' : article.excerpt) : '' %></td>
+                <td>
+                  <% if (article.is_published) { %>
+                    <span class="badge badge-published">Đã xuất bản</span>
+                  <% } else { %>
+                    <span class="badge badge-draft">Bản nháp</span>
+                  <% } %>
+                </td>
+                <td>
+                  <%= article.published_at ? formatDate(article.published_at, true) : 'Chưa công khai' %>
+                </td>
+                <td class="action-cell">
+                  <div class="btn-group-actions">
+                    <% if (article.is_published) { %>
+                      <a href="/news/<%= article.slug %>" target="_blank" class="btn btn-sm btn-ghost" title="Xem trên web">Xem &nearr;</a>
+                    <% } %>
+                    <a href="/admin/news/<%= article.id %>/edit" class="btn btn-sm btn-outline">Sửa</a>
+                    <form action="/admin/news/<%= article.id %>/delete" method="POST" class="inline-form" data-confirm="Bạn có chắc muốn xóa bài viết này?">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="empty-state-card">
+        <h3>Chưa có bài viết nào</h3>
+        <p>Bắt đầu viết bài đầu tiên để quảng bá nét đẹp tinh hoa làng nghề truyền thống.</p>
+        <a href="/admin/news/new" class="btn btn-primary">+ Soạn bản tin ngay</a>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

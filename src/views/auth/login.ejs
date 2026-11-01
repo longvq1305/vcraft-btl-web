@@ -1,0 +1,101 @@
+<%- include('../partials/head', { title: title || 'Đăng nhập - vCraft' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main auth-main">
+  <section class="editorial-page-hero editorial-page-hero--auth">
+    <div class="container">
+      <div class="editorial-page-hero__inner">
+        <span class="editorial-page-hero__eyebrow slide-kicker">Cổng Kết Nối Di Sản</span>
+        <h1 class="editorial-page-hero__title">
+          Đăng nhập tài khoản
+          <span class="editorial-page-hero__script display-script">vCraft</span>
+        </h1>
+        <div class="editorial-rule"></div>
+        <p class="editorial-page-hero__desc">Truy cập không gian quản lý sản phẩm, đơn hàng và báo giá thủ công mỹ nghệ.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container auth-container">
+    <div class="auth-card paper-panel">
+
+      <% if (errors && errors.length > 0) { %>
+        <div class="alert alert-error" role="alert">
+          <ul class="error-list">
+            <% errors.forEach(function(err) { %>
+              <li><%= err %></li>
+            <% }); %>
+          </ul>
+        </div>
+      <% } %>
+
+      <form action="/auth/login" method="POST" class="auth-form" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <% if (returnTo) { %>
+          <input type="hidden" name="returnTo" value="<%= returnTo %>">
+        <% } %>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Địa chỉ email <span class="required">*</span></label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-control"
+            value="<%= email || '' %>"
+            placeholder="nhap.email@example.com"
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Mật khẩu <span class="required">*</span></label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            placeholder="••••••••"
+            required
+            autocomplete="current-password"
+          >
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-block btn-lg">Đăng nhập</button>
+        </div>
+      </form>
+
+      <div class="auth-footer">
+        <p>Chưa có tài khoản? <a href="/auth/register" class="link-primary">Đăng ký ngay</a></p>
+      </div>
+
+      <div class="demo-login-helper paper-panel">
+        <h3 class="demo-helper-title">Tài khoản thử nghiệm sẵn có</h3>
+        <div class="demo-grid">
+          <button type="button" class="btn-demo" data-demo-email="admin@vcraft.vn" data-demo-password="Admin@123">
+            <span class="demo-role">Quản trị viên</span>
+            <span class="demo-mail">admin@vcraft.vn</span>
+          </button>
+          <button type="button" class="btn-demo" data-demo-email="buyer@vcraft.vn" data-demo-password="Buyer@123">
+            <span class="demo-role">Khách hàng</span>
+            <span class="demo-mail">buyer@vcraft.vn</span>
+          </button>
+          <button type="button" class="btn-demo" data-demo-email="gom.battrang@vcraft.vn" data-demo-password="Artisan@123">
+            <span class="demo-role">Nghệ nhân Gốm</span>
+            <span class="demo-mail">gom.battrang@vcraft.vn</span>
+          </button>
+          <button type="button" class="btn-demo" data-demo-email="lua.vanphuc@vcraft.vn" data-demo-password="Artisan@123">
+            <span class="demo-role">Nghệ nhân Lụa</span>
+            <span class="demo-mail">lua.vanphuc@vcraft.vn</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,218 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main workshop-detail-page">
+  <!-- Workshop Hero Banner -->
+  <section class="workshop-detail-hero">
+    <div class="workshop-hero-backdrop">
+      <img
+        src="<%= workshop.cover_image || 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1600&q=80' %>"
+        alt="<%= workshop.workshop_name %>"
+        class="workshop-hero-img"
+      >
+      <div class="workshop-hero-overlay"></div>
+    </div>
+
+    <div class="container workshop-hero-content-wrap">
+      <nav class="breadcrumb-nav light-breadcrumb" aria-label="Đường dẫn">
+        <ol class="breadcrumb-list">
+          <li><a href="/">Trang chủ</a></li>
+          <li><a href="/workshops">Xưởng Thủ công</a></li>
+          <li aria-current="page"><%= workshop.workshop_name %></li>
+        </ol>
+      </nav>
+
+      <div class="workshop-header-card paper-panel">
+        <span class="slide-kicker">Hồ Sơ Xưởng Thủ Công</span>
+          <span class="status-badge <%= workshop.is_open ? 'status-approved' : 'status-suspended' %>">
+            <%= workshop.is_open ? 'Đang mở cửa đón khách' : 'Tạm đóng cửa tham quan' %>
+          </span>
+          <% if (workshop.categories) { %>
+            <span class="category-pill"><%= workshop.categories %></span>
+          <% } %>
+
+        <h1 class="workshop-title"><%= workshop.workshop_name %></h1>
+        <div class="editorial-rule"></div>
+        <p class="workshop-artisan-name">Nghệ nhân chủ nhiệm: <strong><%= workshop.artisan_name %></strong></p>
+
+        <div class="workshop-quick-info">
+          <% if (workshop.address) { %>
+            <div class="info-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span><%= workshop.address %></span>
+            </div>
+          <% } %>
+
+          <% if (workshop.visiting_hours) { %>
+            <div class="info-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span>Giờ tham quan: <%= workshop.visiting_hours %></span>
+            </div>
+          <% } %>
+
+          <% if (workshop.phone) { %>
+            <div class="info-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              <span><%= workshop.phone %></span>
+            </div>
+          <% } %>
+        </div>
+
+        <div class="workshop-header-actions">
+          <a href="/quotes/new" class="btn btn-primary">Yêu cầu Chế tác Độc bản</a>
+          <% if (workshop.latitude && workshop.longitude) { %>
+            <a href="/map#workshop-<%= workshop.slug %>" class="btn btn-outline">Xem vị trí trên Bản đồ</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Workshop Details Content -->
+  <div class="container workshop-body-layout">
+    <div class="workshop-main-column">
+      <!-- Story Section -->
+      <section class="content-block paper-panel">
+        <h2 class="content-heading section-script-title">Câu chuyện Làng nghề <span class="display-script">&amp; Di sản</span></h2>
+        <div class="workshop-story-text formatted-text">
+          <% if (workshop.story) { %>
+            <p><%= workshop.story %></p>
+          <% } else { %>
+            <p>Xưởng thủ công truyền thống lưu giữ tinh hoa văn hóa và bí quyết chế tác qua nhiều thế hệ.</p>
+          <% } %>
+        </div>
+      </section>
+
+      <!-- Workshop Gallery Images -->
+      <% if (workshop.gallery_images && workshop.gallery_images.length > 0) { %>
+        <section class="content-block paper-panel">
+          <h2 class="content-heading section-script-title">Không gian Xưởng <span class="display-script">&amp; Chế tác</span></h2>
+          <div class="workshop-photo-gallery">
+            <% workshop.gallery_images.forEach(function(imgUrl, idx) { %>
+              <div class="gallery-photo-item image-frame">
+                <img
+                  src="<%= imgUrl %>"
+                  alt="<%= workshop.workshop_name %> - Ảnh <%= idx + 1 %>"
+                  class="gallery-photo-img"
+                  loading="lazy"
+                >
+              </div>
+            <% }); %>
+          </div>
+        </section>
+      <% } %>
+
+      <!-- Products from this workshop -->
+      <section class="content-block">
+        <div class="section-header">
+          <div>
+            <h2 class="content-heading">Tác phẩm của xưởng</h2>
+            <p class="section-subtext">Các tuyệt tác đã hoàn thiện và được mở bán trực tiếp từ xưởng.</p>
+          </div>
+          <a href="/catalog?workshop=<%= workshop.slug %>" class="section-link">Xem tất cả (<%= products.length %>) &rarr;</a>
+        </div>
+
+        <% if (products && products.length > 0) { %>
+          <div class="grid grid-3 product-grid">
+            <% products.forEach(function(product) { %>
+              <article class="product-card">
+                <a href="/products/<%= product.slug %>" class="product-card-media">
+                  <img
+                    src="<%= product.hero_image || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80' %>"
+                    alt="<%= product.name %>"
+                    class="product-card-img"
+                    loading="lazy"
+                  >
+                  <span class="product-category-badge"><%= product.category %></span>
+                </a>
+                <div class="product-card-body">
+                  <h3 class="product-card-title">
+                    <a href="/products/<%= product.slug %>"><%= product.name %></a>
+                  </h3>
+                  <div class="product-card-footer">
+                    <span class="product-price">
+                      <%= typeof formatCurrency === 'function' ? formatCurrency(product.price) : Number(product.price).toLocaleString('vi-VN') + ' ₫' %>
+                    </span>
+                    <a href="/products/<%= product.slug %>" class="btn btn-sm btn-outline">Xem tác phẩm</a>
+                  </div>
+                </div>
+              </article>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="empty-state">
+            <p>Hiện xưởng chưa có tác phẩm nào được đăng tải công khai.</p>
+          </div>
+        <% } %>
+      </section>
+    </div>
+
+    <!-- Workshop Sidebar -->
+    <aside class="workshop-sidebar">
+      <!-- Certificate card -->
+      <% if (workshop.certificate_image) { %>
+        <div class="sidebar-card certificate-card paper-panel">
+          <h3 class="sidebar-card-title">Chứng nhận Nghệ nhân</h3>
+          <div class="certificate-preview">
+            <img
+              src="<%= workshop.certificate_image %>"
+              alt="Chứng nhận tay nghề nghệ nhân <%= workshop.artisan_name %>"
+              class="certificate-img"
+            >
+          </div>
+          <p class="certificate-note">Được thẩm định và xác thực bởi hiệp hội làng nghề truyền thống.</p>
+        </div>
+      <% } %>
+
+      <!-- Custom Request Card -->
+      <div class="sidebar-card quote-request-card paper-panel">
+        <h3 class="sidebar-card-title">Đặt tác phẩm theo yêu cầu</h3>
+        <p class="quote-card-desc">
+          Bạn cần đặt làm quà tặng doanh nghiệp, đồ gốm thờ cúng, tượng khắc gỗ hoặc sản phẩm theo kích cỡ riêng?
+        </p>
+        <a href="/quotes/new" class="btn btn-primary btn-block">Gửi yêu cầu báo giá</a>
+      </div>
+
+      <!-- Workshop Contact & Location Card -->
+      <div class="sidebar-card contact-card paper-panel">
+        <h3 class="sidebar-card-title">Thông tin liên hệ &amp; Tham quan</h3>
+        <ul class="sidebar-contact-list">
+          <li>
+            <strong>Địa chỉ:</strong>
+            <span><%= workshop.address || 'Đang cập nhật' %></span>
+          </li>
+          <li>
+            <strong>Giờ mở cửa:</strong>
+            <span><%= workshop.visiting_hours || 'Liên hệ trước khi đến' %></span>
+          </li>
+          <% if (workshop.phone) { %>
+            <li>
+              <strong>Điện thoại:</strong>
+              <span><%= workshop.phone %></span>
+            </li>
+          <% } %>
+          <li>
+            <strong>Trạng thái:</strong>
+            <span class="<%= workshop.is_open ? 'text-success' : 'text-muted' %>">
+              <%= workshop.is_open ? 'Đang đón tiếp khách' : 'Tạm dừng tiếp khách' %>
+            </span>
+          </li>
+        </ul>
+        <% if (workshop.latitude && workshop.longitude) { %>
+          <a href="/map" class="btn btn-outline btn-block btn-sm">Xem bản đồ chỉ đường</a>
+        <% } %>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,147 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main quotes-page">
+  <div class="container">
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li aria-current="page">Yêu cầu Báo giá & Điều phối</li>
+      </ol>
+    </nav>
+
+    <section class="editorial-page-hero editorial-page-hero--quotes">
+      <div class="editorial-page-hero__inner">
+        <span class="editorial-page-hero__eyebrow slide-kicker">Điều Phối &amp; Chế Tác Độc Bản</span>
+        <h1 class="editorial-page-hero__title">
+          Yêu cầu Báo giá &amp; Đơn hàng Chế tác
+          <span class="editorial-page-hero__script display-script">Đo ni</span>
+        </h1>
+        <div class="editorial-rule"></div>
+        <p class="editorial-page-hero__desc">
+          <% if (currentUser && currentUser.role === 'buyer') { %>
+            Theo dõi tiến độ, xem báo giá từ các xưởng làng nghề và chốt nghệ nhân chế tác độc bản.
+          <% } else if (currentUser && currentUser.role === 'artisan') { %>
+            Danh sách yêu cầu đặt hàng phù hợp với thế mạnh xưởng của bạn. Hãy gửi báo giá cạnh tranh.
+          <% } else { %>
+            Giám sát và điều phối luồng báo giá tập trung của toàn bộ làng nghề.
+          <% } %>
+        </p>
+        <% if (currentUser && currentUser.role === 'buyer') { %>
+          <div class="editorial-page-hero__actions">
+            <a href="/quotes/new" class="btn btn-primary btn-lg">+ Đặt chế tác mới</a>
+          </div>
+        <% } %>
+      </div>
+    </section>
+
+    <% if (!quotes || quotes.length === 0) { %>
+      <div class="empty-state card paper-panel">
+        <div class="empty-state-icon">📋</div>
+        <h2 class="empty-state-title">Chưa có yêu cầu báo giá nào</h2>
+        <p class="empty-state-text">
+          <% if (currentUser && currentUser.role === 'buyer') { %>
+            Bạn chưa tạo yêu cầu đặt hàng nào. Hãy gửi yêu cầu đầu tiên để nhận báo giá từ các nghệ nhân hàng đầu!
+          <% } else if (currentUser && currentUser.role === 'artisan') { %>
+            Hiện chưa có yêu cầu báo giá nào gửi tới xưởng của bạn. Khi có khách hàng cần đặt sản phẩm thuộc ngành nghề của bạn, yêu cầu sẽ xuất hiện tại đây.
+          <% } else { %>
+            Hệ thống chưa ghi nhận yêu cầu báo giá nào.
+          <% } %>
+        </p>
+        <% if (currentUser && currentUser.role === 'buyer') { %>
+          <div class="empty-state-actions">
+            <a href="/quotes/new" class="btn btn-primary">Tạo yêu cầu báo giá ngay</a>
+          </div>
+        <% } %>
+      </div>
+    <% } else { %>
+      <div class="card table-card paper-panel">
+        <div class="table-responsive">
+          <table class="table quotes-table">
+            <thead>
+              <tr>
+                <th scope="col">Mã & Tiêu đề</th>
+                <th scope="col">Chuyên mục</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Hạn chót</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Báo giá / Xưởng</th>
+                <th scope="col">Ngày tạo</th>
+                <th scope="col" class="text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% quotes.forEach(function(q) { %>
+                <% const badge = getStatusBadge(q.status); %>
+                <tr>
+                  <td class="quote-title-cell">
+                    <span class="quote-id">#<%= q.id %></span>
+                    <a href="/quotes/<%= q.id %>" class="quote-link font-medium">
+                      <%= q.title %>
+                    </a>
+                  </td>
+                  <td>
+                    <span class="category-tag"><%= q.category %></span>
+                  </td>
+                  <td>
+                    <strong><%= q.quantity %></strong> sản phẩm
+                  </td>
+                  <td>
+                    <time datetime="<%= q.deadline %>"><%= formatDate(q.deadline) %></time>
+                  </td>
+                  <td>
+                    <span class="badge <%= badge.className %>"><%= badge.label %></span>
+                  </td>
+                  <td>
+                    <% if (currentUser && currentUser.role === 'buyer') { %>
+                      <% if (q.status === 'draft') { %>
+                        <span class="text-muted">Bản nháp riêng tư</span>
+                      <% } else if (q.accepted_workshop_name) { %>
+                        <span class="accepted-artisan-name text-success">
+                          <strong><%= q.accepted_workshop_name %></strong>
+                          <small class="block text-muted"><%= formatCurrency(q.accepted_unit_price) %>/sp</small>
+                        </span>
+                      <% } else { %>
+                        <span class="bid-count-badge">
+                          <strong><%= q.bid_count || 0 %></strong> xưởng đã chào
+                        </span>
+                      <% } %>
+                    <% } else if (currentUser && currentUser.role === 'artisan') { %>
+                      <% if (q.my_bid_id) { %>
+                        <% const bidBadge = getStatusBadge(q.my_bid_status); %>
+                        <span class="badge <%= bidBadge.className %>"><%= bidBadge.label %></span>
+                        <small class="block text-muted"><%= formatCurrency(q.my_bid_unit_price) %>/sp</small>
+                      <% } else { %>
+                        <span class="badge badge-pending">Chưa chào giá</span>
+                      <% } %>
+                    <% } else { %>
+                      <span><%= q.bid_count || 0 %> báo giá</span>
+                      <% if (q.accepted_workshop_name) { %>
+                        <small class="block text-success">(Chốt: <%= q.accepted_workshop_name %>)</small>
+                      <% } %>
+                    <% } %>
+                  </td>
+                  <td>
+                    <time datetime="<%= q.created_at %>"><%= formatDate(q.created_at) %></time>
+                  </td>
+                  <td class="text-right">
+                    <a href="/quotes/<%= q.id %>" class="btn btn-outline btn-sm">
+                      <% if (currentUser && currentUser.role === 'artisan' && !q.my_bid_id && (q.status === 'sent' || q.status === 'bidding')) { %>
+                        Chào giá ngay &rarr;
+                      <% } else { %>
+                        Xem chi tiết &rarr;
+                      <% } %>
+                    </a>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

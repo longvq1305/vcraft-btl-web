@@ -1,0 +1,21 @@
+<%- include('../partials/head', { title: title || '400 - Yêu cầu không hợp lệ' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main error-page-main">
+  <div class="container error-container">
+    <div class="error-card paper-panel">
+      <span class="slide-kicker">Thông Báo Hệ Thống</span>
+      <span class="error-code display-block">400</span>
+      <h1 class="error-title">Yêu cầu không hợp lệ</h1>
+      <div class="editorial-rule"></div>
+      <p class="error-desc"><%= typeof message !== 'undefined' && message ? message : 'Dữ liệu gửi lên không đáp ứng yêu cầu của hệ thống.' %></p>
+      <div class="error-actions">
+        <a href="/" data-page-action="back" class="btn btn-secondary">Quay lại trang trước</a>
+        <a href="/" class="btn btn-primary">Về trang chủ vCraft</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

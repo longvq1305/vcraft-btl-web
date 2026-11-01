@@ -1,0 +1,261 @@
+<%- include('../partials/head', { title: title || 'Bàn Làm Việc Quản Trị - vCraft' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main admin-main">
+  <div class="container">
+    <!-- Admin Header -->
+    <section class="editorial-page-hero editorial-page-hero--dashboard">
+      <div class="editorial-page-hero__inner">
+        <span class="editorial-page-hero__eyebrow slide-kicker">Hệ thống điều hành</span>
+        <h1 class="editorial-page-hero__title">
+          Bàn làm việc Quản trị viên
+          <span class="editorial-page-hero__script display-script">Điều phối</span>
+        </h1>
+        <div class="editorial-rule"></div>
+        <p class="editorial-page-hero__desc">Tổng quan hoạt động làng nghề, kiểm duyệt hồ sơ nghệ nhân và vận hành nền tảng.</p>
+        <div class="admin-header-actions">
+          <a href="/admin/artisans/new" class="btn btn-primary">+ Tạo tài khoản Nghệ nhân</a>
+          <a href="/admin/news" class="btn btn-outline">Quản lý Bản tin</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Counter Grid -->
+    <div class="stats-grid">
+      <div class="stat-card paper-panel">
+        <span class="stat-label">Tổng người dùng</span>
+        <span class="stat-value"><%= stats.totalUsers %></span>
+        <span class="stat-sub">Bao gồm <%= stats.buyers %> khách hàng</span>
+      </div>
+      <div class="stat-card stat-card-highlight paper-panel">
+        <span class="stat-label">Hồ sơ nghệ nhân chờ duyệt</span>
+        <span class="stat-value stat-value-pending"><%= stats.artisansPending %></span>
+        <span class="stat-sub"><%= stats.artisansApproved %> xưởng đang hoạt động</span>
+      </div>
+      <div class="stat-card paper-panel">
+        <span class="stat-label">Tác phẩm trên sàn</span>
+        <span class="stat-value"><%= stats.productsTotal %></span>
+        <span class="stat-sub"><%= stats.productsPublished %> tác phẩm đã xuất bản</span>
+      </div>
+      <div class="stat-card paper-panel">
+        <span class="stat-label">Yêu cầu đặt chế tác</span>
+        <span class="stat-value"><%= stats.quotesTotal %></span>
+        <span class="stat-sub"><%= stats.quotesBidding %> đang nhận báo giá &bull; <%= stats.quotesAccepted %> đã chốt</span>
+      </div>
+    </div>
+
+    <!-- Pending Artisans Section -->
+    <section class="admin-section">
+      <div class="section-header-row">
+        <div>
+          <h2 class="section-title">Hồ sơ Nghệ nhân chờ xét duyệt</h2>
+          <p class="section-subtitle">Các xưởng thủ công mới đăng ký cần xác thực trước khi được xuất hiện trên bản đồ và nhận báo giá.</p>
+        </div>
+        <span class="badge badge-pending"><%= pendingArtisans ? pendingArtisans.length : 0 %> hồ sơ</span>
+      </div>
+
+      <% if (pendingArtisans && pendingArtisans.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th>Nghệ nhân / Đại diện</th>
+                <th>Tên xưởng / Thương hiệu</th>
+                <th>Nhóm ngành nghề</th>
+                <th>Địa chỉ làng nghề</th>
+                <th>Ngày đăng ký</th>
+                <th>Trạng thái</th>
+                <th>Thao tác xét duyệt</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% pendingArtisans.forEach(function(artisan) { %>
+                <tr>
+                  <td>
+                    <strong><%= artisan.full_name %></strong><br>
+                    <span class="text-muted"><%= artisan.email %></span><br>
+                    <span class="text-muted"><%= artisan.phone || 'Chưa có SĐT' %></span>
+                  </td>
+                  <td>
+                    <span class="workshop-title"><%= artisan.workshop_name || 'Đang cập nhật' %></span>
+                  </td>
+                  <td><%= artisan.categories || 'Thủ công mỹ nghệ' %></td>
+                  <td><%= artisan.address || 'Đang cập nhật' %></td>
+                  <td><%= formatDate(artisan.created_at, true) %></td>
+                  <td>
+                    <span class="badge badge-pending">Chờ duyệt</span>
+                  </td>
+                  <td class="action-cell">
+                    <div class="btn-group-actions">
+                      <form action="/admin/artisans/<%= artisan.id %>/approve" method="POST" class="inline-form">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="btn btn-sm btn-success">✓ Phê duyệt</button>
+                      </form>
+                      <form action="/admin/artisans/<%= artisan.id %>/suspend" method="POST" class="inline-form" data-confirm="Bạn có chắc muốn từ chối / tạm ngưng nghệ nhân này?">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="btn btn-sm btn-danger">Từ chối</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state-card">
+          <p>Hiện không có hồ sơ nghệ nhân nào đang chờ xét duyệt.</p>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Active Artisans Section -->
+    <section class="admin-section">
+      <div class="section-header-row">
+        <div>
+          <h2 class="section-title">Danh sách Nghệ nhân & Xưởng đang hoạt động</h2>
+          <p class="section-subtitle">Các xưởng đã được xác thực, công khai trên bản đồ và có quyền nhận yêu cầu báo giá.</p>
+        </div>
+        <span class="badge badge-approved"><%= approvedArtisans ? approvedArtisans.length : 0 %> xưởng</span>
+      </div>
+
+      <% if (approvedArtisans && approvedArtisans.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th>Nghệ nhân</th>
+                <th>Xưởng thủ công</th>
+                <th>Ngành nghề</th>
+                <th>Địa chỉ</th>
+                <th>Cửa hàng</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% approvedArtisans.forEach(function(artisan) { %>
+                <tr>
+                  <td>
+                    <strong><%= artisan.full_name %></strong><br>
+                    <span class="text-muted"><%= artisan.email %></span>
+                  </td>
+                  <td>
+                    <a href="/workshops/<%= artisan.slug %>" target="_blank" class="link-primary">
+                      <%= artisan.workshop_name %> &nearr;
+                    </a>
+                  </td>
+                  <td><%= artisan.categories %></td>
+                  <td><%= artisan.address %></td>
+                  <td>
+                    <span class="badge <%= artisan.is_open ? 'badge-approved' : 'badge-suspended' %>">
+                      <%= artisan.is_open ? 'Đang mở cửa' : 'Đang đóng cửa' %>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge badge-approved">Đã duyệt</span>
+                  </td>
+                  <td>
+                    <form action="/admin/artisans/<%= artisan.id %>/suspend" method="POST" class="inline-form" data-confirm="Bạn có chắc muốn tạm ngưng tài khoản nghệ nhân này?">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">Tạm ngưng</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state-card">
+          <p>Chưa có nghệ nhân nào được duyệt.</p>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Operational Snapshot (Quotes & Products) -->
+    <div class="admin-snapshot-row">
+      <section class="admin-section snapshot-col">
+        <div class="section-header-row">
+          <h2 class="section-title">Yêu cầu Báo giá Gần đây</h2>
+          <a href="/quotes" class="btn btn-sm btn-ghost">Xem tất cả &rarr;</a>
+        </div>
+        <% if (recentQuotes && recentQuotes.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table admin-table table-sm">
+              <thead>
+                <tr>
+                  <th>Tiêu đề & Khách hàng</th>
+                  <th>SL</th>
+                  <th>Hạn chót</th>
+                  <th>Báo giá</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% recentQuotes.forEach(function(q) { %>
+                  <% const badge = getStatusBadge(q.status); %>
+                  <tr>
+                    <td>
+                      <a href="/quotes/<%= q.id %>" class="link-primary"><strong><%= q.title %></strong></a><br>
+                      <span class="text-muted"><%= q.buyer_name %></span>
+                    </td>
+                    <td><%= q.quantity %></td>
+                    <td><%= formatDate(q.deadline) %></td>
+                    <td><span class="badge badge-default"><%= q.bid_count %> giá</span></td>
+                    <td><span class="badge <%= badge.className %>"><%= badge.label %></span></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <div class="empty-state-card"><p>Chưa có yêu cầu báo giá nào.</p></div>
+        <% } %>
+      </section>
+
+      <section class="admin-section snapshot-col">
+        <div class="section-header-row">
+          <h2 class="section-title">Tác phẩm Mới Cập nhật</h2>
+          <a href="/catalog" class="btn btn-sm btn-ghost">Xem danh mục &rarr;</a>
+        </div>
+        <% if (recentProducts && recentProducts.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table admin-table table-sm">
+              <thead>
+                <tr>
+                  <th>Tên tác phẩm & Xưởng</th>
+                  <th>Giá niêm yết</th>
+                  <th>Kho</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% recentProducts.forEach(function(p) { %>
+                  <tr>
+                    <td>
+                      <a href="/products/<%= p.slug %>" class="link-primary"><strong><%= p.name %></strong></a><br>
+                      <span class="text-muted"><%= p.workshop_name || p.artisan_name %></span>
+                    </td>
+                    <td><%= formatCurrency(p.price) %></td>
+                    <td><%= p.inventory %></td>
+                    <td>
+                      <span class="badge <%= p.status === 'published' ? 'badge-published' : 'badge-draft' %>">
+                        <%= p.status === 'published' ? 'Đã xuất bản' : 'Bản nháp' %>
+                      </span>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <div class="empty-state-card"><p>Chưa có tác phẩm nào.</p></div>
+        <% } %>
+      </section>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

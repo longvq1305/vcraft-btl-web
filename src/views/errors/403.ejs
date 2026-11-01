@@ -1,0 +1,25 @@
+<%- include('../partials/head', { title: title || '403 - Quyền truy cập bị từ chối' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main error-page-main">
+  <div class="container error-container">
+    <div class="error-card paper-panel">
+      <span class="slide-kicker">Bảo Mật &amp; Phân Quyền</span>
+      <span class="error-code display-block">403</span>
+      <h1 class="error-title">Truy cập bị từ chối</h1>
+      <div class="editorial-rule"></div>
+      <p class="error-desc"><%= typeof message !== 'undefined' && message ? message : 'Bạn không có quyền truy cập vào tài nguyên hoặc thực hiện thao tác này.' %></p>
+      <div class="error-actions">
+        <% if (!currentUser) { %>
+          <a href="/auth/login" class="btn btn-primary">Đăng nhập tài khoản</a>
+        <% } else { %>
+          <a href="/" class="btn btn-primary">Về trang chủ vCraft</a>
+        <% } %>
+        <a href="/" data-page-action="back" class="btn btn-secondary">Quay lại</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

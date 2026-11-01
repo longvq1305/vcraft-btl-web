@@ -1,0 +1,75 @@
+<%- include('../partials/head', { title: title || 'Bản Tin & Văn Hóa Làng Nghề - vCraft' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main news-main">
+  <!-- Page Header -->
+  <section class="editorial-page-hero editorial-page-hero--news">
+    <div class="container">
+      <div class="editorial-page-hero__inner">
+        <span class="editorial-page-hero__eyebrow slide-kicker">Di sản &amp; Đời sống Nghề</span>
+        <h1 class="editorial-page-hero__title">
+          Bản tin Làng nghề Thủ công
+          <span class="editorial-page-hero__script display-script">Ký sự</span>
+        </h1>
+        <div class="editorial-rule"></div>
+        <p class="editorial-page-hero__desc">
+          Khám phá những câu chuyện giữ lửa truyền thống, nét tinh xảo trong từng kỹ nghệ cổ và nhịp sống văn hóa tại các làng nghề Việt Nam.
+        </p>
+      </div>
+      <div class="editorial-page-hero__visual" aria-hidden="true">
+        <div class="image-frame">
+          <img src="/images/heritage/incense-craft.webp" alt="" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- News Listing -->
+  <section class="section news-grid-section">
+    <div class="container">
+      <% if (articles && articles.length > 0) { %>
+        <div class="news-grid">
+          <% articles.forEach(function(article, index) { %>
+            <article class="news-card paper-panel <%= index === 0 ? 'news-card-featured' : '' %>">
+              <a href="/news/<%= article.slug %>" class="news-card-media image-frame">
+                <% if (article.cover_image) { %>
+                  <img src="<%= article.cover_image %>" alt="<%= article.title %>" class="news-card-img" loading="lazy">
+                <% } else { %>
+                  <div class="news-img-placeholder">
+                    <span>vCraft Di sản</span>
+                  </div>
+                <% } %>
+              </a>
+              <div class="news-card-body">
+                <div class="news-meta">
+                  <span class="news-date">
+                    <%= formatDate(article.published_at || article.created_at) %>
+                  </span>
+                </div>
+                <h2 class="news-card-title">
+                  <a href="/news/<%= article.slug %>"><%= article.title %></a>
+                </h2>
+                <p class="news-card-excerpt"><%= article.excerpt %></p>
+                <div class="news-card-footer">
+                  <a href="/news/<%= article.slug %>" class="news-read-more">
+                    Đọc tiếp câu chuyện &rarr;
+                  </a>
+                </div>
+              </div>
+            </article>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <div class="empty-icon">📰</div>
+          <h2 class="empty-title">Chưa có bài viết bản tin nào</h2>
+          <p class="empty-desc">Các câu chuyện làng nghề và tin tức văn hóa đang được biên tập và sẽ sớm cập nhật.</p>
+          <a href="/" class="btn btn-primary">Về trang chủ</a>
+        </div>
+      <% } %>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

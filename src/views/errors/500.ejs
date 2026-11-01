@@ -1,0 +1,21 @@
+<%- include('../partials/head', { title: title || '500 - Lỗi máy chủ' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main error-page-main">
+  <div class="container error-container">
+    <div class="error-card paper-panel">
+      <span class="slide-kicker">Trục Trặc Kỹ Thuật</span>
+      <span class="error-code display-block">500</span>
+      <h1 class="error-title">Lỗi xử lý hệ thống</h1>
+      <div class="editorial-rule"></div>
+      <p class="error-desc"><%= typeof message !== 'undefined' && message ? message : 'Hệ thống gặp sự cố trong quá trình xử lý yêu cầu của bạn. Đội ngũ kỹ thuật đã được thông báo.' %></p>
+      <div class="error-actions">
+        <a href="/" class="btn btn-primary">Về trang chủ vCraft</a>
+        <a href="/" data-page-action="reload" class="btn btn-secondary">Thử tải lại</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

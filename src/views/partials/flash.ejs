@@ -1,0 +1,14 @@
+<% if (typeof flash !== 'undefined' && flash && flash.length > 0) { %>
+  <div class="flash-messages container" aria-live="polite">
+    <% flash.forEach(function(item) { %>
+      <div class="alert alert-<%= item.type || 'info' %>" role="alert">
+        <span class="alert-icon">
+          <% if (item.type === 'success') { %>✓
+          <% } else if (item.type === 'error' || item.type === 'danger') { %>!
+          <% } else { %>ℹ<% } %>
+        </span>
+        <span class="alert-text"><%= item.message %></span>
+      </div>
+    <% }); %>
+  </div>
+<% } %>

@@ -1,0 +1,356 @@
+<%- include('../../partials/head', { title: title }) %>
+<%- include('../../partials/header') %>
+<%- include('../../partials/flash') %>
+
+<main class="site-main artisan-edit-product-page">
+  <div class="container container-narrow">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li><a href="/artisan/dashboard">Bảng điều khiển</a></li>
+        <li aria-current="page">Chỉnh sửa: <%= product.name %></li>
+      </ol>
+    </nav>
+
+    <div class="page-header with-action">
+      <div>
+        <span class="slide-kicker">Biên Tập Tác Phẩm</span>
+        <h1 class="page-title">Chỉnh sửa Tác phẩm</h1>
+        <div class="editorial-rule"></div>
+        <p class="page-subtitle">
+          Cập nhật thông tin tác phẩm, bổ sung hình ảnh và ghi nhận các công đoạn trong Nhật ký chế tác minh bạch.
+        </p>
+      </div>
+      <div class="header-action-group">
+        <a href="/products/<%= product.slug %>" target="_blank" class="btn btn-outline">
+          Xem trang tác phẩm
+        </a>
+        <a href="/products/<%= product.slug %>/story" target="_blank" class="btn btn-outline">
+          Xem Nhật ký chế tác
+        </a>
+      </div>
+    </div>
+
+    <!-- Product Update Form -->
+    <div class="card form-card mb-4 paper-panel">
+      <div class="card-header">
+        <h2 class="card-title">1. Thông tin tác phẩm & Hình ảnh</h2>
+      </div>
+      <div class="card-body">
+        <form
+          action="/artisan/products/<%= product.id %>?_csrf=<%= csrfToken %>"
+          method="POST"
+          enctype="multipart/form-data"
+          class="vcraft-form"
+        >
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <fieldset class="form-section">
+            <div class="form-group">
+              <label for="product-name" class="form-label required">Tên tác phẩm</label>
+              <input
+                type="text"
+                id="product-name"
+                name="name"
+                class="form-control"
+                value="<%= product.name %>"
+                required
+              >
+            </div>
+
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="product-category" class="form-label required">Danh mục ngành nghề</label>
+                <input
+                  type="text"
+                  id="product-category"
+                  name="category"
+                  list="category-options"
+                  class="form-control"
+                  value="<%= product.category %>"
+                  required
+                >
+                <datalist id="category-options">
+                  <% if (categories && categories.length > 0) { %>
+                    <% categories.forEach(function(cat) { %>
+                      <option value="<%= cat %>"></option>
+                    <% }); %>
+                  <% } %>
+                </datalist>
+              </div>
+
+              <div class="form-group">
+                <label for="product-status" class="form-label required">Trạng thái phát hành</label>
+                <select id="product-status" name="status" class="form-control form-select">
+                  <option value="published" <%= product.status === 'published' ? 'selected' : '' %>>Xuất bản công khai</option>
+                  <option value="draft" <%= product.status === 'draft' ? 'selected' : '' %>>Bản nháp (Ẩn)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="product-price" class="form-label required">Giá bán (VNĐ)</label>
+                <input
+                  type="number"
+                  id="product-price"
+                  name="price"
+                  min="0"
+                  step="1000"
+                  class="form-control"
+                  value="<%= product.price %>"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="product-inventory" class="form-label required">Số lượng tồn kho</label>
+                <input
+                  type="number"
+                  id="product-inventory"
+                  name="inventory"
+                  min="0"
+                  step="1"
+                  class="form-control"
+                  value="<%= product.inventory %>"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="product-description" class="form-label required">Mô tả tác phẩm</label>
+              <textarea
+                id="product-description"
+                name="description"
+                rows="5"
+                class="form-control"
+                required
+              ><%= product.description %></textarea>
+            </div>
+          </fieldset>
+
+          <!-- Media Management Section -->
+          <fieldset class="form-section" id="gallery">
+            <legend class="form-section-legend">Hình ảnh đại diện & Bộ sưu tập</legend>
+
+            <!-- Hero image -->
+            <div class="form-group">
+              <label for="hero_image" class="form-label">Ảnh đại diện chính (Hero Image)</label>
+              <% if (product.hero_image) { %>
+                <div class="current-image-preview mb-2">
+                  <img src="<%= product.hero_image %>" alt="<%= product.name %>" class="preview-thumb preview-thumb--cover">
+                  <span class="preview-note">Ảnh đại diện hiện tại. Chọn tệp bên dưới nếu muốn thay thế.</span>
+                </div>
+              <% } %>
+              <input
+                type="file"
+                id="hero_image"
+                name="hero_image"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                class="form-control"
+              >
+            </div>
+
+            <!-- Existing Gallery Images -->
+            <% if (product.images && product.images.length > 0) { %>
+              <div class="form-group">
+                <label class="form-label">Các ảnh chi tiết hiện có</label>
+                <div class="edit-gallery-grid">
+                  <% product.images.forEach(function(img) { %>
+                    <div class="edit-gallery-card">
+                      <img src="<%= img.image_path %>" alt="<%= img.alt_text || 'Ảnh chi tiết' %>" class="edit-gallery-thumb">
+                      <div class="edit-gallery-overlay">
+                        <form
+                          action="/artisan/products/<%= product.id %>/images/<%= img.id %>/delete"
+                          method="POST"
+                          data-confirm="Bạn có chắc chắn muốn xóa ảnh này khỏi tác phẩm?"
+                        >
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                          <button type="submit" class="btn btn-xs btn-danger" title="Xóa ảnh này">Xóa</button>
+                        </form>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              </div>
+            <% } %>
+
+            <!-- Add new gallery images -->
+            <div class="form-group">
+              <label for="gallery_images" class="form-label">Tải thêm ảnh chi tiết</label>
+              <input
+                type="file"
+                id="gallery_images"
+                name="gallery_images"
+                multiple
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                class="form-control"
+              >
+              <small class="form-text">Các ảnh tải lên sẽ được nối tiếp vào bộ sưu tập chi tiết của tác phẩm.</small>
+            </div>
+          </fieldset>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">Lưu Cập Nhật Tác Phẩm</button>
+            <a href="/artisan/dashboard" class="btn btn-outline btn-lg">Về Bảng điều khiển</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Production Timeline / Provenance Steps Section -->
+    <section class="card form-card mb-4 paper-panel" id="timeline">
+      <div class="card-header">
+        <h2 class="card-title">2. Nhật ký Chế tác Minh bạch (Provenance Steps)</h2>
+        <p class="card-subtitle">
+          Ghi nhận từng công đoạn chế tác tác phẩm từ xưởng. Dữ liệu này tự động xuất hiện trên trang Căn cước tác phẩm và mã QR.
+        </p>
+      </div>
+      <div class="card-body">
+        <!-- Existing Steps List -->
+        <% if (product.steps && product.steps.length > 0) { %>
+          <div class="existing-steps-list mb-4">
+            <h3 class="subsection-title">Các công đoạn đã ghi nhận (<%= product.steps.length %>)</h3>
+            <div class="steps-table-wrap table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">#</th>
+                    <th class="table-thumbnail-cell" style="width: 70px;">Ảnh</th>
+                    <th>Tên công đoạn</th>
+                    <th>Thời gian</th>
+                    <th>Ghi chú kỹ thuật</th>
+                    <th class="text-right">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% product.steps.forEach(function(step, idx) { %>
+                    <tr>
+                      <td><strong><%= idx + 1 %></strong></td>
+                      <td class="table-thumbnail-cell">
+                        <% if (step.image_path) { %>
+                          <img src="<%= step.image_path %>" alt="<%= step.title %>" class="step-table-thumb">
+                        <% } else { %>
+                          <span class="text-muted">—</span>
+                        <% } %>
+                      </td>
+                      <td><strong><%= step.title %></strong></td>
+                      <td>
+                        <%= typeof formatDate === 'function' ? formatDate(step.occurred_at) : new Date(step.occurred_at).toLocaleDateString('vi-VN') %>
+                      </td>
+                      <td><%= step.description || '—' %></td>
+                      <td class="text-right">
+                        <form
+                          action="/artisan/products/<%= product.id %>/steps/<%= step.id %>/delete"
+                          method="POST"
+                          class="d-inline"
+                          data-confirm="Bạn có chắc chắn muốn xóa công đoạn chế tác này?"
+                        >
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                          <button type="submit" class="btn btn-xs btn-danger">Xóa bước</button>
+                        </form>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <% } else { %>
+          <div class="empty-state p-3 mb-4">
+            <p>Chưa có công đoạn nào được ghi nhận. Hãy thêm công đoạn đầu tiên bằng biểu mẫu bên dưới.</p>
+          </div>
+        <% } %>
+
+        <!-- Add Step Form -->
+        <div class="add-step-box">
+          <h3 class="subsection-title">+ Thêm công đoạn chế tác mới</h3>
+          <form
+            action="/artisan/products/<%= product.id %>/steps?_csrf=<%= csrfToken %>"
+            method="POST"
+            enctype="multipart/form-data"
+            class="vcraft-form"
+          >
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="step-title" class="form-label required">Tên công đoạn</label>
+                <input
+                  type="text"
+                  id="step-title"
+                  name="title"
+                  class="form-control"
+                  required
+                  placeholder="Ví dụ: Chuốt dáng gốm trên bàn xoay thủ công"
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="step-occurred" class="form-label">Thời gian thực hiện</label>
+                <input
+                  type="datetime-local"
+                  id="step-occurred"
+                  name="occurred_at"
+                  class="form-control"
+                >
+                <small class="form-text">Để trống nếu muốn lấy thời gian hiện tại.</small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="step-desc" class="form-label">Mô tả công đoạn & Kỹ thuật</label>
+              <textarea
+                id="step-desc"
+                name="description"
+                rows="3"
+                class="form-control"
+                placeholder="Ghi chép về nhiệt độ lò nung, loại men, kỹ thuật đục chạm hoặc công cụ truyền thống được sử dụng..."
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="step-image" class="form-label">Hình ảnh tư liệu thực địa</label>
+              <input
+                type="file"
+                id="step-image"
+                name="image"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                class="form-control"
+              >
+              <small class="form-text">Ảnh chụp nghệ nhân đang thao tác hoặc sản phẩm ở công đoạn này.</small>
+            </div>
+
+            <button type="submit" class="btn btn-secondary">
+              Ghi nhận công đoạn vào Nhật ký
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Danger Zone: Delete Product -->
+    <div class="card danger-card">
+      <div class="card-body danger-body">
+        <div>
+          <h3 class="danger-title">Xóa tác phẩm này</h3>
+          <p class="danger-desc">
+            Hành động này sẽ xóa vĩnh viễn tác phẩm, toàn bộ ảnh chi tiết và các bước trong nhật ký chế tác. Không thể hoàn tác.
+          </p>
+        </div>
+        <form
+          action="/artisan/products/<%= product.id %>/delete"
+          method="POST"
+          data-confirm="Bạn có CHẮC CHẮN muốn xóa vĩnh viễn tác phẩm này?"
+        >
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit" class="btn btn-danger">Xóa Vĩnh Viễn Tác Phẩm</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/footer') %>

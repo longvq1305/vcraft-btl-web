@@ -1,0 +1,205 @@
+<%- include('../partials/head', { title: title || 'Tạo Tài Khoản Nghệ Nhân Mới - Quản Trị' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main admin-main">
+  <div class="container container-form">
+    <div class="admin-page-header">
+      <div>
+        <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+          <ol class="breadcrumb-list">
+            <li><a href="/admin">Bàn làm việc Quản trị</a></li>
+            <li aria-current="page">Tạo tài khoản nghệ nhân mới</li>
+          </ol>
+        </nav>
+        <span class="slide-kicker">Quản Trị Nghệ Nhân</span>
+        <h1 class="page-title">Cấp Tài Khoản Nghệ Nhân Trực Tiếp</h1>
+        <div class="editorial-rule"></div>
+        <p class="page-subtitle">Tạo tài khoản nghệ nhân được phê duyệt ngay và khởi tạo hồ sơ xưởng thủ công trên bản đồ di sản.</p>
+      </div>
+      <a href="/admin" class="btn btn-outline">&larr; Quay lại</a>
+    </div>
+
+    <% if (errors && errors.length > 0) { %>
+      <div class="alert alert-error" role="alert">
+        <ul class="error-list">
+          <% errors.forEach(function(err) { %>
+            <li><%= err %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <div class="card form-card paper-panel">
+      <form action="/admin/artisans/new" method="POST" class="admin-form" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <h3 class="form-section-title">1. Thông tin đăng nhập & Nghệ nhân</h3>
+
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="fullName" class="form-label">Họ tên Nghệ nhân <span class="required">*</span></label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              class="form-control"
+              value="<%= values.fullName || '' %>"
+              placeholder="Ví dụ: Nghệ nhân Nguyễn Văn A"
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">Địa chỉ Email đăng nhập <span class="required">*</span></label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-control"
+              value="<%= values.email || '' %>"
+              placeholder="artisan@vcraft.vn"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="password" class="form-label">Mật khẩu khởi tạo <span class="required">*</span></label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              placeholder="Tối thiểu 6 ký tự"
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label for="phone" class="form-label">Số điện thoại liên hệ</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              class="form-control"
+              value="<%= values.phone || '' %>"
+              placeholder="0912 345 678"
+            >
+          </div>
+        </div>
+
+        <h3 class="form-section-title">2. Hồ sơ Xưởng thủ công & Định vị Làng nghề</h3>
+
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="workshopName" class="form-label">Tên Xưởng / Cơ sở chế tác <span class="required">*</span></label>
+            <input
+              type="text"
+              id="workshopName"
+              name="workshopName"
+              class="form-control"
+              value="<%= values.workshopName || '' %>"
+              placeholder="Ví dụ: Xưởng Gốm Tinh Hoa Bát Tràng"
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label for="categories" class="form-label">Nhóm ngành nghề <span class="required">*</span></label>
+            <input
+              type="text"
+              id="categories"
+              name="categories"
+              class="form-control"
+              value="<%= values.categories || '' %>"
+              placeholder="Ví dụ: Gốm sứ, Mỹ nghệ"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="address" class="form-label">Địa chỉ xưởng / Làng nghề <span class="required">*</span></label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            class="form-control"
+            value="<%= values.address || '' %>"
+            placeholder="Thôn 1 Làng cổ Bát Tràng, Gia Lâm, Hà Nội"
+            required
+          >
+        </div>
+
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="latitude" class="form-label">Tọa độ Vĩ độ (Latitude)</label>
+            <input
+              type="number"
+              step="any"
+              id="latitude"
+              name="latitude"
+              class="form-control"
+              value="<%= values.latitude || '20.9786' %>"
+              placeholder="20.9786"
+            >
+          </div>
+          <div class="form-group">
+            <label for="longitude" class="form-label">Tọa độ Kinh độ (Longitude)</label>
+            <input
+              type="number"
+              step="any"
+              id="longitude"
+              name="longitude"
+              class="form-control"
+              value="<%= values.longitude || '105.9125' %>"
+              placeholder="105.9125"
+            >
+          </div>
+        </div>
+
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="visitingHours" class="form-label">Giờ đón khách trải nghiệm</label>
+            <input
+              type="text"
+              id="visitingHours"
+              name="visitingHours"
+              class="form-control"
+              value="<%= values.visitingHours || '08:00 - 17:30 (Hằng ngày)' %>"
+              placeholder="08:00 - 17:30"
+            >
+          </div>
+          <div class="form-group checkbox-group-wrap">
+            <label class="form-checkbox-label">
+              <input
+                type="checkbox"
+                name="isOpen"
+                value="1"
+                <%= values.isOpen !== false ? 'checked' : '' %>
+              >
+              <span>Xưởng đang mở cửa đón khách tham quan & trải nghiệm</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="story" class="form-label">Câu chuyện & Di sản truyền thống của xưởng</label>
+          <textarea
+            id="story"
+            name="story"
+            class="form-control"
+            rows="4"
+            placeholder="Mô tả kỹ thuật bí truyền, số năm gắn bó với nghề và những giải thưởng, danh hiệu nghệ nhân..."
+          ><%= values.story || '' %></textarea>
+        </div>
+
+        <div class="form-actions-bar">
+          <a href="/admin" class="btn btn-secondary">Hủy bỏ</a>
+          <button type="submit" class="btn btn-primary btn-lg">Tạo & Phê Duyệt Tài Khoản Ngay</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

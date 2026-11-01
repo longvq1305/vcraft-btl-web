@@ -1,0 +1,171 @@
+<%- include('../../partials/head', { title: title }) %>
+<%- include('../../partials/header') %>
+<%- include('../../partials/flash') %>
+
+<main class="site-main artisan-new-product-page">
+  <div class="container container-narrow">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li><a href="/artisan/dashboard">Bảng điều khiển</a></li>
+        <li aria-current="page">Đăng tác phẩm mới</li>
+      </ol>
+    </nav>
+
+    <div class="page-header">
+      <span class="slide-kicker">Chế Tác Mới</span>
+      <h1 class="page-title">Đăng Tác phẩm Thủ công Mới</h1>
+      <div class="editorial-rule"></div>
+      <p class="page-subtitle">
+        Cung cấp thông tin chi tiết về tác phẩm. Sau khi tạo, bạn có thể bổ sung các bước trong Nhật ký chế tác minh bạch (Provenance Timeline).
+      </p>
+    </div>
+
+    <div class="card form-card paper-panel">
+      <div class="card-body">
+        <form
+          action="/artisan/products?_csrf=<%= csrfToken %>"
+          method="POST"
+          enctype="multipart/form-data"
+          class="vcraft-form"
+        >
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <fieldset class="form-section">
+            <legend class="form-section-legend">Thông tin tác phẩm</legend>
+
+            <div class="form-group">
+              <label for="product-name" class="form-label required">Tên tác phẩm</label>
+              <input
+                type="text"
+                id="product-name"
+                name="name"
+                class="form-control"
+                required
+                placeholder="Ví dụ: Bình gốm men rạn vẽ hoa sen cổ"
+              >
+            </div>
+
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="product-category" class="form-label required">Danh mục ngành nghề</label>
+                <input
+                  type="text"
+                  id="product-category"
+                  name="category"
+                  list="category-options"
+                  class="form-control"
+                  required
+                  placeholder="Ví dụ: Gốm sứ"
+                >
+                <datalist id="category-options">
+                  <% if (categories && categories.length > 0) { %>
+                    <% categories.forEach(function(cat) { %>
+                      <option value="<%= cat %>"></option>
+                    <% }); %>
+                  <% } else { %>
+                    <option value="Gốm sứ"></option>
+                    <option value="Lụa tơ tằm"></option>
+                    <option value="Sơn mài"></option>
+                    <option value="Chạm khắc gỗ"></option>
+                    <option value="Mây tre đan"></option>
+                    <option value="Đúc đồng"></option>
+                  <% } %>
+                </datalist>
+              </div>
+
+              <div class="form-group">
+                <label for="product-status" class="form-label required">Trạng thái phát hành</label>
+                <select id="product-status" name="status" class="form-control form-select">
+                  <option value="published">Xuất bản công khai ngay</option>
+                  <option value="draft">Lưu dưới dạng bản nháp</option>
+                </select>
+                <small class="form-text">Bản nháp chỉ hiển thị với bạn và ban quản trị.</small>
+              </div>
+            </div>
+
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="product-price" class="form-label required">Giá bán niêm yết (VNĐ)</label>
+                <input
+                  type="number"
+                  id="product-price"
+                  name="price"
+                  min="0"
+                  step="1000"
+                  class="form-control"
+                  required
+                  placeholder="Ví dụ: 1500000"
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="product-inventory" class="form-label required">Số lượng tồn kho</label>
+                <input
+                  type="number"
+                  id="product-inventory"
+                  name="inventory"
+                  min="0"
+                  step="1"
+                  value="1"
+                  class="form-control"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="product-description" class="form-label required">Mô tả tác phẩm & Câu chuyện chế tác</label>
+              <textarea
+                id="product-description"
+                name="description"
+                rows="5"
+                class="form-control"
+                required
+                placeholder="Mô tả chất liệu, kỹ thuật chế tác, kích thước, hoa văn biểu tượng và ý nghĩa văn hóa của tác phẩm..."
+              ></textarea>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-section">
+            <legend class="form-section-legend">Hình ảnh tác phẩm</legend>
+
+            <div class="form-group">
+              <label for="hero_image" class="form-label required">Ảnh đại diện chính (Hero Image)</label>
+              <input
+                type="file"
+                id="hero_image"
+                name="hero_image"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                class="form-control"
+                required
+              >
+              <small class="form-text">Ảnh chụp góc nhìn đẹp nhất của tác phẩm (ảnh vuông hoặc chữ nhật ngang, tối đa 10MB, tự động tối ưu sang WebP).</small>
+            </div>
+
+            <div class="form-group">
+              <label for="gallery_images" class="form-label">Ảnh chi tiết bổ sung (tối đa 8 ảnh)</label>
+              <input
+                type="file"
+                id="gallery_images"
+                name="gallery_images"
+                multiple
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                class="form-control"
+              >
+              <small class="form-text">Ảnh các góc cạnh, chi tiết men rạn, đường thêu, con triện nghệ nhân...</small>
+            </div>
+          </fieldset>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">Tạo Tác Phẩm & Tiếp Tục</button>
+            <a href="/artisan/dashboard" class="btn btn-outline btn-lg">Hủy bỏ</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/footer') %>

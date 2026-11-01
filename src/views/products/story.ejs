@@ -1,0 +1,161 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main provenance-story-page">
+  <div class="container story-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li><a href="/catalog">Bộ sưu tập</a></li>
+        <li><a href="/products/<%= product.slug %>"><%= product.name %></a></li>
+        <li aria-current="page">Nhật ký Chế tác & Nguồn gốc</li>
+      </ol>
+    </nav>
+
+    <!-- Certificate Header Block -->
+    <!-- Certificate Header Masthead -->
+    <section class="editorial-page-hero editorial-page-hero--story">
+      <div class="editorial-page-hero__inner">
+        <span class="editorial-page-hero__eyebrow slide-kicker">Hồ sơ Căn cước Tác phẩm</span>
+        <h1 class="editorial-page-hero__title">
+          Hành trình Chế tác: <%= product.name %>
+          <span class="editorial-page-hero__script display-script">Ký ức</span>
+        </h1>
+        <div class="editorial-rule"></div>
+        <p class="editorial-page-hero__desc">
+          Nhật ký minh bạch ghi nhận từng công đoạn chế tác trực tiếp từ bàn tay nghệ nhân và xưởng nghề truyền thống.
+        </p>
+      </div>
+      <div class="editorial-page-hero__visual">
+        <div class="story-qr-badge-card paper-panel">
+          <img
+            src="<%= qrUrl %>"
+            alt="Mã QR tra cứu căn cước tác phẩm <%= product.name %>"
+            class="story-qr-img"
+          >
+          <div class="qr-meta-info">
+            <span class="qr-label">Mã định danh số</span>
+            <a href="<%= qrUrl %>" target="_blank" class="qr-download-link">Tải ảnh QR</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Summary Card -->
+    <section class="story-summary-grid paper-panel">
+      <div class="summary-item">
+        <span class="summary-label">Tác phẩm:</span>
+        <span class="summary-value"><strong><%= product.name %></strong></span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Danh mục:</span>
+        <span class="summary-value"><%= product.category %></span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Xưởng chế tác:</span>
+        <span class="summary-value">
+          <% if (product.workshop_slug) { %>
+            <a href="/workshops/<%= product.workshop_slug %>"><%= product.workshop_name %></a>
+          <% } else { %>
+            <%= product.artisan_name %>
+          <% } %>
+        </span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Nghệ nhân chủ nhiệm:</span>
+        <span class="summary-value"><%= product.artisan_name %></span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Địa chỉ xưởng:</span>
+        <span class="summary-value"><%= product.workshop_address || 'Làng nghề truyền thống Việt Nam' %></span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Trạng thái phát hành:</span>
+        <span class="summary-value">
+          <span class="badge <%= product.status === 'published' ? 'badge-success' : 'badge-warning' %>">
+            <%= product.status === 'published' ? 'Đã phát hành chính thức' : 'Bản nháp' %>
+          </span>
+        </span>
+      </div>
+    </section>
+
+    <!-- Chronological Timeline of Evidence Steps -->
+    <section class="story-timeline-section">
+      <div class="timeline-intro">
+        <h2 class="timeline-main-heading section-script-title">Các công đoạn chế tác <span class="display-script">theo thời gian</span></h2>
+        <p class="timeline-intro-sub">
+          Mỗi bước ghi nhận đều đi kèm thời gian thực hiện, ghi chép kỹ thuật và hình ảnh đối chiếu nguyên bản tại xưởng.
+        </p>
+      </div>
+
+      <% if (product.steps && product.steps.length > 0) { %>
+        <div class="provenance-vertical-timeline">
+          <% product.steps.forEach(function(step, idx) { %>
+            <article class="timeline-node">
+              <div class="node-marker">
+                <span class="node-num"><%= idx + 1 %></span>
+              </div>
+              <div class="node-card paper-panel">
+                <header class="node-header">
+                  <div class="node-meta">
+                    <span class="node-phase">Công đoạn <%= idx + 1 %></span>
+                    <time class="node-time" datetime="<%= step.occurred_at %>">
+                      <%= typeof formatDate === 'function' ? formatDate(step.occurred_at) : new Date(step.occurred_at).toLocaleDateString('vi-VN') %>
+                    </time>
+                  </div>
+                  <h3 class="node-title"><%= step.title %></h3>
+                </header>
+
+                <% if (step.image_path) { %>
+                  <div class="node-media-frame image-frame">
+                    <img
+                      src="<%= step.image_path %>"
+                      alt="<%= step.title %>"
+                      class="node-img"
+                      loading="lazy"
+                    >
+                  </div>
+                <% } %>
+
+                <% if (step.description) { %>
+                  <div class="node-body formatted-text">
+                    <p><%= step.description %></p>
+                  </div>
+                <% } %>
+              </div>
+            </article>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div class="empty-state story-empty">
+          <p>Hiện nghệ nhân chưa bổ sung hình ảnh công đoạn chi tiết cho tác phẩm này.</p>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Bottom Verification Card -->
+    <footer class="story-footer-card paper-panel">
+      <div class="footer-guarantee">
+        <div class="guarantee-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div>
+          <h3 class="guarantee-title">Cam kết Chân bản từ Làng nghề Việt</h3>
+          <p class="guarantee-desc">
+            vCraft và Nghệ nhân cam kết thông tin nguồn gốc, vật liệu và công đoạn thực hiện đều được lưu trữ toàn vẹn. Quý khách có thể xuất trình mã định danh này để đối chiếu bảo hành hoặc chứng thực giá trị di sản.
+          </p>
+        </div>
+      </div>
+      <div class="footer-actions">
+        <a href="/products/<%= product.slug %>" class="btn btn-primary">Quay lại xem tác phẩm</a>
+        <button type="button" class="btn btn-outline" data-page-action="print">In hồ sơ căn cước</button>
+      </div>
+    </footer>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

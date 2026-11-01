@@ -1,0 +1,21 @@
+<%- include('../partials/head', { title: title || '409 - Xung đột dữ liệu' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main error-page-main">
+  <div class="container error-container">
+    <div class="error-card paper-panel">
+      <span class="slide-kicker">Cập Nhật Đồng Bộ</span>
+      <span class="error-code display-block">409</span>
+      <h1 class="error-title">Xung đột dữ liệu &amp; Thao tác</h1>
+      <div class="editorial-rule"></div>
+      <p class="error-desc"><%= typeof message !== 'undefined' && message ? message : 'Thao tác không thể hoàn tất do dữ liệu đã bị thay đổi bởi một phiên làm việc khác hoặc trạng thái không còn phù hợp.' %></p>
+      <div class="error-actions">
+        <a href="/quotes" data-page-action="back" class="btn btn-secondary">Quay lại & Tải lại trang</a>
+        <a href="/quotes" class="btn btn-primary">Danh sách báo giá</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,21 @@
+<%- include('../partials/head', { title: title || '404 - Không tìm thấy trang' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main error-page-main">
+  <div class="container error-container">
+    <div class="error-card paper-panel">
+      <span class="slide-kicker">Lạc Bước Hành Trình</span>
+      <span class="error-code display-block">404</span>
+      <h1 class="error-title">Không tìm thấy trang</h1>
+      <div class="editorial-rule"></div>
+      <p class="error-desc"><%= typeof message !== 'undefined' && message ? message : 'Địa chỉ bạn vừa yêu cầu không tồn tại hoặc đã được gỡ bỏ khỏi nền tảng.' %></p>
+      <div class="error-actions">
+        <a href="/" class="btn btn-primary">Về trang chủ vCraft</a>
+        <a href="/catalog" class="btn btn-secondary">Khám phá sản phẩm</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

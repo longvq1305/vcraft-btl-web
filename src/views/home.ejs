@@ -1,0 +1,674 @@
+<%- include('partials/head', { title: title }) %>
+<%- include('partials/header') %>
+<%- include('partials/flash') %>
+
+<main class="site-main">
+  <!-- 1. Hero Section -->
+  <section class="heritage-hero">
+    <div class="heritage-hero__image">
+      <img
+        src="/images/heritage/incense-field.webp"
+        alt="Cánh đồng phơi chân nhang đỏ thắm tại làng nghề truyền thống Quảng Phú Cầu"
+        width="2000"
+        height="1333"
+        fetchpriority="high"
+        loading="eager"
+      >
+    </div>
+    <div class="heritage-hero__veil"></div>
+    <div class="container heritage-hero__inner">
+      <span class="slide-kicker">Di sản &amp; Tinh hoa Văn hóa Bản địa</span>
+      <h1 class="heritage-hero__title">
+        <span class="heritage-hero__script display-script">Làng nghề</span>
+        <span class="display-block">VIỆT NAM</span>
+      </h1>
+      <p class="heritage-hero__lead">
+        vCraft là nền tảng tuyển chọn tác phẩm thủ công mỹ nghệ độc bản, kết nối trực tiếp đến các làng nghề truyền thống. Minh bạch nguồn gốc từng công đoạn qua nhật ký chế tác và chứng nhận số.
+      </p>
+      <div class="heritage-hero__actions">
+        <a href="/catalog" class="btn btn-primary btn-lg">Khám phá Tác phẩm</a>
+        <a href="/workshops" class="btn btn-secondary btn-lg">Tìm Xưởng Thủ công</a>
+        <a href="/map" class="btn btn-outline btn-lg">Bản đồ Làng nghề</a>
+      </div>
+      <div class="heritage-hero__meta">
+        <div class="heritage-stat">
+          <span class="stat-number">500+</span>
+          <span class="stat-label">Năm gìn giữ</span>
+        </div>
+        <div class="heritage-stat">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Nghệ nhân bản địa</span>
+        </div>
+        <div class="heritage-stat">
+          <span class="stat-number">Độc bản</span>
+          <span class="stat-label">Minh bạch chế tác</span>
+        </div>
+      </div>
+    </div>
+    <a href="#intro" class="heritage-hero__scroll" aria-label="Cuộn xuống tìm hiểu di sản">
+      <span class="scroll-arrow" aria-hidden="true">&darr;</span>
+    </a>
+  </section>
+
+  <!-- 2. Intro Section (Slide 2: Khái niệm Làng nghề & Làng nghề truyền thống) -->
+  <section id="intro" class="section intro-editorial">
+    <div class="container">
+      <div class="paper-panel intro-editorial__panel">
+        <div class="intro-editorial__copy">
+          <span class="slide-kicker">Khái niệm &amp; Nguồn cội</span>
+          <h2 class="section-script-title">
+            <span class="display-script">Giới thiệu</span>
+            <span class="display-block">KHÔNG GIAN LÀNG NGHỀ</span>
+          </h2>
+          <div class="editorial-quote">
+            <span class="intro-editorial__quote-mark" aria-hidden="true">&ldquo;</span>
+            <p class="quote-primary">
+              Làng nghề là nơi một hoặc nhiều cụm dân cư cùng tham gia hoạt động sản xuất nghề, tạo ra các sản phẩm và dịch vụ gắn với đời sống kinh tế của địa phương.
+            </p>
+          </div>
+          <div class="editorial-rule"></div>
+          <p class="quote-secondary">
+            <strong>Làng nghề truyền thống</strong> là những làng nghề có nghề được hình thành và duy trì từ lâu đời, thường gắn với bản sắc văn hóa, kỹ thuật và lịch sử của cộng đồng. vCraft số hóa dòng chảy di sản đó, giúp người mộ điệu tiếp cận chân bản từ chính bàn tay người thợ.
+          </p>
+        </div>
+        <div class="intro-editorial__media">
+          <div class="image-frame">
+            <img
+              src="/images/heritage/incense-workshop.webp"
+              alt="Không gian lao động sản xuất thủ công tại xưởng làm tăm hương truyền thống"
+              width="800"
+              height="600"
+              loading="lazy"
+            >
+            <span class="heritage-label">Không gian chế tác</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Five Pillars Section (Slide 3: Nghệ nhân, Cộng đồng, Kỹ thuật, Sản phẩm, Lịch sử) -->
+  <section class="section heritage-pillars">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="slide-kicker">Cấu thành di sản</span>
+        <h2 class="section-title">
+          <span class="display-block">MỘT LÀNG NGHỀ</span>
+          <span class="display-script">thường có</span>
+        </h2>
+        <p class="section-subtitle">Năm trụ cột cốt lõi tạo nên bản sắc và sự trường tồn của mỗi vùng nghề Việt Nam</p>
+      </div>
+
+      <div class="pillars-grid">
+        <!-- 01: Nghệ nhân -->
+        <article class="pillar-card">
+          <div class="pillar-card__image">
+            <img
+              src="/images/heritage/bamboo-craftsman.webp"
+              alt="Nghệ nhân mây tre đan cao tuổi miệt mài tạo tác thủ công"
+              width="400"
+              height="300"
+              loading="lazy"
+            >
+          </div>
+          <div class="pillar-card__label">
+            <span class="pillar-index">01</span>
+            <h3 class="pillar-name">Nghệ nhân</h3>
+            <p class="pillar-desc">Chủ thể sáng tạo nắm giữ bí quyết, đôi tay tài hoa và linh hồn của nghề qua năm tháng.</p>
+          </div>
+        </article>
+
+        <!-- 02: Cộng đồng -->
+        <article class="pillar-card">
+          <div class="pillar-card__image">
+            <img
+              src="/images/heritage/incense-craft.webp"
+              alt="Người dân làng nghề gắn bó cùng làm việc trong sân làng phơi hương"
+              width="400"
+              height="300"
+              loading="lazy"
+            >
+          </div>
+          <div class="pillar-card__label">
+            <span class="pillar-index">02</span>
+            <h3 class="pillar-name">Cộng đồng</h3>
+            <p class="pillar-desc">Sự gắn kết của những gia đình, dòng họ cùng chung nhịp đập sản xuất và đời sống làng quê.</p>
+          </div>
+        </article>
+
+        <!-- 03: Kỹ thuật -->
+        <article class="pillar-card">
+          <div class="pillar-card__image">
+            <img
+              src="/images/heritage/bamboo-weaving.webp"
+              alt="Kỹ thuật đan lát nan tre chuẩn xác và công phu"
+              width="400"
+              height="300"
+              loading="lazy"
+            >
+          </div>
+          <div class="pillar-card__label">
+            <span class="pillar-index">03</span>
+            <h3 class="pillar-name">Kỹ thuật</h3>
+            <p class="pillar-desc">Tri thức dân gian, công thức vật liệu và quy trình chế tác khắt khe tôi luyện qua nhiều thế hệ.</p>
+          </div>
+        </article>
+
+        <!-- 04: Sản phẩm -->
+        <article class="pillar-card">
+          <div class="pillar-card__image">
+            <img
+              src="/images/heritage/lacquerware.webp"
+              alt="Sản phẩm sơn mài và đồ thủ công mỹ nghệ tinh tế đậm đà bản sắc"
+              width="400"
+              height="300"
+              loading="lazy"
+            >
+          </div>
+          <div class="pillar-card__label">
+            <span class="pillar-index">04</span>
+            <h3 class="pillar-name">Sản phẩm</h3>
+            <p class="pillar-desc">Kết tinh giữa công năng đời sống và thẩm mỹ nghệ thuật độc bản mang dấu ấn bản địa.</p>
+          </div>
+        </article>
+
+        <!-- 05: Lịch sử -->
+        <article class="pillar-card">
+          <div class="pillar-card__image">
+            <img
+              src="/images/heritage/rattan-display.webp"
+              alt="Không gian trưng bày các sản phẩm thủ công lưu giữ dấu ấn thời gian"
+              width="400"
+              height="300"
+              loading="lazy"
+            >
+          </div>
+          <div class="pillar-card__label">
+            <span class="pillar-index">05</span>
+            <h3 class="pillar-name">Lịch sử</h3>
+            <p class="pillar-desc">Bề dày trăm năm thăng trầm, gắn bó mật thiết với dòng chảy văn hóa non sông Đại Việt.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Formation Sequence Section (Slide 4: Quá trình hình thành) -->
+  <section class="section formation-section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="slide-kicker">Tiến trình lịch sử</span>
+          <h2 class="section-title">
+            <span class="display-script">Quá trình</span>
+            <span class="display-block">HÌNH THÀNH LÀNG NGHỀ</span>
+          </h2>
+        </div>
+        <p class="section-subtitle">Năm giai đoạn tôi luyện để một vùng quê trở thành cái nôi di sản thủ công</p>
+      </div>
+
+      <div class="formation-track">
+        <div class="formation-step">
+          <div class="formation-number">01</div>
+          <div class="formation-body">
+            <h3 class="formation-title">Khởi nguồn</h3>
+            <p class="formation-desc">
+              Một nghề xuất hiện từ nhu cầu của đời sống hoặc nguồn nguyên liệu sẵn có tại địa phương.
+            </p>
+          </div>
+        </div>
+
+        <div class="formation-step">
+          <div class="formation-number">02</div>
+          <div class="formation-body">
+            <h3 class="formation-title">Hoàn thiện</h3>
+            <p class="formation-desc">
+              Người dân dần hoàn thiện phương pháp sản xuất và tạo ra những sản phẩm đặc trưng.
+            </p>
+          </div>
+        </div>
+
+        <div class="formation-step">
+          <div class="formation-number">03</div>
+          <div class="formation-body">
+            <h3 class="formation-title">Hình thành kỹ thuật</h3>
+            <p class="formation-desc">
+              Kỹ thuật chế tác được đúc kết, tạo thành hệ thống tri thức nghề chuẩn mực và tinh xảo.
+            </p>
+          </div>
+        </div>
+
+        <div class="formation-step">
+          <div class="formation-number">04</div>
+          <div class="formation-body">
+            <h3 class="formation-title">Truyền nghề</h3>
+            <p class="formation-desc">
+              Kỹ thuật được truyền từ thế hệ này sang thế hệ khác, tạo thành tri thức nghề trường tồn.
+            </p>
+          </div>
+        </div>
+
+        <div class="formation-step">
+          <div class="formation-number">05</div>
+          <div class="formation-body">
+            <h3 class="formation-title">Cộng đồng nghề</h3>
+            <p class="formation-desc">
+              Nhiều hộ gia đình cùng làm nghề &rarr; nghề trở thành hoạt động kinh tế đặc trưng của làng.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Craft Collage Section (Slides 5, 6, 8, 9: Gốm, Dệt tơ, Mây tre đan) -->
+  <section class="section craft-collage">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="slide-kicker">Di sản chất liệu</span>
+        <h2 class="section-title">
+          <span class="display-block">NHỮNG NHÓM LÀNG NGHỀ</span>
+          <span class="display-script">tiêu biểu</span>
+        </h2>
+        <p class="section-subtitle">
+          &ldquo;Từ một nắm đất, sợi tơ, thanh tre hay tờ giấy dó, người thợ tạo nên những sản phẩm mang dấu ấn của vùng đất và con người Việt Nam.&rdquo;
+        </p>
+      </div>
+
+      <div class="craft-collage__grid">
+        <!-- Pottery -->
+        <article class="craft-story-card craft-story-card--pottery">
+          <div class="craft-story-card__image">
+            <img
+              src="/images/heritage/pottery-hands.webp"
+              alt="Bàn tay nghệ nhân vuốt gốm thủ công trên bàn xoay truyền thống"
+              width="808"
+              height="1212"
+              loading="lazy"
+            >
+            <span class="heritage-label">Làng Gốm Bát Tràng &bull; Chu Đậu</span>
+          </div>
+          <div class="craft-story-card__copy">
+            <span class="craft-story-card__script display-script">Làng nghề</span>
+            <h3 class="craft-story-card__title">GỐM SỨ ĐẠI VIỆT</h3>
+            <p class="craft-story-card__text">
+              Từ đất tạo nên một dấu ấn văn hóa. Giá trị gốm nằm ở kỹ thuật xử lý đất sét, kỹ thuật tạo hình bàn xoay, họa tiết men lam cổ truyền và kinh nghiệm kiểm soát nhiệt độ lò nung củi.
+            </p>
+            <a href="/catalog?category=Gốm%20sứ" class="btn btn-outline btn-sm">Xem tác phẩm Gốm &rarr;</a>
+          </div>
+        </article>
+
+        <!-- Weaving -->
+        <article class="craft-story-card craft-story-card--weaving">
+          <div class="craft-story-card__image">
+            <img
+              src="/images/heritage/loom-artisan.webp"
+              alt="Nghệ nhân dệt lụa bên khung cửi cổ truyền Làng lụa Vạn Phúc"
+              width="2000"
+              height="1333"
+              loading="lazy"
+            >
+            <span class="heritage-label">Làng Lụa Vạn Phúc &bull; Nha Xá</span>
+          </div>
+          <div class="craft-story-card__copy">
+            <span class="craft-story-card__script display-script">Làng nghề</span>
+            <h3 class="craft-story-card__title">DỆT TƠ LỤA</h3>
+            <p class="craft-story-card__text">
+              Từ sợi vải, dệt nên một phần bản sắc. Nghề dệt sử dụng sợi tự nhiên như tơ tằm, bông, đay... qua các công đoạn kéo sợi, mắc sợi, dệt và hoàn thiện để tạo nên những sản phẩm đặc trưng.
+            </p>
+            <a href="/catalog?category=Lụa%20tơ%20tằm" class="btn btn-outline btn-sm">Xem tác phẩm Lụa &rarr;</a>
+          </div>
+        </article>
+
+        <!-- Rattan -->
+        <article class="craft-story-card craft-story-card--rattan">
+          <div class="craft-story-card__image">
+            <img
+              src="/images/heritage/rattan-master.webp"
+              alt="Nghệ nhân mây tre đan nắn nót tạo khung uốn lượn tinh xảo"
+              width="1344"
+              height="896"
+              loading="lazy"
+            >
+            <span class="heritage-label">Làng Mây Tre Phú Vinh &bull; Bao La</span>
+          </div>
+          <div class="craft-story-card__copy">
+            <span class="craft-story-card__script display-script">Làng nghề</span>
+            <h3 class="craft-story-card__title">MÂY TRE ĐAN</h3>
+            <p class="craft-story-card__text">
+              Sử dụng các vật liệu tự nhiên như tre, mây, nứa, cói... Từ những vật liệu giản dị, nghề đan tạo nên những sản phẩm vừa hữu dụng cho đời sống vừa mang giá trị văn hóa độc bản.
+            </p>
+            <a href="/catalog?category=Mây%20tre%20đan" class="btn btn-outline btn-sm">Xem tác phẩm Mây Tre &rarr;</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Culture Photo Strip (Wikimedia CC WebPs) -->
+  <section class="section culture-photo-strip">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="slide-kicker">Tư liệu mở Wikimedia Commons</span>
+          <h2 class="section-title">
+            <span class="display-script">Khoảnh khắc</span>
+            <span class="display-block">ĐỜI SỐNG LÀNG NGHỀ</span>
+          </h2>
+        </div>
+        <p class="section-subtitle">Tư liệu hình ảnh thực địa từ các làng nghề truyền thống Thổ Hà, Hới, Phú Vinh</p>
+      </div>
+
+      <div class="culture-photo-strip__grid">
+        <figure class="culture-photo">
+          <img
+            src="/images/heritage/tho-ha-pottery.webp"
+            alt="Tường gốm và chum sành đặc trưng tại làng cổ Thổ Hà, Bắc Giang"
+            width="2000"
+            height="1500"
+            loading="lazy"
+          >
+          <figcaption class="photo-credit">
+            <span class="credit-location">Làng gốm Thổ Hà, Bắc Giang</span>
+            <span class="credit-meta">
+              Ảnh: <a href="https://commons.wikimedia.org/wiki/File:ThoHa_Gom1.JPG" target="_blank" rel="noopener noreferrer">Bùi Thế Tâm</a> (CC BY-SA 3.0)
+            </span>
+          </figcaption>
+        </figure>
+
+        <figure class="culture-photo">
+          <img
+            src="/images/heritage/hoi-mat-weaving.webp"
+            alt="Chiếu cói dệt thủ công của làng Hới tại đền Trần, Tràng An"
+            width="1443"
+            height="1925"
+            loading="lazy"
+          >
+          <figcaption class="photo-credit">
+            <span class="credit-location">Làng chiếu Hới, Thái Bình</span>
+            <span class="credit-meta">
+              Ảnh: <a href="https://commons.wikimedia.org/wiki/File:Hoi_village%27s_sedge_weaving_mat_in_temple_of_Tr%E1%BA%A7n_dynasty_(Trang_An,_Ninh_Binh).jpg" target="_blank" rel="noopener noreferrer">VinhNguyen.1257</a> (CC BY-SA 4.0)
+            </span>
+          </figcaption>
+        </figure>
+
+        <figure class="culture-photo">
+          <img
+            src="/images/heritage/phu-vinh-rattan.webp"
+            alt="Không gian làm mây tre đan tại làng nghề Phú Vinh, Chương Mỹ, Hà Nội"
+            width="1200"
+            height="865"
+            loading="lazy"
+          >
+          <figcaption class="photo-credit">
+            <span class="credit-location">Làng mây tre Phú Vinh, Hà Nội</span>
+            <span class="credit-meta">
+              Ảnh: <a href="https://commons.wikimedia.org/wiki/File:Bamboo_and_rattan_village_Phu_Vinh,Chuong_My,Ha_Noi,Viet_Nam.jpg" target="_blank" rel="noopener noreferrer">Rin Mamori</a> (CC BY-SA 4.0)
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Categories Bar -->
+  <% if (categories && categories.length > 0) { %>
+  <section class="section section-categories">
+    <div class="container">
+      <div class="categories-strip">
+        <span class="slide-kicker categories-label">Chuyên mục:</span>
+        <div class="categories-pills">
+          <a href="/catalog" class="cat-pill <%= !currentPath || currentPath === '/' ? 'active' : '' %>">Tất cả</a>
+          <% categories.forEach(function(cat) { %>
+            <a href="/catalog?category=<%= encodeURIComponent(cat) %>" class="cat-pill"><%= cat %></a>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <!-- 8. Featured Masterpieces -->
+  <section class="section section-products">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="slide-kicker">Tuyển chọn thủ công</span>
+          <h2 class="section-title">
+            <span class="display-script">Tuyển chọn</span>
+            <span class="display-block">TÁC PHẨM ĐẶC SẮC</span>
+          </h2>
+        </div>
+        <a href="/catalog" class="section-link">Xem toàn bộ tác phẩm &rarr;</a>
+      </div>
+
+      <% if (featuredProducts && featuredProducts.length > 0) { %>
+        <div class="grid grid-4 product-grid">
+          <% featuredProducts.forEach(function(product) { %>
+            <article class="product-card">
+              <a href="/products/<%= product.slug %>" class="product-card-media">
+                <img
+                  src="<%= product.hero_image || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80' %>"
+                  alt="<%= product.name %>"
+                  class="product-card-img"
+                  loading="lazy"
+                >
+                <span class="product-category-badge"><%= product.category %></span>
+              </a>
+              <div class="product-card-body">
+                <div class="product-workshop-name">
+                  <% if (product.workshop_slug) { %>
+                    <a href="/workshops/<%= product.workshop_slug %>"><%= product.workshop_name || product.artisan_name %></a>
+                  <% } else { %>
+                    <span><%= product.artisan_name %></span>
+                  <% } %>
+                </div>
+                <h3 class="product-card-title">
+                  <a href="/products/<%= product.slug %>"><%= product.name %></a>
+                </h3>
+                <div class="product-card-footer">
+                  <span class="product-price">
+                    <%= typeof formatCurrency === 'function' ? formatCurrency(product.price) : Number(product.price).toLocaleString('vi-VN') + ' ₫' %>
+                  </span>
+                  <a href="/products/<%= product.slug %>" class="btn btn-sm btn-outline">Chi tiết</a>
+                </div>
+              </div>
+            </article>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <p>Hiện chưa có tác phẩm nào được xuất bản. Vui lòng quay lại sau.</p>
+        </div>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- 9. Featured Workshops -->
+  <section class="section section-workshops bg-alt">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="slide-kicker">Làng nghề truyền thống</span>
+          <h2 class="section-title">
+            <span class="display-script">Gặp gỡ</span>
+            <span class="display-block">XƯỞNG THỦ CÔNG &amp; NGHỆ NHÂN</span>
+          </h2>
+        </div>
+        <div class="header-actions">
+          <a href="/map" class="btn btn-outline btn-sm">Xem trên Bản đồ</a>
+          <a href="/workshops" class="section-link">Tất cả xưởng &rarr;</a>
+        </div>
+      </div>
+
+      <% if (featuredWorkshops && featuredWorkshops.length > 0) { %>
+        <div class="grid grid-2 workshop-grid">
+          <% featuredWorkshops.forEach(function(ws) { %>
+            <article class="workshop-card">
+              <div class="workshop-card-media">
+                <img
+                  src="<%= ws.cover_image || 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1000&q=80' %>"
+                  alt="<%= ws.workshop_name %>"
+                  class="workshop-card-img"
+                  loading="lazy"
+                >
+                <div class="workshop-status-tag <%= ws.is_open ? 'status-open' : 'status-closed' %>">
+                  <%= ws.is_open ? 'Đang mở cửa đón khách' : 'Tạm đóng cửa tham quan' %>
+                </div>
+              </div>
+              <div class="workshop-card-body">
+                <div class="workshop-artisan-sub">Nghệ nhân: <%= ws.artisan_name %></div>
+                <h3 class="workshop-card-title">
+                  <a href="/workshops/<%= ws.slug %>"><%= ws.workshop_name %></a>
+                </h3>
+                <% if (ws.address) { %>
+                  <p class="workshop-card-address"><%= ws.address %></p>
+                <% } %>
+                <p class="workshop-card-story"><%= ws.story ? (ws.story.slice(0, 150) + (ws.story.length > 150 ? '...' : '')) : 'Xưởng thủ công gìn giữ tinh hoa truyền thống.' %></p>
+                <div class="workshop-card-meta">
+                  <span class="meta-tag"><%= ws.categories || 'Thủ công mỹ nghệ' %></span>
+                  <span class="meta-count"><%= ws.product_count || 0 %> tác phẩm</span>
+                </div>
+                <div class="workshop-card-footer">
+                  <a href="/workshops/<%= ws.slug %>" class="btn btn-primary btn-sm">Khám phá Xưởng</a>
+                </div>
+              </div>
+            </article>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <p>Chưa có xưởng thủ công nào được hiển thị.</p>
+        </div>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- 10. Provenance Story Feature Section -->
+  <section class="section section-provenance">
+    <div class="container">
+      <div class="provenance-banner">
+        <div class="provenance-content">
+          <span class="slide-kicker">Tính năng độc bản</span>
+          <h2 class="provenance-title">
+            <span class="display-script">Chứng thực số</span>
+            <span class="display-block">NHẬT KÝ CHẾ TÁC &amp; MÃ QR</span>
+          </h2>
+          <p class="provenance-desc">
+            vCraft trao cho mỗi tác phẩm một căn cước văn hóa riêng biệt. Từng giai đoạn chọn nguyên liệu, tạo hình, nung đốt hay thêu dệt đều được nghệ nhân ghi nhận kèm thời gian và hình ảnh thực địa.
+          </p>
+          <ul class="provenance-features">
+            <li>
+              <strong>Truy xuất nguồn gốc:</strong> Quét mã QR gắn kèm tác phẩm để xem toàn bộ lịch sử ra đời.
+            </li>
+            <li>
+              <strong>Chứng thực bản quyền:</strong> Đảm bảo tác phẩm chân bản trực tiếp từ bàn tay nghệ nhân Việt.
+            </li>
+            <li>
+              <strong>Đồng hành sáng tạo:</strong> Khách hàng theo dõi tiến độ từng ngày khi đặt làm riêng.
+            </li>
+          </ul>
+          <div class="provenance-actions">
+            <a href="/catalog" class="btn btn-primary">Xem tác phẩm có nhật ký</a>
+            <a href="/quotes/new" class="btn btn-outline">Đặt làm theo yêu cầu</a>
+          </div>
+        </div>
+        <div class="provenance-mock">
+          <div class="provenance-card-preview">
+            <div class="mock-header">
+              <span class="mock-tag">Chứng thực vCraft</span>
+              <span class="mock-date">Xác nhận trực tiếp từ xưởng</span>
+            </div>
+            <div class="mock-timeline">
+              <div class="mock-step">
+                <span class="step-dot"></span>
+                <span class="step-label">Tuyển chọn nguyên liệu &amp; Khai thác đất sét tự nhiên</span>
+              </div>
+              <div class="mock-step">
+                <span class="step-dot"></span>
+                <span class="step-label">Chuốt gốm trên bàn xoay &amp; Phơi khô tự nhiên</span>
+              </div>
+              <div class="mock-step">
+                <span class="step-dot"></span>
+                <span class="step-label">Vẽ họa tiết thủ công bằng men lam cổ truyền</span>
+              </div>
+              <div class="mock-step">
+                <span class="step-dot active"></span>
+                <span class="step-label">Nung củi ở 1300°C trong lò bầu 36 giờ</span>
+              </div>
+            </div>
+            <div class="mock-seal">
+              <div class="seal-inner">Bản quyền Di sản</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Bespoke Quote CTA Section -->
+  <section class="section section-quote-cta">
+    <div class="container">
+      <div class="quote-cta-box">
+        <div class="quote-cta-text">
+          <span class="slide-kicker">Chế tác độc bản</span>
+          <h2 class="quote-cta-title">
+            <span class="display-script">Đặt riêng</span>
+            <span class="display-block">TÁC PHẨM THEO YÊU CẦU</span>
+          </h2>
+          <p class="quote-cta-desc">
+            Gửi yêu cầu thiết kế riêng, kích thước hoặc số lượng tùy chỉnh. Hệ thống sẽ kết nối trực tiếp đến các nghệ nhân có chuyên môn phù hợp để bạn nhận báo giá và thời gian chế tác chi tiết.
+          </p>
+        </div>
+        <div class="quote-cta-btn-wrap">
+          <a href="/quotes/new" class="btn btn-primary btn-lg">Gửi Yêu Cầu Báo Giá</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. News Section -->
+  <% if (latestNews && latestNews.length > 0) { %>
+  <section class="section section-news">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="slide-kicker">Góc nhìn di sản</span>
+          <h2 class="section-title">
+            <span class="display-script">Chuyện nghề</span>
+            <span class="display-block">TIN TỨC &amp; BÀI VIẾT VĂN HÓA</span>
+          </h2>
+        </div>
+        <a href="/news" class="section-link">Xem tất cả bài viết &rarr;</a>
+      </div>
+
+      <div class="grid grid-3 news-grid">
+        <% latestNews.forEach(function(article) { %>
+          <article class="news-card">
+            <a href="/news/<%= article.slug %>" class="news-card-media">
+              <img
+                src="<%= article.cover_image || 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80' %>"
+                alt="<%= article.title %>"
+                class="news-card-img"
+                loading="lazy"
+              >
+            </a>
+            <div class="news-card-body">
+              <div class="news-date">
+                <%= typeof formatDate === 'function' ? formatDate(article.published_at) : new Date(article.published_at || article.created_at).toLocaleDateString('vi-VN') %>
+              </div>
+              <h3 class="news-card-title">
+                <a href="/news/<%= article.slug %>"><%= article.title %></a>
+              </h3>
+              <p class="news-card-excerpt"><%= article.excerpt %></p>
+              <a href="/news/<%= article.slug %>" class="news-read-more">Đọc tiếp &rarr;</a>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %>

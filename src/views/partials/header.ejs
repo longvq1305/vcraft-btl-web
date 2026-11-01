@@ -1,0 +1,99 @@
+<header class="site-header">
+  <div class="container header-container">
+    <div class="header-brand-wrap">
+      <a href="/" class="brand-logo" aria-label="vCraft - Tinh hoa Làng nghề Việt Nam">
+        <span class="brand-script display-script">Làng nghề số</span>
+        <span class="brand-title"><span class="brand-accent">v</span>Craft <span class="brand-country">Việt Nam</span></span>
+      </a>
+      <span class="brand-subtext">Di sản &amp; Tinh hoa Thủ công</span>
+    </div>
+    <button class="mobile-nav-toggle" aria-label="Menu điều hướng" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+
+    <nav class="main-nav" aria-label="Menu chính">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="/" class="nav-link <%= currentPath === '/' ? 'active' : '' %>">Trang chủ</a>
+        </li>
+        <li class="nav-item">
+          <a href="/catalog" class="nav-link <%= currentPath.startsWith('/catalog') ? 'active' : '' %>">Sản phẩm</a>
+        </li>
+        <li class="nav-item">
+          <a href="/workshops" class="nav-link <%= currentPath.startsWith('/workshops') ? 'active' : '' %>">Làng nghề & Xưởng</a>
+        </li>
+        <li class="nav-item">
+          <a href="/map" class="nav-link <%= currentPath === '/map' ? 'active' : '' %>">Bản đồ</a>
+        </li>
+        <li class="nav-item">
+          <a href="/news" class="nav-link <%= currentPath.startsWith('/news') ? 'active' : '' %>">Bản tin</a>
+        </li>
+      </ul>
+      <div class="mobile-nav-actions">
+        <% if (!currentUser) { %>
+          <a href="/quotes/new" class="btn btn-outline btn-sm">Đặt chế tác</a>
+          <a href="/auth/login" class="btn btn-ghost btn-sm">Đăng nhập</a>
+          <a href="/auth/register" class="btn btn-primary btn-sm">Đăng ký</a>
+        <% } else { %>
+          <div class="user-menu">
+            <span class="user-greeting">
+              <span class="user-name"><%= currentUser.fullName %></span>
+              <span class="badge badge-<%= currentUser.role %>">
+                <%= currentUser.role === 'admin' ? 'Quản trị' : (currentUser.role === 'artisan' ? 'Nghệ nhân' : 'Khách hàng') %>
+              </span>
+            </span>
+            <form action="/auth/logout" method="POST" class="inline-form">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" class="btn btn-ghost btn-sm btn-logout" title="Đăng xuất khỏi hệ thống">Đăng xuất</button>
+            </form>
+          </div>
+          <% if (currentUser.role === 'buyer') { %>
+            <a href="/quotes" class="btn btn-outline btn-sm">Báo giá của tôi</a>
+            <a href="/quotes/new" class="btn btn-primary btn-sm">+ Đặt chế tác</a>
+          <% } else if (currentUser.role === 'artisan') { %>
+            <a href="/artisan/dashboard" class="btn btn-outline btn-sm">Bàn làm việc</a>
+            <a href="/artisan/products/new" class="btn btn-primary btn-sm">+ Đăng tác phẩm</a>
+          <% } else if (currentUser.role === 'admin') { %>
+            <a href="/admin" class="btn btn-outline btn-sm">Quản trị</a>
+          <% } %>
+        <% } %>
+      </div>
+    </nav>
+
+    <div class="header-actions">
+      <% if (!currentUser) { %>
+        <a href="/quotes/new" class="btn btn-outline btn-sm">Đặt chế tác</a>
+        <a href="/auth/login" class="btn btn-ghost btn-sm">Đăng nhập</a>
+        <a href="/auth/register" class="btn btn-primary btn-sm">Đăng ký</a>
+      <% } else { %>
+        <% if (currentUser.role === 'buyer') { %>
+          <a href="/quotes" class="btn btn-outline btn-sm">Báo giá của tôi</a>
+          <a href="/quotes/new" class="btn btn-primary btn-sm">+ Đặt chế tác</a>
+        <% } else if (currentUser.role === 'artisan') { %>
+          <a href="/artisan/dashboard" class="btn btn-outline btn-sm">Bàn làm việc</a>
+          <a href="/artisan/products/new" class="btn btn-primary btn-sm">+ Đăng tác phẩm</a>
+        <% } else if (currentUser.role === 'admin') { %>
+          <a href="/admin" class="btn btn-outline btn-sm">Quản trị</a>
+        <% } %>
+
+        <div class="user-menu">
+          <span class="user-greeting">
+            <span class="user-name"><%= currentUser.fullName %></span>
+            <span class="badge badge-<%= currentUser.role %>">
+              <%= currentUser.role === 'admin' ? 'Quản trị' : (currentUser.role === 'artisan' ? 'Nghệ nhân' : 'Khách hàng') %>
+            </span>
+          </span>
+          <form action="/auth/logout" method="POST" class="inline-form">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button type="submit" class="btn btn-ghost btn-sm btn-logout" title="Đăng xuất khỏi hệ thống">Đăng xuất</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</header>

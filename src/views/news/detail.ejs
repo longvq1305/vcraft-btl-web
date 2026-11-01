@@ -1,0 +1,85 @@
+<%- include('../partials/head', { title: title || article.title + ' - vCraft' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main news-detail-main">
+  <!-- Article Header -->
+  <header class="article-header">
+    <div class="container container-reading">
+      <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+        <ol class="breadcrumb-list">
+          <li><a href="/">Trang chủ</a></li>
+          <li><a href="/news">Bản tin làng nghề</a></li>
+          <li aria-current="page"><%= article.title %></li>
+        </ol>
+      </nav>
+
+      <span class="slide-kicker">Di sản văn hóa</span>
+      <h1 class="article-title"><%= article.title %></h1>
+      <div class="editorial-rule"></div>
+      <div class="article-meta">
+        <span class="article-date">
+          Xuất bản: <%= formatDate(article.published_at || article.created_at, true) %>
+        </span>
+        <% if (!article.is_published) { %>
+          <span class="badge badge-draft">Bản nháp (Chưa công khai)</span>
+        <% } %>
+      </div>
+
+      <p class="article-lead"><%= article.excerpt %></p>
+    </div>
+  </header>
+
+  <!-- Article Media -->
+  <% if (article.cover_image) { %>
+    <div class="container container-reading">
+      <div class="article-cover-frame image-frame">
+        <img src="<%= article.cover_image %>" alt="<%= article.title %>" class="article-cover-img">
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Article Content -->
+  <div class="article-content-wrap">
+    <div class="container container-reading">
+      <div class="article-body paper-panel">
+        <%- article.body %>
+      </div>
+
+      <div class="article-actions-bar">
+        <a href="/news" class="btn btn-outline">&larr; Quay lại danh sách bản tin</a>
+        <a href="/workshops" class="btn btn-primary">Tìm xưởng thủ công tiêu biểu</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related News Section -->
+  <% if (typeof recentArticles !== 'undefined' && recentArticles && recentArticles.length > 0) { %>
+    <section class="section related-news-section">
+      <div class="container">
+        <h2 class="section-title">Câu chuyện làng nghề khác</h2>
+        <div class="news-grid-compact">
+          <% recentArticles.forEach(function(rel) { %>
+            <article class="news-card-compact paper-panel">
+              <a href="/news/<%= rel.slug %>" class="news-compact-media">
+                <% if (rel.cover_image) { %>
+                  <img src="<%= rel.cover_image %>" alt="<%= rel.title %>">
+                <% } else { %>
+                  <div class="news-placeholder-small">vCraft</div>
+                <% } %>
+              </a>
+              <div class="news-compact-body">
+                <span class="news-date"><%= formatDate(rel.published_at || rel.created_at) %></span>
+                <h3 class="news-compact-title">
+                  <a href="/news/<%= rel.slug %>"><%= rel.title %></a>
+                </h3>
+              </div>
+            </article>
+          <% }); %>
+        </div>
+      </div>
+    </section>
+  <% } %>
+</main>
+
+<%- include('../partials/footer') %>

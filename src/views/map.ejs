@@ -1,0 +1,111 @@
+<%- include('partials/head', { title: title, hasMap: true }) %>
+
+<%- include('partials/header') %>
+<%- include('partials/flash') %>
+
+<main class="site-main map-page-main">
+  <section class="editorial-page-hero editorial-page-hero--map">
+    <div class="container">
+      <nav class="breadcrumb-nav light-breadcrumb" aria-label="Đường dẫn">
+        <ol class="breadcrumb-list">
+          <li><a href="/">Trang chủ</a></li>
+          <li aria-current="page">Bản đồ Làng nghề</li>
+        </ol>
+      </nav>
+      <div class="editorial-page-hero__inner">
+        <span class="editorial-page-hero__eyebrow slide-kicker">Tọa độ Di sản &amp; Không gian Nghề</span>
+        <h1 class="editorial-page-hero__title">
+          Bản đồ Làng nghề &amp; Xưởng Thủ công
+          <span class="editorial-page-hero__script display-script">Tọa độ</span>
+        </h1>
+        <div class="editorial-rule"></div>
+        <p class="editorial-page-hero__desc">
+          Khám phá tọa độ các xưởng nghề truyền thống, theo dõi trạng thái mở cửa và tìm đường ghé thăm nghệ nhân.
+        </p>
+        <div class="map-header-stats">
+          <span class="badge badge-primary"><strong><%= workshops.length %></strong> xưởng đã định vị</span>
+        </div>
+      </div>
+      <div class="editorial-page-hero__visual" aria-hidden="true">
+        <div class="image-frame">
+          <img src="/images/heritage/vintage-pottery.webp" alt="" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Map Container Layout -->
+  <div class="map-layout-container">
+    <!-- Sidebar / List of Workshops -->
+    <aside class="map-sidebar paper-panel" id="map-sidebar" aria-label="Danh sách xưởng trên bản đồ">
+      <div class="map-sidebar-header">
+        <h2 class="sidebar-heading">Danh sách xưởng nghề</h2>
+        <div class="map-filter-controls">
+          <input
+            type="text"
+            id="map-search-input"
+            class="form-control form-control-sm"
+            placeholder="Lọc xưởng theo tên, làng nghề..."
+          >
+        </div>
+      </div>
+
+      <div class="map-workshops-list" id="map-workshops-list">
+        <% if (workshops && workshops.length > 0) { %>
+          <% workshops.forEach(function(ws, index) { %>
+            <div
+              class="map-workshop-item"
+              data-id="<%= ws.id %>"
+              data-slug="<%= ws.slug %>"
+              data-lat="<%= ws.latitude %>"
+              data-lng="<%= ws.longitude %>"
+              data-name="<%= ws.workshop_name.toLowerCase() %>"
+              data-cat="<%= (ws.categories || '').toLowerCase() %>"
+              tabindex="0"
+              role="button"
+              aria-label="Chọn <%= ws.workshop_name %> trên bản đồ"
+            >
+              <div class="item-header">
+                <h3 class="item-title"><%= ws.workshop_name %></h3>
+                <span class="status-dot <%= ws.is_open ? 'dot-open' : 'dot-closed' %>" title="<%= ws.is_open ? 'Đang mở cửa' : 'Tạm đóng cửa' %>"></span>
+              </div>
+              <div class="item-artisan">Nghệ nhân: <%= ws.artisan_name %></div>
+              <% if (ws.address) { %>
+                <div class="item-address"><%= ws.address %></div>
+              <% } %>
+              <% if (ws.visiting_hours) { %>
+                <div class="item-hours">Giờ mở cửa: <%= ws.visiting_hours %></div>
+              <% } %>
+              <div class="item-actions">
+                <a href="/workshops/<%= ws.slug %>" class="btn btn-outline btn-xs" data-stop-propagation>Xem hồ sơ</a>
+                <span class="view-on-map-text">Xem vị trí &rarr;</span>
+              </div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="empty-state p-3">
+            <p>Chưa có xưởng thủ công nào được thiết lập tọa độ trên bản đồ.</p>
+          </div>
+        <% } %>
+      </div>
+    </aside>
+
+    <!-- Map Canvas Element -->
+    <div class="map-canvas-wrap">
+      <div id="village-map" class="village-map-element" role="region" aria-label="Bản đồ tương tác OpenStreetMap"></div>
+      <div class="map-floating-legend">
+        <div class="legend-item"><span class="legend-dot dot-open"></span> Đang mở cửa đón khách</div>
+        <div class="legend-item"><span class="legend-dot dot-closed"></span> Tạm đóng cửa tham quan</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Safe JSON data script for map initialization -->
+<script id="workshops-data" type="application/json"><%- JSON.stringify(workshops).replace(/</g, '\\u003c') %></script>
+
+
+<!-- Custom Map Engine -->
+<script src="/js/map.js" defer></script>
+
+<%- include('partials/footer') %>

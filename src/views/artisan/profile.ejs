@@ -1,0 +1,250 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main artisan-profile-page">
+  <div class="container container-narrow">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li><a href="/artisan/dashboard">Bảng điều khiển</a></li>
+        <li aria-current="page">Hồ sơ Xưởng thủ công</li>
+      </ol>
+    </nav>
+
+    <div class="page-header with-action">
+      <div>
+        <span class="slide-kicker">Hồ Sơ Nghệ Nhân</span>
+        <h1 class="page-title">Hồ sơ Xưởng &amp; Thông tin Nghệ nhân</h1>
+        <div class="editorial-rule"></div>
+        <p class="page-subtitle">
+          Cung cấp thông tin giới thiệu, hình ảnh xưởng và tọa độ để người mua và du khách có thể tìm thấy bạn trên Bản đồ Làng nghề.
+        </p>
+      </div>
+      <% if (profile && profile.slug) { %>
+        <a href="/workshops/<%= profile.slug %>" target="_blank" class="btn btn-outline">Xem trang công khai</a>
+      <% } %>
+    </div>
+
+    <!-- Profile Form -->
+    <div class="card form-card paper-panel">
+      <div class="card-body">
+        <form
+          action="/artisan/profile?_csrf=<%= csrfToken %>"
+          method="POST"
+          enctype="multipart/form-data"
+          class="vcraft-form"
+        >
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <!-- Section: Basic Information -->
+          <fieldset class="form-section">
+            <legend class="form-section-legend">Thông tin cơ bản</legend>
+
+            <div class="form-group">
+              <label for="workshop_name" class="form-label required">Tên Xưởng thủ công</label>
+              <input
+                type="text"
+                id="workshop_name"
+                name="workshop_name"
+                class="form-control"
+                value="<%= profile ? profile.workshop_name : '' %>"
+                required
+                placeholder="Ví dụ: Xưởng Gốm Bát Tràng Hiệp Thắng"
+              >
+              <small class="form-text">Tên xưởng sẽ xuất hiện trang trọng trên bản đồ và các tác phẩm của bạn.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="categories" class="form-label">Ngành nghề / Danh mục thủ công</label>
+              <input
+                type="text"
+                id="categories"
+                name="categories"
+                class="form-control"
+                value="<%= profile ? profile.categories : '' %>"
+                placeholder="Ví dụ: Gốm men rạn, Gốm lam, Điêu khắc đất nung"
+              >
+              <small class="form-text">Phân cách các danh mục bằng dấu phẩy. Giúp khách hàng lọc theo ngành nghề.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="story" class="form-label">Câu chuyện xưởng & Bí quyết di sản</label>
+              <textarea
+                id="story"
+                name="story"
+                rows="6"
+                class="form-control"
+                placeholder="Chia sẻ về lịch sử gia đình, kinh nghiệm nghệ nhân, kỹ thuật thủ công gia truyền và tâm huyết gửi gắm trong từng tác phẩm..."
+              ><%= profile ? profile.story : '' %></textarea>
+            </div>
+          </fieldset>
+
+          <!-- Section: Location & Visiting -->
+          <fieldset class="form-section">
+            <legend class="form-section-legend">Địa chỉ & Đón tiếp tham quan</legend>
+
+            <div class="form-group">
+              <label for="address" class="form-label">Địa chỉ xưởng</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                class="form-control"
+                value="<%= profile ? profile.address : '' %>"
+                placeholder="Ví dụ: Thôn 1 Làng cổ Bát Tràng, Huyện Gia Lâm, Hà Nội"
+              >
+            </div>
+
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="latitude" class="form-label">Vĩ độ (Latitude)</label>
+                <input
+                  type="number"
+                  step="any"
+                  id="latitude"
+                  name="latitude"
+                  class="form-control"
+                  value="<%= profile && profile.latitude !== null ? profile.latitude : '' %>"
+                  placeholder="Ví dụ: 20.9785"
+                >
+                <small class="form-text">Tọa độ để ghim vị trí xưởng trên Bản đồ Làng nghề.</small>
+              </div>
+
+              <div class="form-group">
+                <label for="longitude" class="form-label">Kinh độ (Longitude)</label>
+                <input
+                  type="number"
+                  step="any"
+                  id="longitude"
+                  name="longitude"
+                  class="form-control"
+                  value="<%= profile && profile.longitude !== null ? profile.longitude : '' %>"
+                  placeholder="Ví dụ: 105.9123"
+                >
+              </div>
+            </div>
+
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="phone" class="form-label">Số điện thoại liên hệ</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  class="form-control"
+                  value="<%= profile ? profile.phone : '' %>"
+                  placeholder="Ví dụ: 0912 345 678"
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="visiting_hours" class="form-label">Giờ mở cửa đón khách</label>
+                <input
+                  type="text"
+                  id="visiting_hours"
+                  name="visiting_hours"
+                  class="form-control"
+                  value="<%= profile ? profile.visiting_hours : '' %>"
+                  placeholder="Ví dụ: 08:30 - 17:30 (Hằng ngày)"
+                >
+              </div>
+            </div>
+
+            <div class="form-group checkbox-group">
+              <label class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  name="is_open"
+                  value="1"
+                  <%= profile && profile.is_open ? 'checked' : '' %>
+                >
+                <span class="checkbox-label">
+                  <strong>Xưởng đang mở cửa tiếp khách tham quan</strong>
+                  <small class="d-block text-muted">Hiển thị chấm xanh và trạng thái đón khách trên bản đồ</small>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- Section: Media & Certificates -->
+          <fieldset class="form-section">
+            <legend class="form-section-legend">Hình ảnh & Chứng nhận nghệ nhân</legend>
+
+            <!-- Cover Image -->
+            <div class="form-group">
+              <label for="cover_image" class="form-label">Ảnh bìa xưởng (Cover Photo)</label>
+              <% if (profile && profile.cover_image) { %>
+                <div class="current-image-preview">
+                  <img src="<%= profile.cover_image %>" alt="Ảnh bìa hiện tại" class="preview-thumb preview-thumb--cover">
+                  <span class="preview-note">Ảnh bìa đang sử dụng. Chọn tệp mới bên dưới nếu muốn thay đổi.</span>
+                </div>
+              <% } %>
+              <input
+                type="file"
+                id="cover_image"
+                name="cover_image"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                class="form-control"
+              >
+              <small class="form-text">Ảnh phong cảnh xưởng, cổng làng hoặc bàn làm việc của nghệ nhân (tối đa 10MB, tự động tối ưu sang WebP).</small>
+            </div>
+
+            <!-- Certificate Image -->
+            <div class="form-group">
+              <label for="certificate_image" class="form-label">Bằng khen / Chứng nhận Nghệ nhân</label>
+              <% if (profile && profile.certificate_image) { %>
+                <div class="current-image-preview">
+                  <a href="<%= profile.certificate_image %>" target="_blank" rel="noopener noreferrer" title="Xem chứng nhận kích thước đầy đủ">
+                    <img src="<%= profile.certificate_image %>" alt="Chứng nhận hiện tại" class="preview-thumb preview-thumb--certificate">
+                  </a>
+                  <span class="preview-note">Chứng nhận đã tải lên. Chọn tệp mới để thay thế.</span>
+                </div>
+              <% } %>
+              <input
+                type="file"
+                id="certificate_image"
+                name="certificate_image"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                class="form-control"
+              >
+              <small class="form-text">Chứng nhận Nghệ nhân Ưu tú, Bàn tay Vàng, giải thưởng làng nghề...</small>
+            </div>
+
+            <!-- Gallery Images -->
+            <div class="form-group">
+              <label for="gallery_images" class="form-label">Bộ sưu tập ảnh xưởng & Không gian chế tác</label>
+              <% if (profile && profile.gallery_images && profile.gallery_images.length > 0) { %>
+                <div class="gallery-preview-grid">
+                  <% profile.gallery_images.forEach(function(imgUrl, idx) { %>
+                    <div class="gallery-preview-item">
+                      <img src="<%= imgUrl %>" alt="Ảnh thư viện <%= idx + 1 %>">
+                    </div>
+                  <% }); %>
+                </div>
+                <small class="form-text d-block mb-2">Đang có <%= profile.gallery_images.length %> ảnh trong thư viện. Bạn có thể chọn thêm tệp bên dưới để bổ sung (tối đa 8 ảnh).</small>
+              <% } %>
+              <input
+                type="file"
+                id="gallery_images"
+                name="gallery_images"
+                multiple
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                class="form-control"
+              >
+              <small class="form-text">Có thể chọn nhiều ảnh cùng lúc (giữ phím Ctrl/Cmd để chọn tối đa 8 ảnh).</small>
+            </div>
+          </fieldset>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">Lưu Hồ Sơ Xưởng</button>
+            <a href="/artisan/dashboard" class="btn btn-outline btn-lg">Quay lại Bảng điều khiển</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

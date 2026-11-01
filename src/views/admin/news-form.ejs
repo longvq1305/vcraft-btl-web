@@ -1,0 +1,131 @@
+<%- include('../partials/head', { title: title || 'Biên Tập Bản Tin - Quản Trị' }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main admin-main">
+  <div class="container container-form">
+    <div class="admin-page-header">
+      <div>
+        <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+          <ol class="breadcrumb-list">
+            <li><a href="/admin">Quản trị</a></li>
+            <li><a href="/admin/news">Quản lý bản tin</a></li>
+            <li aria-current="page"><%= article ? 'Chỉnh sửa bài viết' : 'Soạn bài mới' %></li>
+          </ol>
+        </nav>
+        <span class="slide-kicker">Biên Tập Truyền Thông</span>
+        <h1 class="page-title"><%= article ? 'Chỉnh Sửa Bản Tin' : 'Soạn Bản Tin Làng Nghề Mới' %></h1>
+        <div class="editorial-rule"></div>
+        <p class="page-subtitle">Biên tập nội dung truyền thông văn hóa và câu chuyện di sản thủ công.</p>
+      </div>
+      <a href="/admin/news" class="btn btn-outline">&larr; Quay lại danh sách</a>
+    </div>
+
+    <% if (errors && errors.length > 0) { %>
+      <div class="alert alert-error" role="alert">
+        <ul class="error-list">
+          <% errors.forEach(function(err) { %>
+            <li><%= err %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <div class="card form-card paper-panel">
+      <form
+        action="<%= article ? '/admin/news/' + article.id : '/admin/news' %>"
+        method="POST"
+        class="admin-form"
+        novalidate
+      >
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <div class="form-group">
+          <label for="title" class="form-label">Tiêu đề bài viết <span class="required">*</span></label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            class="form-control"
+            value="<%= values.title || '' %>"
+            placeholder="Ví dụ: Hành Trình Gìn Giữ Hồn Gốm Việt Cùng Làng Nghề Bát Tràng"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="coverImage" class="form-label">Đường dẫn ảnh bìa (URL hoặc /uploads/...)</label>
+          <% const currentCover = (values.cover_image || values.coverImage || '').toString().trim(); %>
+          <div
+            id="newsCoverPreview"
+            class="current-image-preview news-cover-preview"
+            <%= currentCover ? '' : 'hidden' %>
+          >
+            <img
+              <% if (currentCover) { %>src="<%= currentCover %>"<% } %>
+              alt="Xem trước ảnh bìa bản tin"
+              class="preview-thumb preview-thumb--cover"
+            >
+            <span class="preview-note">Ảnh bìa hiển thị trên trang bài viết và danh sách bản tin.</span>
+          </div>
+          <input
+            type="text"
+            id="coverImage"
+            name="coverImage"
+            class="form-control"
+            value="<%= values.cover_image || values.coverImage || '' %>"
+            placeholder="https://images.unsplash.com/... hoặc /uploads/..."
+            data-image-preview-target="newsCoverPreview"
+          >
+          <small class="form-hint">Nhập URL hình ảnh sắc nét thể hiện sinh động tác phẩm hoặc nghệ nhân.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="excerpt" class="form-label">Đoạn tóm tắt mở đầu (Lead/Excerpt) <span class="required">*</span></label>
+          <textarea
+            id="excerpt"
+            name="excerpt"
+            class="form-control"
+            rows="3"
+            placeholder="Tóm tắt ngắn gọn 2-3 câu thu hút người đọc..."
+            required
+          ><%= values.excerpt || '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="body" class="form-label">Nội dung chi tiết (Hỗ trợ HTML cơ bản) <span class="required">*</span></label>
+          <textarea
+            id="body"
+            name="body"
+            class="form-control code-editor"
+            rows="12"
+            placeholder="<p>Nhập nội dung bài viết...</p>"
+            required
+          ><%= values.body || '' %></textarea>
+          <small class="form-hint">Có thể sử dụng các thẻ HTML như &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;blockquote&gt; để định dạng bài viết.</small>
+        </div>
+
+        <div class="form-group checkbox-group-wrap">
+          <label class="form-checkbox-label">
+            <input
+              type="checkbox"
+              name="isPublished"
+              value="1"
+              <%= (values.is_published || values.isPublished) ? 'checked' : '' %>
+            >
+            <span><strong>Xuất bản bài viết ngay</strong> (Hiển thị công khai trên trang chủ và chuyên mục bản tin)</span>
+          </label>
+        </div>
+
+        <div class="form-actions-bar">
+          <a href="/admin/news" class="btn btn-secondary">Hủy bỏ</a>
+          <button type="submit" class="btn btn-primary btn-lg">
+            <%= article ? 'Cập Nhật Bản Tin' : 'Lưu & Đăng Bài' %>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,524 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<%
+  const stageOrder = ['draft', 'sent', 'bidding', 'accepted', 'in_production', 'delivered'];
+  const currentIndex = stageOrder.indexOf(quote.status);
+  const stages = [
+    { key: 'draft', label: 'Khởi tạo' },
+    { key: 'sent', label: 'Gửi xưởng' },
+    { key: 'bidding', label: 'Chào giá' },
+    { key: 'accepted', label: 'Chốt đơn' },
+    { key: 'in_production', label: 'Chế tác' },
+    { key: 'delivered', label: 'Hoàn thành' }
+  ];
+  const currentBadge = getStatusBadge(quote.status);
+%>
+
+<main class="site-main quote-detail-page">
+  <div class="container">
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li><a href="/quotes">Yêu cầu Báo giá</a></li>
+        <li aria-current="page">#<%= quote.id %> - <%= quote.title %></li>
+      </ol>
+    </nav>
+
+    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+      <div class="alert alert-error" role="alert">
+        <span class="alert-icon">!</span>
+        <span class="alert-text"><%= errorMessage %></span>
+      </div>
+    <% } %>
+
+    <!-- Header & Workflow Stepper -->
+    <div class="quote-header-box card paper-panel">
+      <div class="quote-header-main">
+        <div class="quote-header-title-wrap">
+          <span class="slide-kicker">Hồ Sơ Yêu Cầu Chế Tác</span>
+          <div class="quote-meta-tags">
+            <span class="quote-id-tag">Mã yêu cầu: #<%= quote.id %></span>
+            <span class="badge <%= currentBadge.className %>"><%= currentBadge.label %></span>
+            <span class="version-tag text-muted text-sm">Phiên bản: v<%= quote.version %></span>
+          </div>
+          <h1 class="quote-title"><%= quote.title %></h1>
+        </div>
+
+        <div class="quote-header-actions">
+          <a href="/quotes" class="btn btn-outline btn-sm">&larr; Danh sách báo giá</a>
+        </div>
+      </div>
+
+      <!-- Stepper component using exact shared CSS classes -->
+      <div class="quote-stepper" aria-label="Tiến trình yêu cầu báo giá">
+        <% stages.forEach(function(st, idx) { %>
+          <%
+            let stepStateClass = '';
+            if (idx < currentIndex) stepStateClass = 'step-done';
+            else if (idx === currentIndex) stepStateClass = 'step-active';
+          %>
+          <div class="step-item <%= stepStateClass %>">
+            <div class="step-badge">
+              <% if (idx < currentIndex) { %>✓<% } else { %><%= idx + 1 %><% } %>
+            </div>
+            <span class="step-label"><%= st.label %></span>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+
+    <div class="grid grid-sidebar mt-4">
+      <!-- Main Content Column -->
+      <div class="main-column">
+        <!-- Specifications Card -->
+        <div class="card spec-card paper-panel">
+          <h2 class="card-title">Chi tiết Yêu cầu Đặt hàng</h2>
+
+          <div class="spec-grid">
+            <div class="spec-item">
+              <span class="spec-label">Khách hàng yêu cầu:</span>
+              <span class="spec-value font-medium"><%= quote.buyer_name %></span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Chuyên mục ngành nghề:</span>
+              <span class="spec-value category-tag"><%= quote.category %></span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Số lượng đặt:</span>
+              <span class="spec-value"><strong><%= quote.quantity %></strong> chiếc / bộ</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Hạn chót tiếp nhận chào giá:</span>
+              <span class="spec-value text-terracotta">
+                <strong><time datetime="<%= quote.deadline %>"><%= formatDate(quote.deadline) %></time></strong>
+              </span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Thời gian tạo:</span>
+              <span class="spec-value"><time datetime="<%= quote.created_at %>"><%= formatDate(quote.created_at, true) %></time></span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Cập nhật gần nhất:</span>
+              <span class="spec-value"><time datetime="<%= quote.updated_at %>"><%= formatDate(quote.updated_at, true) %></time></span>
+            </div>
+          </div>
+
+          <div class="spec-description mt-3">
+            <h3 class="spec-label font-semibold">Mô tả kỹ thuật & quy cách:</h3>
+            <div class="spec-desc-content mt-1">
+              <%= quote.description %>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== STAGE: DRAFT ==================== -->
+        <% if (quote.status === 'draft') { %>
+          <% if (isOwner) { %>
+            <div class="card action-card draft-action-card mt-4 paper-panel">
+              <div class="action-header">
+                <h2 class="card-title text-terracotta">Phát lệnh Gửi Yêu cầu tới các Nghệ nhân</h2>
+                <p class="text-muted">
+                  Yêu cầu hiện tại đang ở trạng thái <strong>Bản nháp</strong> riêng tư. Sau khi bạn bấm "Gửi yêu cầu", hệ thống sẽ tự động ghép nối với các nghệ nhân đã được phê duyệt thuộc chuyên mục <strong><%= quote.category %></strong> để mở phiên tiếp nhận chào giá.
+                </p>
+              </div>
+
+              <form action="/quotes/<%= quote.id %>/send" method="POST" class="mt-3">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  Gửi yêu cầu tới các nghệ nhân phù hợp &rarr;
+                </button>
+              </form>
+            </div>
+          <% } %>
+        <% } %>
+
+        <!-- ==================== STAGE: SENT / BIDDING ==================== -->
+        <% if (quote.status === 'sent' || quote.status === 'bidding') { %>
+          <!-- Buyer or Admin View: View all bids -->
+          <% if (isOwner || isAdmin) { %>
+            <div class="card bids-card mt-4 paper-panel">
+              <div class="card-header-flex">
+                <h2 class="card-title">
+                  Báo giá từ các Xưởng Nghệ nhân (<%= bids ? bids.length : 0 %>)
+                </h2>
+                <% if (quote.status === 'sent') { %>
+                  <span class="badge badge-sent">Chờ xưởng đầu tiên chào giá</span>
+                <% } else { %>
+                  <span class="badge badge-bidding">Đang nhận chào giá cạnh tranh</span>
+                <% } %>
+              </div>
+
+              <% if (!bids || bids.length === 0) { %>
+                <div class="empty-state p-4 text-center">
+                  <p class="text-muted">
+                    Yêu cầu đã được gửi đến <%= targets ? targets.length : 0 %> xưởng nghề trong làng. Chưa có xưởng nào gửi chào giá. Vui lòng chờ các nghệ nhân tính toán đơn giá và phản hồi.
+                  </p>
+                </div>
+              <% } else { %>
+                <div class="bid-grid">
+                  <% bids.forEach(function(b) { %>
+                    <div class="bid-card <%= b.status === 'accepted' ? 'accepted-bid' : '' %>">
+                      <div class="bid-card-header">
+                        <div class="artisan-info">
+                          <h3 class="artisan-name font-semibold">
+                            <% if (b.artisan_slug) { %>
+                              <a href="/workshops/<%= b.artisan_slug %>" class="link-artisan text-primary" target="_blank">
+                                <%= b.workshop_name || b.artisan_name %> &nearr;
+                              </a>
+                            <% } else { %>
+                              <%= b.workshop_name || b.artisan_name %>
+                            <% } %>
+                          </h3>
+                          <span class="artisan-contact text-muted text-sm block">
+                            Nghệ nhân: <%= b.artisan_name %> &bull; SĐT: <%= b.artisan_phone || 'Đã xác thực' %>
+                          </span>
+                        </div>
+                        <div class="bid-price-tag mt-2">
+                          <span class="price-amount text-primary font-bold text-lg"><%= formatCurrency(b.unit_price) %></span>
+                          <span class="price-unit text-muted text-sm">/ sản phẩm</span>
+                        </div>
+                      </div>
+
+                      <div class="bid-meta-grid mt-3">
+                        <div class="bid-meta-item">
+                          <span class="meta-label text-muted text-xs block">Tổng giá trị ước tính:</span>
+                          <span class="meta-val font-semibold text-primary">
+                            <%= formatCurrency(b.unit_price * quote.quantity) %>
+                          </span>
+                        </div>
+                        <div class="bid-meta-item">
+                          <span class="meta-label text-muted text-xs block">Thời gian chế tác:</span>
+                          <span class="meta-val font-semibold"><%= b.lead_days %> ngày</span>
+                        </div>
+                        <div class="bid-meta-item">
+                          <span class="meta-label text-muted text-xs block">Dự kiến hoàn thành:</span>
+                          <span class="meta-val"><time datetime="<%= b.completion_date %>"><%= formatDate(b.completion_date) %></time></span>
+                        </div>
+                        <div class="bid-meta-item">
+                          <span class="meta-label text-muted text-xs block">Thời điểm chào giá:</span>
+                          <span class="meta-val"><time datetime="<%= b.created_at %>"><%= formatDate(b.created_at, true) %></time></span>
+                        </div>
+                      </div>
+
+                      <% if (b.note) { %>
+                        <div class="bid-note-box mt-3 p-2 bg-light rounded text-sm">
+                          <span class="note-label font-semibold text-xs text-muted block">Ghi chú & phương án kỹ thuật:</span>
+                          <p class="note-text mb-0"><%= b.note %></p>
+                        </div>
+                      <% } %>
+
+                      <% if (isOwner && (quote.status === 'sent' || quote.status === 'bidding') && b.status === 'submitted') { %>
+                        <div class="bid-card-actions mt-3">
+                          <form action="/quotes/<%= quote.id %>/accept" method="POST" data-confirm="Xác nhận chọn báo giá từ <%= b.workshop_name || b.artisan_name %> với đơn giá <%= formatCurrency(b.unit_price) %>? Đơn hàng sẽ chính thức được chốt.">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <input type="hidden" name="bidId" value="<%= b.id %>">
+                            <input type="hidden" name="version" value="<%= quote.version %>">
+                            <button type="submit" class="btn btn-success btn-sm w-100">
+                              ✓ Chấp thuận báo giá này
+                            </button>
+                          </form>
+                        </div>
+                      <% } %>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } %>
+            </div>
+          <% } %>
+
+          <!-- Artisan View: Own Bid Details & Submission Form -->
+          <% if (isArtisan) { %>
+            <div class="card artisan-bidding-card mt-4 paper-panel">
+              <h2 class="card-title">Chào giá từ Xưởng của Bạn</h2>
+
+              <% if (myBid) { %>
+                <div class="alert alert-info" role="alert">
+                  <span class="alert-icon">ℹ</span>
+                  <span class="alert-text">
+                    Xưởng của bạn đã gửi báo giá chào hàng. Bạn có thể cập nhật lại mức giá và thời gian hoàn thành bên dưới cho đến khi khách hàng chốt đơn.
+                  </span>
+                </div>
+
+                <div class="my-bid-summary card mb-3 p-3">
+                  <div class="bid-meta-grid">
+                    <div class="bid-meta-item">
+                      <span class="meta-label text-muted text-xs block">Đơn giá đã chào:</span>
+                      <span class="meta-val font-semibold text-primary"><%= formatCurrency(myBid.unit_price) %>/sp</span>
+                    </div>
+                    <div class="bid-meta-item">
+                      <span class="meta-label text-muted text-xs block">Tổng giá trị đơn:</span>
+                      <span class="meta-val font-semibold"><%= formatCurrency(myBid.unit_price * quote.quantity) %></span>
+                    </div>
+                    <div class="bid-meta-item">
+                      <span class="meta-label text-muted text-xs block">Thời gian sản xuất:</span>
+                      <span class="meta-val font-semibold"><%= myBid.lead_days %> ngày</span>
+                    </div>
+                    <div class="bid-meta-item">
+                      <span class="meta-label text-muted text-xs block">Dự kiến hoàn thành:</span>
+                      <span class="meta-val"><%= formatDate(myBid.completion_date) %></span>
+                    </div>
+                  </div>
+                </div>
+              <% } else { %>
+                <p class="text-muted">
+                  Xưởng của bạn đã được khách hàng tin tưởng gửi yêu cầu. Hãy đưa ra đơn giá tốt nhất và thời gian hoàn thành khả thi để nhận đơn hàng này.
+                </p>
+              <% } %>
+
+              <!-- Form to submit/update bid -->
+              <form action="/quotes/<%= quote.id %>/bids" method="POST" class="form-standard mt-3">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label for="unitPrice" class="form-label">
+                      Đơn giá chào (VNĐ / sản phẩm) <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="unitPrice"
+                      name="unitPrice"
+                      class="form-control"
+                      placeholder="Ví dụ: 250000"
+                      value="<%= myBid ? myBid.unit_price : '' %>"
+                      min="1"
+                      step="any"
+                      required
+                    >
+                    <span class="form-help">Đơn giá chưa bao gồm VAT (nếu có).</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="leadDays" class="form-label">
+                      Thời gian chế tác (Số ngày) <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="leadDays"
+                      name="leadDays"
+                      class="form-control"
+                      placeholder="Ví dụ: 15"
+                      value="<%= myBid ? myBid.lead_days : '' %>"
+                      min="1"
+                      step="1"
+                      required
+                    >
+                    <span class="form-help">Số ngày từ khi nhận đơn đến lúc hoàn thành.</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="completionDate" class="form-label">
+                    Ngày dự kiến bàn giao thành phẩm <span class="required" aria-hidden="true">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="completionDate"
+                    name="completionDate"
+                    class="form-control"
+                    value="<%= myBid ? myBid.completion_date : '' %>"
+                    required
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="note" class="form-label">Ghi chú cam kết & giải pháp chế tác</label>
+                  <textarea
+                    id="note"
+                    name="note"
+                    class="form-control form-textarea"
+                    rows="4"
+                    placeholder="Cam kết về loại đất sét, men nung củi truyền thống, bao bì đóng hộp chống va đập, mẫu thử miễn phí..."
+                  ><%= myBid ? (myBid.note || '') : '' %></textarea>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <%= myBid ? 'Cập nhật Báo giá' : 'Gửi Báo giá Chào hàng' %> &rarr;
+                  </button>
+                </div>
+              </form>
+            </div>
+          <% } %>
+        <% } %>
+
+        <!-- ==================== STAGE: ACCEPTED ==================== -->
+        <% if (quote.status === 'accepted') { %>
+          <div class="card status-action-card accepted-banner-card mt-4 paper-panel">
+            <div class="banner-badge-wrap">
+              <span class="badge badge-accepted badge-lg">Đã chốt báo giá thành công</span>
+            </div>
+            <h2 class="card-title text-success mt-2">
+              Đơn hàng đã được giao cho xưởng <%= quote.accepted_workshop_name %>
+            </h2>
+            <div class="accepted-details-grid mt-3">
+              <div class="detail-box">
+                <span class="detail-lbl text-xs text-muted block">Đơn giá chốt:</span>
+                <span class="detail-val text-primary font-bold"><%= formatCurrency(quote.accepted_unit_price) %>/sp</span>
+              </div>
+              <div class="detail-box">
+                <span class="detail-lbl text-xs text-muted block">Tổng giá trị đơn hàng:</span>
+                <span class="detail-val font-bold"><%= formatCurrency(quote.accepted_unit_price * quote.quantity) %></span>
+              </div>
+              <div class="detail-box">
+                <span class="detail-lbl text-xs text-muted block">Thời gian chế tác:</span>
+                <span class="detail-val font-semibold"><%= quote.accepted_lead_days %> ngày</span>
+              </div>
+              <div class="detail-box">
+                <span class="detail-lbl text-xs text-muted block">Hạn bàn giao:</span>
+                <span class="detail-val"><%= formatDate(quote.accepted_completion_date) %></span>
+              </div>
+            </div>
+
+            <% if (isArtisan && isWinner) { %>
+              <div class="artisan-next-step mt-4 p-3 bg-light rounded">
+                <h3 class="font-semibold text-primary">Bước tiếp theo cho Xưởng của bạn:</h3>
+                <p class="text-sm text-muted">
+                  Chúc mừng bạn! Khách hàng đã chấp thuận báo giá. Vui lòng bấm xác nhận bắt đầu chế tác để khách hàng theo dõi tiến độ.
+                </p>
+                <form action="/quotes/<%= quote.id %>/start" method="POST" class="mt-2">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    Bắt đầu Sản xuất tại Xưởng &rarr;
+                  </button>
+                </form>
+              </div>
+            <% } else if (isArtisan && !isWinner) { %>
+              <div class="mt-3 text-muted">
+                Đơn hàng này đã được khách hàng lựa chọn trao cho xưởng khác. Cảm ơn xưởng đã tham gia gửi báo giá.
+              </div>
+            <% } else if (isOwner) { %>
+              <div class="mt-3 text-muted">
+                Đơn hàng đã chốt. Nghệ nhân đang chuẩn bị nguyên vật liệu và chuẩn bị bắt đầu quy trình chế tác.
+              </div>
+            <% } %>
+          </div>
+        <% } %>
+
+        <!-- ==================== STAGE: IN PRODUCTION ==================== -->
+        <% if (quote.status === 'in_production') { %>
+          <div class="card status-action-card production-banner-card mt-4 paper-panel">
+            <div class="banner-badge-wrap">
+              <span class="badge badge-production badge-lg">Đang trong quy trình chế tác</span>
+            </div>
+            <h2 class="card-title text-terracotta mt-2">
+              Sản phẩm đang được chế tác tại <%= quote.accepted_workshop_name %>
+            </h2>
+            <p class="text-muted">
+              Đơn hàng gồm <%= quote.quantity %> sản phẩm đang được thực hiện theo đúng tiêu chuẩn kỹ thuật làng nghề truyền thống.
+            </p>
+
+            <% if (isArtisan && isWinner) { %>
+              <div class="artisan-next-step mt-4 p-3 bg-light rounded">
+                <h3 class="font-semibold text-success">Hoàn thành & Bàn giao:</h3>
+                <p class="text-sm text-muted">
+                  Khi tất cả sản phẩm đã được kiểm tra chất lượng đạt chuẩn và đóng gói bàn giao cho khách hàng, bấm nút dưới đây để hoàn tất đơn hàng.
+                </p>
+                <form action="/quotes/<%= quote.id %>/deliver" method="POST" class="mt-2" data-confirm="Xác nhận bạn đã hoàn thành sản phẩm và bàn giao cho khách hàng?">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="btn btn-success btn-lg">
+                    ✓ Đánh dấu Đã Giao Hàng & Hoàn Tất
+                  </button>
+                </form>
+              </div>
+            <% } else if (isOwner) { %>
+              <div class="mt-3 text-muted">
+                Nghệ nhân đang tiến hành tạo tác theo đúng tiến độ cam kết. Bạn sẽ nhận được thông báo khi sản phẩm hoàn thành và bàn giao.
+              </div>
+            <% } %>
+          </div>
+        <% } %>
+
+        <!-- ==================== STAGE: DELIVERED ==================== -->
+        <% if (quote.status === 'delivered') { %>
+          <div class="card status-action-card delivered-banner-card mt-4 paper-panel">
+            <div class="banner-badge-wrap">
+              <span class="badge badge-delivered badge-lg">Đơn hàng đã hoàn thành trọn vẹn</span>
+            </div>
+            <h2 class="card-title text-success mt-2">
+              Bàn giao thành công bởi <%= quote.accepted_workshop_name %>
+            </h2>
+            <p class="text-muted">
+              Đơn hàng <%= quote.quantity %> sản phẩm chế tác độc bản đã được bàn giao đến khách hàng <%= quote.buyer_name %>. Cảm ơn sự hợp tác giữa khách hàng và xưởng nghề!
+            </p>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Sidebar Column -->
+      <aside class="sidebar-column">
+        <!-- Order Summary Card -->
+        <div class="card order-summary-card paper-panel">
+          <h2 class="card-title">Tóm tắt Đơn hàng</h2>
+          <ul class="summary-list">
+            <li class="summary-item">
+              <span class="summary-label">Trạng thái:</span>
+              <span class="badge <%= currentBadge.className %>"><%= currentBadge.label %></span>
+            </li>
+            <li class="summary-item">
+              <span class="summary-label">Số lượng:</span>
+              <span class="summary-val font-semibold"><%= quote.quantity %> sản phẩm</span>
+            </li>
+            <li class="summary-item">
+              <span class="summary-label">Ngành nghề:</span>
+              <span class="summary-val"><%= quote.category %></span>
+            </li>
+            <li class="summary-item">
+              <span class="summary-label">Hạn chót chào giá:</span>
+              <span class="summary-val"><%= formatDate(quote.deadline) %></span>
+            </li>
+            <% if (quote.accepted_unit_price) { %>
+              <li class="summary-item">
+                <span class="summary-label">Đơn giá đã chốt:</span>
+                <span class="summary-val text-primary font-bold"><%= formatCurrency(quote.accepted_unit_price) %></span>
+              </li>
+              <li class="summary-item">
+                <span class="summary-label">Tổng thanh toán:</span>
+                <span class="summary-val text-success font-bold"><%= formatCurrency(quote.accepted_unit_price * quote.quantity) %></span>
+              </li>
+              <li class="summary-item">
+                <span class="summary-label">Xưởng thực hiện:</span>
+                <span class="summary-val font-semibold"><%= quote.accepted_workshop_name %></span>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+
+        <!-- Targeted Artisans (for Buyer/Admin) -->
+        <% if ((isOwner || isAdmin) && targets && targets.length > 0) { %>
+          <div class="card targets-card mt-4 paper-panel">
+            <h3 class="card-subtitle">Xưởng được Mời Chào giá (<%= targets.length %>)</h3>
+            <ul class="targets-list mt-2">
+              <% targets.forEach(function(t) { %>
+                <li class="target-item p-2 border-bottom">
+                  <div class="target-name font-medium">
+                    <%= t.workshop_name || t.artisan_name %>
+                  </div>
+                  <div class="target-meta text-xs text-muted">
+                    <% if (t.seen_at) { %>
+                      <span class="text-success">Đã xem <time datetime="<%= t.seen_at %>"><%= formatDate(t.seen_at, true) %></time></span>
+                    <% } else { %>
+                      <span>Chưa mở xem</span>
+                    <% } %>
+                  </div>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+        <% } %>
+
+        <!-- Help Card -->
+        <div class="card help-card mt-4 paper-panel">
+          <h3 class="card-subtitle font-semibold">Hỗ trợ Điều phối Làng nghề</h3>
+          <p class="text-sm text-muted mt-1">
+            Nếu cần hỗ trợ kỹ thuật hoặc can thiệp điều phối tiến độ từ Ban Quản lý, vui lòng liên hệ Ban Điều phối Làng nghề qua hotline hoặc email contact@vcraft.vn.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
