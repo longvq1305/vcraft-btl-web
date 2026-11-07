@@ -20,6 +20,21 @@ vCraft là nền tảng thương mại di sản và kết nối trực tiếp gi
   - Thiết lập tiêu đề bảo mật với `helmet` (CSP cấu hình mở cho CDN Leaflet, OSM Tiles, Unsplash)
   - Giới hạn tần suất yêu cầu đăng nhập/đăng ký với `express-rate-limit`
 
+### Cơ Chế Giao Diện Sáng/Tối & Hướng Dẫn Bảo Trì (Theme System & Maintenance)
+
+- **Cơ chế chuyển đổi (Toggle Behavior):**
+  - Nút bấm trên thanh điều hướng header (`button.theme-toggle[data-theme-toggle]`) cho phép chuyển đổi tức thì giữa hai chế độ: **Nền tối** và **Nền sáng** (đồng bộ nhãn hiển thị, biểu tượng SVG mặt trời/mặt trăng và các thuộc tính trợ năng `aria-pressed`, `aria-label`).
+- **Thứ tự ưu tiên & Lưu trữ (Persistence & Fallback):**
+  - **Khởi tạo ban đầu:** Tự động nhận diện theo tùy chọn giao diện của hệ điều hành/trình duyệt qua media query `prefers-color-scheme`.
+  - **Ghi nhớ lựa chọn:** Khi người dùng chủ động bấm chuyển đổi, giá trị được lưu bền vững vào `localStorage` với khóa `vcraft_theme` (`'light'` hoặc `'dark'`). Lựa chọn tường minh này luôn được ưu tiên áp dụng ở các lần truy cập tiếp theo.
+  - **Dự phòng hạn chế lưu trữ:** Nếu môi trường duyệt web chặn hoặc giới hạn quyền truy cập `localStorage` (chế độ ẩn danh, sandbox), lựa chọn thủ công của người dùng vẫn được duy trì trong bộ nhớ phiên làm việc trên trang hiện tại.
+- **Áp dụng thuộc tính gốc & Chống chớp nháy (Root Selector & Anti-FOUC):**
+  - Chế độ giao diện được gắn vào thuộc tính `data-theme` trên phần tử gốc `<html>` (`data-theme="light"` hoặc `data-theme="dark"`).
+  - Tệp `public/js/theme.js` được nạp đồng bộ (synchronous) ngay trong `<head>` (`src/views/partials/head.ejs`) trước các tệp CSS, đảm bảo `data-theme` được xác định trước lượt vẽ đầu tiên (First Paint), ngăn chặn hiện tượng nhấp nháy giao diện (FOUC).
+- **Vị trí bảng màu & Quy tắc bảo trì (Palette Maintenance):**
+  - Toàn bộ bảng màu và các biến thiết kế (color tokens) cho cả hai chế độ sáng/tối được khai báo tập trung tại `public/css/styles.css` (thông qua `:root` và các bộ chọn theo `[data-theme="dark"]` / `[data-theme="light"]`).
+  - **Quy tắc bảo trì:** Khi chỉnh sửa hoặc bổ sung màu mới, luôn bảo đảm cập nhật theo cặp đồng bộ giữa biến màu nền (`background tokens`) và biến màu chữ/tiền cảnh (`foreground/text tokens`) tương ứng để duy trì độ tương phản rõ ràng và trải nghiệm đọc nhất quán.
+
 ---
 
 ## 2. Cấu Trúc Thư Mục Dự Án
@@ -38,7 +53,8 @@ vcraft/
 │   │   └── styles.css          # Toàn bộ hệ thống giao diện và biến màu di sản
 │   ├── js/
 │   │   ├── main.js             # Điều hướng di động, cảnh báo và thư viện ảnh
-│   │   └── map.js              # Khởi tạo bản đồ Leaflet tương tác
+│   │   ├── map.js              # Khởi tạo bản đồ Leaflet tương tác
+│   │   └── theme.js            # Khởi tạo theme đồng bộ chống FOUC và xử lý chuyển đổi giao diện
 │   └── uploads/                # Thư mục lưu trữ ảnh đã nén WebP
 │       └── .gitkeep
 └── src/
