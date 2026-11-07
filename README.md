@@ -22,18 +22,10 @@ vCraft là nền tảng thương mại di sản và kết nối trực tiếp gi
 
 ### Cơ Chế Giao Diện Sáng/Tối & Hướng Dẫn Bảo Trì (Theme System & Maintenance)
 
-- **Cơ chế chuyển đổi (Toggle Behavior):**
-  - Nút bấm trên thanh điều hướng header (`button.theme-toggle[data-theme-toggle]`) cho phép chuyển đổi tức thì giữa hai chế độ: **Nền tối** và **Nền sáng** (đồng bộ nhãn hiển thị, biểu tượng SVG mặt trời/mặt trăng và các thuộc tính trợ năng `aria-pressed`, `aria-label`).
-- **Thứ tự ưu tiên & Lưu trữ (Persistence & Fallback):**
-  - **Khởi tạo ban đầu:** Tự động nhận diện theo tùy chọn giao diện của hệ điều hành/trình duyệt qua media query `prefers-color-scheme`.
-  - **Ghi nhớ lựa chọn:** Khi người dùng chủ động bấm chuyển đổi, giá trị được lưu bền vững vào `localStorage` với khóa `vcraft_theme` (`'light'` hoặc `'dark'`). Lựa chọn tường minh này luôn được ưu tiên áp dụng ở các lần truy cập tiếp theo.
-  - **Dự phòng hạn chế lưu trữ:** Nếu môi trường duyệt web chặn hoặc giới hạn quyền truy cập `localStorage` (chế độ ẩn danh, sandbox), lựa chọn thủ công của người dùng vẫn được duy trì trong bộ nhớ phiên làm việc trên trang hiện tại.
-- **Áp dụng thuộc tính gốc & Chống chớp nháy (Root Selector & Anti-FOUC):**
-  - Chế độ giao diện được gắn vào thuộc tính `data-theme` trên phần tử gốc `<html>` (`data-theme="light"` hoặc `data-theme="dark"`).
-  - Tệp `public/js/theme.js` được nạp đồng bộ (synchronous) ngay trong `<head>` (`src/views/partials/head.ejs`) trước các tệp CSS, đảm bảo `data-theme` được xác định trước lượt vẽ đầu tiên (First Paint), ngăn chặn hiện tượng nhấp nháy giao diện (FOUC).
-- **Vị trí bảng màu & Quy tắc bảo trì (Palette Maintenance):**
-  - Toàn bộ bảng màu và các biến thiết kế (color tokens) cho cả hai chế độ sáng/tối được khai báo tập trung tại `public/css/styles.css` (thông qua `:root` và các bộ chọn theo `[data-theme="dark"]` / `[data-theme="light"]`).
-  - **Quy tắc bảo trì:** Khi chỉnh sửa hoặc bổ sung màu mới, luôn bảo đảm cập nhật theo cặp đồng bộ giữa biến màu nền (`background tokens`) và biến màu chữ/tiền cảnh (`foreground/text tokens`) tương ứng để duy trì độ tương phản rõ ràng và trải nghiệm đọc nhất quán.
+- **Tự động theo trình duyệt:** `public/js/theme.js` đọc `prefers-color-scheme: dark` để chọn bảng màu sáng hoặc tối. Không có nút chuyển chế độ trên web, không đọc/ghi `localStorage` và không áp dụng lựa chọn thủ công cũ.
+- **Cập nhật tức thì:** Khi tùy chọn sáng/tối do trình duyệt cung cấp thay đổi, giao diện tự cập nhật mà không cần tải lại trang.
+- **Khởi tạo trước khi vẽ:** Script được nạp đồng bộ trong `src/views/partials/head.ejs`, trước CSS, và đặt `data-theme="light"` hoặc `data-theme="dark"` trên `<html>`. Trình duyệt không hỗ trợ `matchMedia` dùng bảng màu sáng.
+- **Bảo trì bảng màu:** Các cặp màu nền/chữ nằm trong `public/css/styles.css`, tại `:root` (sáng) và `html[data-theme="dark"]` (tối). Khi bổ sung màu, cập nhật đồng bộ màu nền và màu chữ để giữ độ tương phản.
 
 ---
 
@@ -54,7 +46,7 @@ vcraft/
 │   ├── js/
 │   │   ├── main.js             # Điều hướng di động, cảnh báo và thư viện ảnh
 │   │   ├── map.js              # Khởi tạo bản đồ Leaflet tương tác
-│   │   └── theme.js            # Khởi tạo theme đồng bộ chống FOUC và xử lý chuyển đổi giao diện
+│   │   └── theme.js            # Tự nhận chế độ sáng/tối trình duyệt trước khi nạp CSS
 │   └── uploads/                # Thư mục lưu trữ ảnh đã nén WebP
 │       └── .gitkeep
 └── src/

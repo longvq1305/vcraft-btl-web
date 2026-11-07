@@ -819,51 +819,6 @@ html[data-theme="dark"] .site-header {
   margin-top: 1px;
 }
 
-/* Theme Toggle Button */
-.theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  padding: 0.35rem 0.75rem;
-  font-family: var(--font-body);
-  font-size: 0.825rem;
-  font-weight: 600;
-  line-height: 1;
-  color: var(--text-primary);
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-input);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-  flex-shrink: 0;
-  min-height: 36px;
-}
-
-.theme-toggle:hover {
-  background-color: var(--primary-light);
-  border-color: var(--heading-color);
-  color: var(--heading-color);
-}
-
-.theme-toggle:focus-visible {
-  outline: 2px solid var(--focus-color);
-  outline-offset: 2px;
-}
-
-.theme-toggle svg {
-  width: 15px;
-  height: 15px;
-  flex-shrink: 0;
-  fill: none;
-}
-
-.theme-toggle-label {
-  display: inline-block;
-  line-height: 1;
-}
-
 /* Navigation */
 .main-nav {
   display: flex;
@@ -4754,7 +4709,7 @@ html[data-theme="dark"] .quote-id-tag {
    22. Responsive Breakpoints & Accessibility
    ========================================================================== */
 @media (max-width: 1200px) {
-  /* Collapse the header before its theme and account controls become crowded. */
+  /* Collapse the header before its navigation and account controls become crowded. */
   .mobile-nav-toggle {
     display: flex;
     align-items: center;
@@ -4996,16 +4951,6 @@ html[data-theme="dark"] .quote-id-tag {
 @media (max-width: 640px) {
   .header-container {
     gap: 0.5rem;
-  }
-
-  .theme-toggle {
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0.5rem;
-  }
-
-  .theme-toggle-label {
-    display: none;
   }
 
   .container {
