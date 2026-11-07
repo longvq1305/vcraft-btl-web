@@ -52,12 +52,12 @@
 
   // Custom marker pin factory
   function createMarkerIcon(isOpen) {
-    const pinColor = isOpen ? '#5F0C0A' : '#6E5C5A';
-    const dotColor = isOpen ? '#C59B27' : '#A3928E';
+    const pinColor = isOpen ? 'var(--map-pin-fill)' : 'var(--map-pin-muted-fill)';
+    const dotColor = isOpen ? 'var(--map-pin-dot)' : 'var(--map-pin-muted-dot)';
     const svgIcon = `
       <svg width="32" height="42" viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M16 0C7.16344 0 0 7.16344 0 16C0 26.5 16 42 16 42C16 42 32 26.5 32 16C32 7.16344 24.8366 0 16 0Z" fill="${pinColor}"/>
-        <circle cx="16" cy="15" r="7" fill="#FAF7F2"/>
+        <circle cx="16" cy="15" r="7" fill="var(--map-pin-ring)"/>
         <circle cx="16" cy="15" r="4" fill="${dotColor}"/>
       </svg>
     `;

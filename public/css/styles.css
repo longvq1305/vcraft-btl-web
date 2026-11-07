@@ -3,7 +3,7 @@
  * Master Stylesheet: Presentation Editorial Design System
  * 
  * Visual Grammar grounded in PowerPoint evidence:
- * - Palette: Oxblood/Burgundy (#5F0C0A, #680B13, #3E0708), Warm Parchment (#FFF9E1, #F4E8C7), Antique Gold (#C59B27), Deep Ink (#1B1212)
+ * - Light palette: ivory, oxblood and antique gold. Dark palette: navy, teal and indigo.
  * - Typography: Bricolage Grotesque (body/UI), Calistoga (heritage display), Allison (calligraphic accent)
  * - Texture: Subtle handmade paper texture (paper-texture.webp)
  * - Minimal rounding: 0-4px radii, hard/offset editorial borders/shadows, rectangular burgundy caption tabs
@@ -110,6 +110,27 @@
   /* Paper Panel Gradients */
   --paper-gradient-start: rgba(255, 249, 225, 0.9);
   --paper-gradient-end: rgba(244, 232, 199, 0.45);
+
+  /* Theme-specific imagery, brand surfaces and inline map markers */
+  --paper-texture: url('/images/heritage/paper-texture.webp');
+  --brand-rgb: 95, 12, 10;
+  --on-brand-rgb: 255, 249, 225;
+  --home-veil: linear-gradient(135deg, rgba(62, 7, 8, 0.94) 0%, rgba(95, 12, 10, 0.82) 50%, rgba(26, 13, 14, 0.90) 100%);
+  --hero-deep: #3E0708;
+  --hero-mid: #5F0C0A;
+  --hero-end: #680B13;
+  --hero-workshops-end: #4A0908;
+  --hero-map-start: #2E0506;
+  --hero-story-start: #2A0405;
+  --caption-bg: rgba(62, 7, 8, 0.92);
+  --workshop-overlay: linear-gradient(180deg, rgba(244, 232, 199, 0.3) 0%, rgba(244, 232, 199, 0.95) 100%);
+  --shadow-header: 0 2px 10px rgba(95, 12, 10, 0.08);
+  --shadow-image: 0 2px 8px rgba(95, 12, 10, 0.04);
+  --map-pin-fill: #5F0C0A;
+  --map-pin-muted-fill: #6E5C5A;
+  --map-pin-dot: #C59B27;
+  --map-pin-muted-dot: #A3928E;
+  --map-pin-ring: #FAF7F2;
   /* Typography Tokens */
   --font-body: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-sans: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -140,90 +161,120 @@
 }
 
 /* ==========================================================================
-   1b. Dark Theme Palette (Lacquer / Charcoal & Antique Gold Heritage)
+   1b. Dark Theme Palette (Navy / Teal / Indigo)
    ========================================================================== */
 html[data-theme="dark"] {
   color-scheme: dark;
-  /* Base & Surface Colors */
-  --bg-primary: #141010;
-  --bg-secondary: #1B1515;
-  --bg-card: #221A1A;
-  --bg-surface-raised: #281F1F;
-  --bg-alt: #1D1616;
-  --bg-dark: #0D0808;
-  --bg-wine: #3E0708;
-  --bg-input: #1C1515;
 
-  --primary-light: rgba(95, 12, 10, 0.35);
-  --primary-focus: rgba(229, 169, 60, 0.25);
-  --primary-border: #B86B63;
-  --terracotta-light: #2D1B16;
-  --gold-light: #261D0F;
-  --antique-gold-light: #261D0F;
-  --aged-paper: #221A1A;
-  --aged-paper-border: #4D3929;
+  /* Legacy color-named tokens also serve brand roles: teal replaces oxblood,
+     mint replaces gold, and indigo replaces terracotta in this theme. */
+  --oxblood: #115E59;
+  --oxblood-hover: #0F4C49;
+  --oxblood-dark: #042F2E;
+  --wine: #164E63;
+  --parchment: #E2F8F5;
+  --parchment-light: #152D40;
+  --aged-paper: #11243A;
+  --aged-paper-border: #2E5264;
+  --ink: #062923;
+  --ink-secondary: #CBD5E1;
+  --ink-muted: #A5B4C4;
+  --antique-gold: #5EEAD4;
+  --antique-gold-hover: #99F6E4;
+  --antique-gold-light: #103E42;
+  --antique-gold-border: #237F7C;
+  --primary: #115E59;
+  --primary-hover: #0F4C49;
+  --primary-light: #103E42;
+  --primary-focus: rgba(94, 234, 212, 0.25);
+  --primary-border: #2DD4BF;
+  --terracotta: #4338CA;
+  --terracotta-hover: #3730A3;
+  --terracotta-light: #25274C;
+  --terracotta-border: #818CF8;
+  --gold: #5EEAD4;
+  --gold-light: #103E42;
+  --gold-border: #237F7C;
 
-  /* Typography Colors */
-  --text-primary: #FAF6F0;
-  --text-secondary: #D9CEC7;
-  --text-muted: #B3A29D;
-  --text-light: #FFF9E1;
-  --text-inverse: #141010;
-  --text-gold: #E5CA7E;
-  --text-gold-accessible: #E5CA7E;
-  --heading-color: #F5D6A0;
-  --link-color: #E5A93C;
-  --link-hover: #F0C068;
-  --on-brand: #FFF9E1;
+  --bg-primary: #08111F;
+  --bg-secondary: #0D1B2D;
+  --bg-card: #11243A;
+  --bg-surface-raised: #183149;
+  --bg-alt: #0F2034;
+  --bg-dark: #050D19;
+  --bg-wine: #0D3F4D;
+  --bg-input: #0A1728;
 
-  /* Borders & Dividers */
-  --border-color: #382A2A;
-  --border-subtle: #291E1E;
-  --border-strong: #856969;
-  --border-burgundy: rgba(224, 90, 80, 0.35);
-  --border-input: #856969;
-  --focus-color: #E5A93C;
-  --focus-ring: rgba(229, 169, 60, 0.35);
+  --text-primary: #E2E8F0;
+  --text-secondary: #CBD5E1;
+  --text-muted: #A5B4C4;
+  --text-light: #E2F8F5;
+  --text-inverse: #08111F;
+  --text-gold: #5EEAD4;
+  --text-gold-accessible: #5EEAD4;
+  --heading-color: #DFF7F4;
+  --link-color: #5EEAD4;
+  --link-hover: #99F6E4;
+  --on-brand: #E2F8F5;
 
-  /* Status Semantic Colors */
-  --status-success-bg: #132E1B;
+  --border-color: #2C435A;
+  --border-subtle: #1D344A;
+  --border-strong: #58738C;
+  --border-burgundy: rgba(45, 212, 191, 0.35);
+  --border-input: #58738C;
+  --focus-color: #5EEAD4;
+  --focus-ring: rgba(94, 234, 212, 0.35);
+
+  --status-success-bg: #0D2E27;
   --status-success-text: #86EFAC;
-  --status-success-border: #22543D;
-
-  --status-warning-bg: #33220E;
-  --status-warning-text: #FDE047;
-  --status-warning-border: #5A3E1B;
-
-  --status-danger-bg: #351416;
-  --status-danger-text: #FCA5A5;
-  --status-danger-border: #5C1D24;
-
-  --status-info-bg: #0C283B;
+  --status-success-border: #23775F;
+  --status-warning-bg: #302612;
+  --status-warning-text: #FDE68A;
+  --status-warning-border: #85641E;
+  --status-danger-bg: #351C2B;
+  --status-danger-text: #FDA4AF;
+  --status-danger-border: #A33E61;
+  --status-info-bg: #0D2B45;
   --status-info-text: #7DD3FC;
-  --status-info-border: #164E63;
-
-  /* Button Semantics */
-  --btn-success-bg: #166534;
-  --btn-success-hover: #15803D;
+  --status-info-border: #326A99;
+  --btn-success-bg: #047857;
+  --btn-success-hover: #06654E;
   --btn-success-text: #FFFFFF;
-  --btn-success-border: #22C55E;
-  --btn-danger-bg: #991B1B;
-  --btn-danger-hover: #B91C1C;
+  --btn-success-border: #34D399;
+  --btn-danger-bg: #9F1239;
+  --btn-danger-hover: #881337;
   --btn-danger-text: #FFFFFF;
-  --btn-danger-border: #EF4444;
+  --btn-danger-border: #FB7185;
 
-  /* Shadows in Dark Theme */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.55);
   --shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.65);
   --shadow-editorial: 4px 4px 0px rgba(0, 0, 0, 0.5);
-  --shadow-editorial-gold: 4px 4px 0px rgba(229, 202, 126, 0.25);
+  --shadow-editorial-gold: 4px 4px 0px rgba(94, 234, 212, 0.25);
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-header: 0 2px 12px rgba(0, 0, 0, 0.4);
+  --shadow-image: 0 2px 8px rgba(0, 0, 0, 0.4);
 
-  /* Paper Panel Gradients */
-  --paper-gradient-start: rgba(38, 30, 30, 0.95);
-  --paper-gradient-end: rgba(26, 20, 20, 0.85);
+  --paper-gradient-start: #142B40;
+  --paper-gradient-end: #102131;
+  --paper-texture: none;
+  --brand-rgb: 45, 212, 191;
+  --on-brand-rgb: 226, 248, 245;
+  --home-veil: linear-gradient(135deg, rgba(8, 18, 36, 0.96) 0%, rgba(9, 74, 78, 0.90) 50%, rgba(12, 30, 54, 0.96) 100%);
+  --hero-deep: #081224;
+  --hero-mid: #0D3F4D;
+  --hero-end: #123B66;
+  --hero-workshops-end: #153A4B;
+  --hero-map-start: #071526;
+  --hero-story-start: #070F21;
+  --caption-bg: rgba(8, 18, 36, 0.94);
+  --workshop-overlay: linear-gradient(180deg, rgba(13, 27, 45, 0.75) 0%, rgba(13, 27, 45, 0.97) 100%);
+  --map-pin-fill: #0F766E;
+  --map-pin-muted-fill: #475569;
+  --map-pin-dot: #5EEAD4;
+  --map-pin-muted-dot: #94A3B8;
+  --map-pin-ring: #E2F8F5;
 }
 
 /* ==========================================================================
@@ -252,7 +303,7 @@ body.site-body {
   line-height: 1.65;
   color: var(--text-primary);
   background-color: var(--bg-primary);
-  background-image: url('/images/heritage/paper-texture.webp');
+  background-image: var(--paper-texture);
   background-repeat: repeat;
   background-size: 800px auto;
   background-attachment: fixed;
@@ -265,11 +316,6 @@ body.site-body {
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-html[data-theme="dark"] body.site-body {
-  background-image: 
-    linear-gradient(rgba(20, 16, 16, 0.92), rgba(20, 16, 16, 0.92)),
-    url('/images/heritage/paper-texture.webp');
-}
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
@@ -402,7 +448,7 @@ button {
   background-color: var(--bg-card);
   background-image: 
     radial-gradient(ellipse at top, var(--paper-gradient-start) 0%, var(--paper-gradient-end) 100%),
-    url('/images/heritage/paper-texture.webp');
+    var(--paper-texture);
   background-size: auto, 600px auto;
   border: 1px solid var(--aged-paper-border);
   border-radius: var(--radius-sm);
@@ -442,7 +488,7 @@ button {
 .editorial-rule {
   border: none;
   height: 1px;
-  background: linear-gradient(90deg, rgba(95, 12, 10, 0.75) 0%, rgba(95, 12, 10, 0.2) 75%, transparent 100%);
+  background: linear-gradient(90deg, rgba(var(--brand-rgb), 0.75) 0%, rgba(var(--brand-rgb), 0.2) 75%, transparent 100%);
   margin: 1.75rem 0;
 }
 
@@ -685,14 +731,14 @@ button {
 .editorial-page-hero .breadcrumb,
 .light-breadcrumb .breadcrumb-list,
 .light-breadcrumb.breadcrumb {
-  color: rgba(255, 249, 225, 0.75);
+  color: rgba(var(--on-brand-rgb), 0.75);
 }
 
 .editorial-page-hero .breadcrumb-list a,
 .editorial-page-hero .breadcrumb a,
 .light-breadcrumb .breadcrumb-list a,
 .light-breadcrumb a {
-  color: rgba(255, 249, 225, 0.85);
+  color: rgba(var(--on-brand-rgb), 0.85);
 }
 
 .editorial-page-hero .breadcrumb-list a:hover,
@@ -705,7 +751,7 @@ button {
 
 .editorial-page-hero .breadcrumb-list li:not(:last-child)::after,
 .light-breadcrumb .breadcrumb-list li:not(:last-child)::after {
-  color: rgba(255, 249, 225, 0.45);
+  color: rgba(var(--on-brand-rgb), 0.45);
 }
 
 .editorial-page-hero .breadcrumb-list [aria-current="page"],
@@ -742,20 +788,20 @@ button {
    ========================================================================== */
 .site-header {
   background-color: var(--parchment);
-  background-image: url('/images/heritage/paper-texture.webp');
+  background-image: var(--paper-texture);
   background-size: 600px auto;
   border-bottom: 2px solid var(--oxblood);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 10px rgba(95, 12, 10, 0.08);
+  box-shadow: var(--shadow-header);
   transition: all var(--transition-normal);
 }
 
 html[data-theme="dark"] .site-header {
   background-color: var(--bg-card);
-  background-image: linear-gradient(rgba(24, 18, 18, 0.94), rgba(24, 18, 18, 0.94)), url('/images/heritage/paper-texture.webp');
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  background-image: var(--paper-texture);
+  box-shadow: var(--shadow-header);
 }
 
 .header-container {
@@ -1638,52 +1684,52 @@ img.image-preview-error {
 
 /* Dark Badges & Status */
 html[data-theme="dark"] .badge-admin {
-  background-color: #2E1B4E;
-  color: #DDD6FE;
-  border-color: #4C2889;
+  background-color: #25274C;
+  color: #C7D2FE;
+  border-color: #5B65A5;
 }
 
 html[data-theme="dark"] .badge-artisan {
-  background-color: #2D1A1B;
-  color: #F5D6A0;
-  border-color: #5C2628;
+  background-color: var(--primary-light);
+  color: var(--link-color);
+  border-color: var(--antique-gold-border);
 }
 
 html[data-theme="dark"] .badge-buyer {
-  background-color: #12284C;
-  color: #BFDBFE;
-  border-color: #1E3A8A;
+  background-color: #102F4C;
+  color: #93C5FD;
+  border-color: #326A99;
 }
 
-html[data-theme="dark"] .badge-draft { background-color: #262222; color: #D1D5DB; border-color: #4B5563; }
+html[data-theme="dark"] .badge-draft { background-color: #1E2B3D; color: #CBD5E1; border-color: #64748B; }
 html[data-theme="dark"] .badge-sent { background-color: #172A46; color: #93C5FD; border-color: #1E40AF; }
-html[data-theme="dark"] .badge-bidding { background-color: #352611; color: #FDE047; border-color: #78350F; }
-html[data-theme="dark"] .badge-accepted { background-color: #132E1B; color: #86EFAC; border-color: #065F46; }
-html[data-theme="dark"] .badge-in_production { background-color: #2A1D45; color: #C4B5FD; border-color: #5B21B6; }
-html[data-theme="dark"] .badge-delivered { background-color: #132E1B; color: #6EE7B7; border-color: #047857; }
-html[data-theme="dark"] .badge-rejected { background-color: #351416; color: #FCA5A5; border-color: #7F1D1D; }
-html[data-theme="dark"] .badge-submitted { background-color: #132E1B; color: #86EFAC; border-color: #166534; }
-html[data-theme="dark"] .badge-pending { background-color: #361E14; color: #FDBA74; border-color: #9A3412; }
+html[data-theme="dark"] .badge-bidding { background-color: var(--status-warning-bg); color: var(--status-warning-text); border-color: var(--status-warning-border); }
+html[data-theme="dark"] .badge-accepted { background-color: var(--status-success-bg); color: var(--status-success-text); border-color: var(--status-success-border); }
+html[data-theme="dark"] .badge-in_production { background-color: #25274C; color: #C7D2FE; border-color: #5B65A5; }
+html[data-theme="dark"] .badge-delivered { background-color: var(--status-success-bg); color: #6EE7B7; border-color: var(--status-success-border); }
+html[data-theme="dark"] .badge-rejected { background-color: var(--status-danger-bg); color: var(--status-danger-text); border-color: var(--status-danger-border); }
+html[data-theme="dark"] .badge-submitted { background-color: var(--status-success-bg); color: var(--status-success-text); border-color: var(--status-success-border); }
+html[data-theme="dark"] .badge-pending { background-color: var(--status-warning-bg); color: var(--status-warning-text); border-color: var(--status-warning-border); }
 
 html[data-theme="dark"] .status-open,
 html[data-theme="dark"] .workshop-status-tag.status-open {
-  background-color: #132E1B;
-  color: #86EFAC;
-  border-color: #166534;
+  background-color: var(--status-success-bg);
+  color: var(--status-success-text);
+  border-color: var(--status-success-border);
 }
 
 html[data-theme="dark"] .status-closed,
 html[data-theme="dark"] .workshop-status-tag.status-closed {
-  background-color: #351416;
-  color: #FCA5A5;
-  border-color: #7F1D1D;
+  background-color: var(--status-danger-bg);
+  color: var(--status-danger-text);
+  border-color: var(--status-danger-border);
 }
 
 html[data-theme="dark"] .category-tag,
 html[data-theme="dark"] .quote-id-tag {
-  background-color: #2A1D1D;
-  color: #F5D6A0;
-  border-color: #4D3333;
+  background-color: #17364A;
+  color: #99F6E4;
+  border-color: #237F7C;
 }
 
 /* ==========================================================================
@@ -1964,12 +2010,7 @@ html[data-theme="dark"] .quote-id-tag {
 .heritage-hero__veil {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(62, 7, 8, 0.94) 0%,
-    rgba(95, 12, 10, 0.82) 50%,
-    rgba(26, 13, 14, 0.90) 100%
-  );
+  background: var(--home-veil);
   z-index: 1;
 }
 
@@ -2080,7 +2121,7 @@ html[data-theme="dark"] .quote-id-tag {
 .heritage-hero__lead {
   font-size: 1.15rem;
   line-height: 1.75;
-  color: rgba(255, 249, 225, 0.9);
+  color: rgba(var(--on-brand-rgb), 0.9);
   margin-bottom: 2rem;
   max-width: 680px;
 }
@@ -2112,7 +2153,7 @@ html[data-theme="dark"] .quote-id-tag {
   background-color: var(--bg-secondary);
   background-image: 
     radial-gradient(ellipse at top, var(--paper-gradient-start) 0%, var(--paper-gradient-end) 100%),
-    url('/images/heritage/paper-texture.webp');
+    var(--paper-texture);
   background-size: auto, 600px auto;
   border-bottom: 2px solid var(--oxblood);
 }
@@ -2184,7 +2225,7 @@ html[data-theme="dark"] .quote-id-tag {
   bottom: 1.5rem;
   left: 1.5rem;
   right: 1.5rem;
-  background-color: rgba(62, 7, 8, 0.92);
+  background-color: var(--caption-bg);
   color: var(--parchment);
   padding: 1.25rem 1.5rem;
   border-radius: var(--radius-xs);
@@ -2284,7 +2325,7 @@ html[data-theme="dark"] .quote-id-tag {
 .editorial-page-hero__desc {
   font-size: 1.05rem;
   line-height: 1.65;
-  color: rgba(255, 249, 225, 0.9);
+  color: rgba(var(--on-brand-rgb), 0.9);
   max-width: 660px;
 }
 
@@ -2310,31 +2351,31 @@ html[data-theme="dark"] .quote-id-tag {
 
 /* Hero Modifiers */
 .editorial-page-hero--catalog {
-  background: linear-gradient(135deg, #3E0708 0%, #5F0C0A 60%, #680B13 100%);
+  background: linear-gradient(135deg, var(--hero-deep) 0%, var(--hero-mid) 60%, var(--hero-end) 100%);
 }
 .editorial-page-hero--workshops {
-  background: linear-gradient(135deg, #3E0708 0%, #5F0C0A 60%, #4A0908 100%);
+  background: linear-gradient(135deg, var(--hero-deep) 0%, var(--hero-mid) 60%, var(--hero-workshops-end) 100%);
 }
 .editorial-page-hero--map {
-  background: linear-gradient(135deg, #2E0506 0%, #5F0C0A 75%, #3E0708 100%);
+  background: linear-gradient(135deg, var(--hero-map-start) 0%, var(--hero-mid) 75%, var(--hero-deep) 100%);
 }
 .editorial-page-hero--news {
-  background: linear-gradient(135deg, #3E0708 0%, #5F0C0A 70%, #680B13 100%);
+  background: linear-gradient(135deg, var(--hero-deep) 0%, var(--hero-mid) 70%, var(--hero-end) 100%);
 }
 .editorial-page-hero--product {
-  background: linear-gradient(135deg, #3E0708 0%, #5F0C0A 100%);
+  background: linear-gradient(135deg, var(--hero-deep) 0%, var(--hero-mid) 100%);
 }
 .editorial-page-hero--story {
-  background: linear-gradient(135deg, #2A0405 0%, #3E0708 50%, #5F0C0A 100%);
+  background: linear-gradient(135deg, var(--hero-story-start) 0%, var(--hero-deep) 50%, var(--hero-mid) 100%);
 }
 .editorial-page-hero--auth {
-  background: linear-gradient(135deg, #3E0708 0%, #5F0C0A 100%);
+  background: linear-gradient(135deg, var(--hero-deep) 0%, var(--hero-mid) 100%);
 }
 .editorial-page-hero--dashboard {
-  background: linear-gradient(135deg, #3E0708 0%, #5F0C0A 100%);
+  background: linear-gradient(135deg, var(--hero-deep) 0%, var(--hero-mid) 100%);
 }
 .editorial-page-hero--quotes {
-  background: linear-gradient(135deg, #3E0708 0%, #5F0C0A 70%, #680B13 100%);
+  background: linear-gradient(135deg, var(--hero-deep) 0%, var(--hero-mid) 70%, var(--hero-end) 100%);
 }
 
 /* ==========================================================================
@@ -2375,7 +2416,7 @@ html[data-theme="dark"] .quote-id-tag {
 /* Formation Section (Process / Story) */
 .formation-section {
   background-color: var(--bg-secondary);
-  background-image: linear-gradient(var(--paper-gradient-start), var(--paper-gradient-end)), url('/images/heritage/paper-texture.webp');
+  background-image: linear-gradient(var(--paper-gradient-start), var(--paper-gradient-end)), var(--paper-texture);
   background-size: 600px auto;
   padding: 5rem 0;
   border-top: 1px solid var(--border-color);
@@ -2552,7 +2593,7 @@ html[data-theme="dark"] .quote-id-tag {
 .quote-cta-desc {
   max-width: 600px;
   margin: 0 auto 2rem auto;
-  color: rgba(255, 249, 225, 0.9);
+  color: rgba(var(--on-brand-rgb), 0.9);
   font-size: 1.05rem;
 }
 
@@ -2709,7 +2750,7 @@ html[data-theme="dark"] .quote-id-tag {
 }
 
 .quick-pill:hover {
-  background-color: rgba(95, 12, 10, 0.06);
+  background-color: var(--primary-light);
   border-color: var(--oxblood);
   color: var(--link-hover);
 }
@@ -2853,7 +2894,7 @@ html[data-theme="dark"] .quote-id-tag {
 .workshop-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(244, 232, 199, 0.3) 0%, rgba(244, 232, 199, 0.95) 100%);
+  background: var(--workshop-overlay);
   z-index: 2;
 }
 
@@ -3126,7 +3167,7 @@ html[data-theme="dark"] .quote-id-tag {
 
 .story-certificate-card {
   background-color: var(--bg-card);
-  background-image: linear-gradient(var(--paper-gradient-start), var(--paper-gradient-end)), url('/images/heritage/paper-texture.webp');
+  background-image: linear-gradient(var(--paper-gradient-start), var(--paper-gradient-end)), var(--paper-texture);
   background-size: 600px auto;
   border: 2px solid var(--oxblood);
   border-radius: var(--radius-sm);
@@ -3219,7 +3260,7 @@ html[data-theme="dark"] .quote-id-tag {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   padding: 0.75rem;
-  box-shadow: 0 2px 8px rgba(95, 12, 10, 0.04);
+  box-shadow: var(--shadow-image);
 }
 
 .quote-spec-image-wrap img {
@@ -3855,7 +3896,7 @@ html[data-theme="dark"] .quote-id-tag {
   background-color: var(--bg-card);
   background-image:
     radial-gradient(ellipse at top, var(--paper-gradient-start) 0%, var(--paper-gradient-end) 100%),
-    url('/images/heritage/paper-texture.webp');
+    var(--paper-texture);
   background-size: auto, 600px auto;
   border: 1px solid var(--aged-paper-border);
   border-radius: var(--radius-sm);
@@ -3935,7 +3976,7 @@ html[data-theme="dark"] .quote-id-tag {
    ========================================================================== */
 .site-footer {
   background-color: var(--bg-dark);
-  color: rgba(255, 249, 225, 0.85);
+  color: rgba(var(--on-brand-rgb), 0.85);
   border-top: 3px solid var(--antique-gold);
   margin-top: auto;
   position: relative;
@@ -3944,7 +3985,7 @@ html[data-theme="dark"] .quote-id-tag {
 .footer-closing {
   padding: 3.5rem 0 2rem 0;
   background-color: rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(255, 249, 225, 0.12);
+  border-bottom: 1px solid rgba(var(--on-brand-rgb), 0.12);
   text-align: center;
 }
 
@@ -3976,7 +4017,7 @@ html[data-theme="dark"] .quote-id-tag {
 .footer-closing-sub {
   font-size: 1rem;
   line-height: 1.7;
-  color: rgba(255, 249, 225, 0.8);
+  color: rgba(var(--on-brand-rgb), 0.8);
   margin-top: 0.75rem;
 }
 
@@ -4011,7 +4052,7 @@ html[data-theme="dark"] .quote-id-tag {
 .footer-tagline {
   font-size: 0.9rem;
   line-height: 1.7;
-  color: rgba(255, 249, 225, 0.75);
+  color: rgba(var(--on-brand-rgb), 0.75);
   margin-bottom: 1.25rem;
 }
 
@@ -4023,13 +4064,13 @@ html[data-theme="dark"] .quote-id-tag {
 
 .footer-credits {
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 249, 225, 0.1);
+  border-top: 1px solid rgba(var(--on-brand-rgb), 0.1);
 }
 
 .footer-credits-text {
   font-size: 0.775rem;
   line-height: 1.5;
-  color: rgba(255, 249, 225, 0.65);
+  color: rgba(var(--on-brand-rgb), 0.65);
   margin-top: 0.4rem;
 }
 
@@ -4051,7 +4092,7 @@ html[data-theme="dark"] .quote-id-tag {
 }
 
 .footer-links a {
-  color: rgba(255, 249, 225, 0.75);
+  color: rgba(var(--on-brand-rgb), 0.75);
   transition: color var(--transition-fast);
 }
 
@@ -4067,7 +4108,7 @@ html[data-theme="dark"] .quote-id-tag {
 }
 
 .demo-item {
-  color: rgba(255, 249, 225, 0.8);
+  color: rgba(var(--on-brand-rgb), 0.8);
 }
 
 .demo-item code {
@@ -4079,10 +4120,10 @@ html[data-theme="dark"] .quote-id-tag {
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(255, 249, 225, 0.1);
+  border-top: 1px solid rgba(var(--on-brand-rgb), 0.1);
   padding: 1.5rem 0;
   font-size: 0.825rem;
-  color: rgba(255, 249, 225, 0.6);
+  color: rgba(var(--on-brand-rgb), 0.6);
   text-align: center;
 }
 
@@ -4554,7 +4595,7 @@ html[data-theme="dark"] .quote-id-tag {
 
 .step-dot.active {
   background-color: var(--oxblood);
-  box-shadow: 0 0 0 3px rgba(95, 12, 10, 0.25);
+  box-shadow: 0 0 0 3px rgba(var(--brand-rgb), 0.25);
 }
 
 .mock-seal {
@@ -4738,7 +4779,7 @@ html[data-theme="dark"] .quote-id-tag {
     right: 0;
     width: 100%;
     background-color: var(--bg-card);
-    background-image: linear-gradient(var(--paper-gradient-start), var(--paper-gradient-end)), url('/images/heritage/paper-texture.webp');
+    background-image: linear-gradient(var(--paper-gradient-start), var(--paper-gradient-end)), var(--paper-texture);
     background-size: 600px auto;
     border-bottom: 2px solid var(--oxblood);
     padding: 1.5rem 1.25rem;

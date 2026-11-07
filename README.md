@@ -23,9 +23,11 @@ vCraft là nền tảng thương mại di sản và kết nối trực tiếp gi
 ### Cơ Chế Giao Diện Sáng/Tối & Hướng Dẫn Bảo Trì (Theme System & Maintenance)
 
 - **Tự động theo trình duyệt:** `public/js/theme.js` đọc `prefers-color-scheme: dark` để chọn bảng màu sáng hoặc tối. Không có nút chuyển chế độ trên web, không đọc/ghi `localStorage` và không áp dụng lựa chọn thủ công cũ.
+- **Hai hệ màu độc lập:** Theme sáng dùng giấy ngà, đỏ trầm và vàng cổ; theme tối dùng xanh than, xanh ngọc và chàm. Mỗi theme có màu riêng cho chữ, liên kết, nút, hero, chân trang, thẻ, biểu mẫu, viền, focus và các nhãn trạng thái, không chỉ đổi nền trang. Theme tối không dùng họa tiết giấy.
 - **Cập nhật tức thì:** Khi tùy chọn sáng/tối do trình duyệt cung cấp thay đổi, giao diện tự cập nhật mà không cần tải lại trang.
 - **Khởi tạo trước khi vẽ:** Script được nạp đồng bộ trong `src/views/partials/head.ejs`, trước CSS, và đặt `data-theme="light"` hoặc `data-theme="dark"` trên `<html>`. Trình duyệt không hỗ trợ `matchMedia` dùng bảng màu sáng.
 - **Bảo trì bảng màu:** Các cặp màu nền/chữ nằm trong `public/css/styles.css`, tại `:root` (sáng) và `html[data-theme="dark"]` (tối). Khi bổ sung màu, cập nhật đồng bộ màu nền và màu chữ để giữ độ tương phản.
+- **Dấu bản đồ:** SVG trong `public/js/map.js` dùng các biến `--map-pin-*`, nên đổi màu ngay cùng theme mà không tạo lại marker. Ảnh tác phẩm, mã QR và nội dung bản đồ giữ màu gốc; không đảo màu ảnh để giả lập theme tối.
 
 ---
 
