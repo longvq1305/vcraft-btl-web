@@ -67,8 +67,9 @@
                       <a href="/news/<%= article.slug %>" target="_blank" class="btn btn-sm btn-ghost" title="Xem trên web">Xem &nearr;</a>
                     <% } %>
                     <a href="/admin/news/<%= article.id %>/edit" class="btn btn-sm btn-outline">Sửa</a>
-                    <form action="/admin/news/<%= article.id %>/delete" method="POST" class="inline-form" data-confirm="Bạn có chắc muốn xóa bài viết này?">
+                    <form action="/admin/news/<%= article.id %>" method="POST" class="inline-form" data-confirm="Bạn có chắc muốn xóa bài viết này?">
                       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <input type="hidden" name="_method" value="DELETE">
                       <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
                     </form>
                   </div>

@@ -1,4 +1,6 @@
 const quoteService = require('../services/quoteService');
+const { ValidationError } = require('../errors/AppError');
+const { todayInVietnam } = require('../utils/date');
 
 const DEFAULT_CATEGORIES = [
   'Gốm sứ',
@@ -12,20 +14,14 @@ const DEFAULT_CATEGORIES = [
 ];
 
 /**
- * Helper to handle errors on detail mutations by either:
- * 1. Returning JSON if requested by XHR / API client
- * 2. Re-rendering the detail page with the matching status code and error message
- * 3. Delegating to Express error handler if detail cannot be fetched
+ * Trả lỗi JSON cho yêu cầu API; nếu không thì hiển thị lỗi trên trang chi tiết
+ * hoặc chuyển cho middleware lỗi khi người dùng không xem được yêu cầu.
  */
 function handleDetailError(req, res, next, err) {
   const status = err.statusCode || 400;
 
   if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
     return res.status(status).json({ error: err.message, status });
-  }
-
-  if (req.flash) {
-    req.flash('error', err.message);
   }
 
   try {
@@ -40,10 +36,29 @@ function handleDetailError(req, res, next, err) {
   }
 }
 
+/**
+ * Hiển thị biểu mẫu tạo hoặc sửa, giữ lại dữ liệu đã nhập nếu kiểm tra thất bại.
+ * @param {import('express').Response} res
+ * @param {{quote?: Object, formData?: Object, errorMessage?: string}} [options]
+ */
+function renderQuoteForm(res, { quote, formData = {}, errorMessage = null } = {}) {
+  const categories = [...DEFAULT_CATEGORIES];
+  if (typeof formData.category === 'string' && formData.category && !categories.includes(formData.category)) {
+    categories.push(formData.category);
+  }
+  return res.render(quote ? 'quotes/edit' : 'quotes/new', {
+    title: quote ? `Sửa yêu cầu báo giá #${quote.id}` : 'Tạo Yêu cầu Báo giá Mới',
+    quote,
+    formData,
+    categories,
+    minDate: todayInVietnam(),
+    errorMessage
+  });
+}
+
 const quoteController = {
   /**
-   * GET /quotes
-   * Role-specific quote listings
+   * GET /quotes — danh sách yêu cầu theo vai trò.
    */
   list(req, res, next) {
     try {
@@ -58,23 +73,14 @@ const quoteController = {
   },
 
   /**
-   * GET /quotes/new
-   * Buyer new request form
+   * GET /quotes/new — biểu mẫu tạo yêu cầu.
    */
   newForm(req, res) {
-    const minDate = new Date().toISOString().slice(0, 10);
-    return res.render('quotes/new', {
-      title: 'Tạo Yêu cầu Báo giá Mới',
-      formData: {},
-      categories: DEFAULT_CATEGORIES,
-      minDate,
-      errorMessage: null
-    });
+    return renderQuoteForm(res);
   },
 
   /**
-   * POST /quotes
-   * Buyer create request as Draft
+   * POST /quotes — người mua tạo bản nháp.
    */
   create(req, res, next) {
     const { title, description, category, quantity, deadline } = req.body;
@@ -94,23 +100,67 @@ const quoteController = {
 
       return res.redirect(`/quotes/${quote.id}`);
     } catch (err) {
-      if (err instanceof quoteService.ValidationError || err.statusCode === 400) {
-        const minDate = new Date().toISOString().slice(0, 10);
-        return res.status(400).render('quotes/new', {
-          title: 'Tạo Yêu cầu Báo giá Mới',
-          formData: req.body,
-          categories: DEFAULT_CATEGORIES,
-          minDate,
-          errorMessage: err.message
+      if (err instanceof ValidationError) {
+        return renderQuoteForm(res.status(400), { formData: req.body, errorMessage: err.message });
+      }
+      return next(err);
+    }
+  },
+
+  /** GET /quotes/:id/edit — hiển thị biểu mẫu sửa bản nháp của chủ sở hữu. */
+  editForm(req, res, next) {
+    try {
+      const quote = quoteService.getDraftForEdit({ quoteId: req.params.id, buyerId: req.user.id });
+      return renderQuoteForm(res, { quote, formData: quote });
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  /** PUT /quotes/:id — lưu thay đổi nếu yêu cầu vẫn là bản nháp. */
+  updateDraft(req, res, next) {
+    const { title, description, category, quantity, deadline } = req.body;
+    const quoteId = req.params.id;
+    try {
+      const quote = quoteService.updateDraft({
+        quoteId, buyerId: req.user.id, title, description, category, quantity, deadline
+      });
+      req.flash('success', 'Đã lưu thay đổi cho bản nháp.');
+      return res.redirect(`/quotes/${quote.id}`);
+    } catch (err) {
+      if (err instanceof ValidationError && !req.xhr && !req.get('accept')?.includes('application/json')) {
+        return renderQuoteForm(res.status(400), {
+          quote: { id: quoteId }, formData: req.body, errorMessage: err.message
         });
       }
       return next(err);
     }
   },
 
+  /** DELETE /quotes/:id — xóa vĩnh viễn bản nháp của chủ sở hữu. */
+  deleteDraft(req, res, next) {
+    try {
+      quoteService.deleteDraft({ quoteId: req.params.id, buyerId: req.user.id });
+      req.flash('success', 'Đã xóa bản nháp yêu cầu báo giá.');
+      return res.redirect('/quotes');
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  /** PATCH /quotes/:id/cancel — hủy yêu cầu chưa chốt chào giá. */
+  cancelQuote(req, res, next) {
+    try {
+      const quote = quoteService.cancelQuote({ quoteId: req.params.id, buyerId: req.user.id });
+      req.flash('success', 'Đã hủy yêu cầu báo giá.');
+      return res.redirect(`/quotes/${quote.id}`);
+    } catch (err) {
+      return next(err);
+    }
+  },
+
   /**
-   * GET /quotes/:id
-   * Detail view with role authorization
+   * GET /quotes/:id — chi tiết theo quyền truy cập.
    */
   show(req, res, next) {
     try {
@@ -138,8 +188,7 @@ const quoteController = {
   },
 
   /**
-   * POST /quotes/:id/send
-   * Buyer sends draft to matching approved artisans
+   * POST /quotes/:id/send — gửi bản nháp tới nghệ nhân phù hợp.
    */
   send(req, res, next) {
     try {
@@ -159,8 +208,7 @@ const quoteController = {
   },
 
   /**
-   * POST /quotes/:id/bids
-   * Approved targeted artisan submits or updates bid
+   * POST /quotes/:id/bids — nghệ nhân được mời gửi hoặc cập nhật chào giá.
    */
   submitBid(req, res, next) {
     const { unitPrice, leadDays, completionDate, note } = req.body;
@@ -185,8 +233,7 @@ const quoteController = {
   },
 
   /**
-   * POST /quotes/:id/accept
-   * Buyer accepts selected bid with optimistic version locking
+   * POST /quotes/:id/accept — người mua chốt báo giá với khóa lạc quan.
    */
   acceptBid(req, res, next) {
     const { bidId, version } = req.body;
@@ -209,8 +256,7 @@ const quoteController = {
   },
 
   /**
-   * POST /quotes/:id/start
-   * Accepted artisan moves state from accepted -> in_production
+   * POST /quotes/:id/start — nghệ nhân trúng thầu bắt đầu chế tác.
    */
   startProduction(req, res, next) {
     try {
@@ -230,8 +276,7 @@ const quoteController = {
   },
 
   /**
-   * POST /quotes/:id/deliver
-   * Accepted artisan moves state from in_production -> delivered
+   * POST /quotes/:id/deliver — nghệ nhân trúng thầu xác nhận bàn giao.
    */
   deliverQuote(req, res, next) {
     try {

@@ -94,7 +94,9 @@
                     <span class="badge <%= badge.className %>"><%= badge.label %></span>
                   </td>
                   <td>
-                    <% if (currentUser && currentUser.role === 'buyer') { %>
+                    <% if (q.status === 'cancelled') { %>
+                      <span class="text-muted">Đã đóng nhận báo giá</span>
+                    <% } else if (currentUser && currentUser.role === 'buyer') { %>
                       <% if (q.status === 'draft') { %>
                         <span class="text-muted">Bản nháp riêng tư</span>
                       <% } else if (q.accepted_workshop_name) { %>
@@ -133,6 +135,9 @@
                         Xem chi tiết &rarr;
                       <% } %>
                     </a>
+                    <% if (currentUser.role === 'buyer' && q.status === 'draft') { %>
+                      <a href="/quotes/<%= q.id %>/edit" class="btn btn-outline btn-sm">Sửa nháp</a>
+                    <% } %>
                   </td>
                 </tr>
               <% }); %>

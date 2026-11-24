@@ -1,19 +1,6 @@
-const { db } = require('../config/database');
-const slugify = require('slugify');
-
-function generateSlug(text, existingCheckFn, currentId = null) {
-  let baseSlug = slugify(text, { lower: true, strict: true, locale: 'vi' });
-  if (!baseSlug) {
-    baseSlug = 'tin-tuc-' + Math.floor(1000 + Math.random() * 9000);
-  }
-  let slug = baseSlug;
-  let counter = 1;
-  while (existingCheckFn(slug, currentId)) {
-    counter++;
-    slug = `${baseSlug}-${counter}`;
-  }
-  return slug;
-}
+const { db, adapter } = require('../config/database');
+const { uniqueSlug } = require('../utils/slug');
+const SlugRedirect = require('./SlugRedirect');
 
 const News = {
   findPublished({ limit = 20, offset = 0 } = {}) {
@@ -58,8 +45,7 @@ const News = {
   },
 
   create({ title, excerpt, body, coverImage, isPublished }) {
-    const slugCheck = (s) => !!db.prepare('SELECT id FROM news WHERE slug = ?').get(s);
-    const slug = generateSlug(title, slugCheck);
+    const slug = uniqueSlug(title, (s) => Boolean(db.prepare('SELECT 1 FROM news WHERE slug = ?').get(s)), 'tin-tuc');
 
     const now = new Date().toISOString();
     const publishedAt = isPublished ? now : null;
@@ -84,49 +70,45 @@ const News = {
     return { id: info.lastInsertRowid, slug };
   },
 
+  /** Cập nhật bản tin và lưu lịch sử đổi slug cùng giao dịch. */
   update(id, { title, excerpt, body, coverImage, isPublished }) {
-    const current = this.findById(id);
-    if (!current) return false;
+    return adapter.transaction(() => {
+      const current = this.findById(id);
+      if (!current) return false;
 
-    const slugCheck = (s, excludeId) => {
-      const row = db.prepare('SELECT id FROM news WHERE slug = ?').get(s);
-      return row && row.id !== excludeId;
-    };
+      let slug = current.slug;
+      if (title && title.trim() !== current.title) {
+        slug = uniqueSlug(title, (s) => {
+          const row = db.prepare('SELECT id FROM news WHERE slug = ?').get(s);
+          return Boolean(row) && row.id !== current.id;
+        }, 'tin-tuc');
+      }
 
-    let slug = current.slug;
-    if (title && title.trim() !== current.title) {
-      slug = generateSlug(title, slugCheck, id);
-    }
+      const now = new Date().toISOString();
+      const publishedAt = isPublished ? current.published_at || now : null;
+      const cover = coverImage !== undefined ? (coverImage ? coverImage.trim() : null) : current.cover_image;
 
-    const now = new Date().toISOString();
-    let publishedAt = current.published_at;
-    if (isPublished && !publishedAt) {
-      publishedAt = now;
-    } else if (!isPublished) {
-      publishedAt = null;
-    }
+      const info = db.prepare(`
+        UPDATE news
+        SET title = ?, slug = ?, excerpt = ?, body = ?, cover_image = ?, is_published = ?, published_at = ?, updated_at = ?
+        WHERE id = ?
+      `).run(
+        title.trim(),
+        slug,
+        excerpt ? excerpt.trim() : '',
+        body ? body.trim() : '',
+        cover,
+        isPublished ? 1 : 0,
+        publishedAt,
+        now,
+        id
+      );
 
-    const cover = coverImage !== undefined ? (coverImage ? coverImage.trim() : null) : current.cover_image;
-
-    const stmt = db.prepare(`
-      UPDATE news
-      SET title = ?, slug = ?, excerpt = ?, body = ?, cover_image = ?, is_published = ?, published_at = ?, updated_at = ?
-      WHERE id = ?
-    `);
-
-    const info = stmt.run(
-      title.trim(),
-      slug,
-      excerpt ? excerpt.trim() : '',
-      body ? body.trim() : '',
-      cover,
-      isPublished ? 1 : 0,
-      publishedAt,
-      now,
-      id
-    );
-
-    return info.changes > 0;
+      if (info.changes && slug !== current.slug) {
+        SlugRedirect.record('news', current.slug, slug);
+      }
+      return info.changes > 0;
+    }, { immediate: true });
   },
 
   delete(id) {

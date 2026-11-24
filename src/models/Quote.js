@@ -1,39 +1,66 @@
-const { db: defaultDb } = (() => {
-  try {
-    return require('../config/database');
-  } catch (err) {
-    return { db: null };
+const BaseModel = require('./BaseModel');
+
+/**
+ * Model yêu cầu báo giá (quote_requests) và danh sách nghệ nhân được mời (quote_targets).
+ * Chỉ chứa truy vấn; luật chuyển trạng thái nằm ở quoteService.
+ */
+class QuoteModel extends BaseModel {
+  static tableName = 'quote_requests';
+
+  /**
+   * Tạo yêu cầu ở trạng thái nháp.
+   * @param {{ buyerId: number, title: string, description: string, category: string, quantity: number, deadline: string }} data
+   * @returns {number} id yêu cầu.
+   */
+  createDraft({ buyerId, title, description, category, quantity, deadline }) {
+    return this.create({
+      buyer_id: buyerId,
+      title,
+      description,
+      category,
+      quantity,
+      deadline,
+      status: 'draft',
+      version: 0,
+      created_at: this.db.now(),
+      updated_at: this.db.now()
+    });
   }
-})();
-
-function getDb(customDb) {
-  if (customDb) return customDb;
-  if (defaultDb) return defaultDb;
-  return require('../config/database').db;
-}
-
-const Quote = {
-  /**
-   * Create a new quote request in 'draft' status
-   */
-  create({ buyerId, title, description, category, quantity, deadline }, customDb = null) {
-    const db = getDb(customDb);
-    const stmt = db.prepare(`
-      INSERT INTO quote_requests (
-        buyer_id, title, description, category, quantity, deadline,
-        status, version, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, 'draft', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    `);
-    const info = stmt.run(buyerId, title, description, category, quantity, deadline);
-    return info.lastInsertRowid;
-  },
 
   /**
-   * Find a quote request by ID with buyer details and accepted bid details
+   * Sửa các trường của bản nháp nếu chủ sở hữu, trạng thái và phiên bản còn khớp.
+   * @param {number|string} id
+   * @param {number} buyerId
+   * @param {number} version
+   * @param {{title: string, description: string, category: string, quantity: number, deadline: string}} fields
+   * @returns {number} Số dòng thay đổi.
    */
-  findById(id, customDb = null) {
-    const db = getDb(customDb);
-    const stmt = db.prepare(`
+  updateDraft(id, buyerId, version, fields) {
+    return this.db.update(this.table, {
+      ...fields,
+      version: version + 1,
+      updated_at: this.db.now()
+    }, { id, buyer_id: buyerId, status: 'draft', version });
+  }
+
+  /**
+   * Xóa bản nháp nếu chủ sở hữu, trạng thái và phiên bản còn khớp.
+   * @param {number|string} id
+   * @param {number} buyerId
+   * @param {number} version
+   * @returns {number} Số dòng bị xóa.
+   */
+  deleteDraft(id, buyerId, version) {
+    return this.db.delete(this.table, { id, buyer_id: buyerId, status: 'draft', version });
+  }
+
+  /**
+   * Yêu cầu kèm thông tin người mua và báo giá đã chốt.
+   * @param {number|string} id
+   * @returns {Object|undefined}
+   */
+  findById(id) {
+    return this.db.get(`
       SELECT qr.*,
              u.full_name AS buyer_name,
              u.email AS buyer_email,
@@ -48,16 +75,15 @@ const Quote = {
       LEFT JOIN bids b_acc ON b_acc.id = qr.accepted_bid_id
       LEFT JOIN artisan_profiles ap ON ap.user_id = b_acc.artisan_id
       WHERE qr.id = ?
-    `);
-    return stmt.get(id);
-  },
+    `, [id]);
+  }
 
   /**
-   * Find quotes created by a buyer
+   * @param {number} buyerId
+   * @returns {Object[]}
    */
-  findByBuyerId(buyerId, customDb = null) {
-    const db = getDb(customDb);
-    const stmt = db.prepare(`
+  findByBuyerId(buyerId) {
+    return this.db.all(`
       SELECT qr.*,
              (SELECT COUNT(*) FROM quote_targets qt WHERE qt.quote_id = qr.id) AS target_count,
              (SELECT COUNT(*) FROM bids b WHERE b.quote_id = qr.id) AS bid_count,
@@ -68,16 +94,16 @@ const Quote = {
       LEFT JOIN artisan_profiles ap ON ap.user_id = b_acc.artisan_id
       WHERE qr.buyer_id = ?
       ORDER BY qr.created_at DESC
-    `);
-    return stmt.all(buyerId);
-  },
+    `, [buyerId]);
+  }
 
   /**
-   * Find targeted quotes for an artisan (excluding drafts)
+   * Yêu cầu mà nghệ nhân được mời (không gồm bản nháp).
+   * @param {number} artisanId
+   * @returns {Object[]}
    */
-  findByArtisanId(artisanId, customDb = null) {
-    const db = getDb(customDb);
-    const stmt = db.prepare(`
+  findByArtisanId(artisanId) {
+    return this.db.all(`
       SELECT qr.*,
              u.full_name AS buyer_name,
              b_art.id AS my_bid_id,
@@ -95,16 +121,17 @@ const Quote = {
       LEFT JOIN bids b_art ON b_art.quote_id = qr.id AND b_art.artisan_id = ?
       WHERE qr.status != 'draft'
       ORDER BY qr.created_at DESC
-    `);
-    return stmt.all(artisanId, artisanId);
-  },
+    `, [artisanId, artisanId]);
+  }
 
   /**
-   * Find all quotes (for admin overview)
+   * Toàn bộ yêu cầu (admin giám sát).
+   * @param {{ limit?: number }} [options]
+   * @returns {Object[]}
    */
-  findAll(customDb = null) {
-    const db = getDb(customDb);
-    const stmt = db.prepare(`
+  findAllWithStats({ limit } = {}) {
+    const params = [];
+    let sql = `
       SELECT qr.*,
              u.full_name AS buyer_name,
              u.email AS buyer_email,
@@ -116,40 +143,59 @@ const Quote = {
       LEFT JOIN bids b_acc ON b_acc.id = qr.accepted_bid_id
       LEFT JOIN artisan_profiles ap ON ap.user_id = b_acc.artisan_id
       ORDER BY qr.created_at DESC
-    `);
-    return stmt.all();
-  },
+    `;
+    if (limit !== undefined) {
+      sql += ' LIMIT ?';
+      params.push(limit);
+    }
+    return this.db.all(sql, params);
+  }
 
   /**
-   * Check if an artisan is targeted for a quote
+   * Thống kê số yêu cầu theo nhóm trạng thái cho bảng điều khiển admin.
+   * @returns {{ total: number, bidding: number, accepted: number, delivered: number }}
    */
-  isArtisanTargeted(quoteId, artisanId, customDb = null) {
-    const db = getDb(customDb);
-    const stmt = db.prepare(`
-      SELECT 1 FROM quote_targets WHERE quote_id = ? AND artisan_id = ?
+  countStats() {
+    const row = this.db.get(`
+      SELECT
+        COUNT(*) AS total,
+        SUM(CASE WHEN status IN ('sent', 'bidding') THEN 1 ELSE 0 END) AS bidding,
+        SUM(CASE WHEN status IN ('accepted', 'in_production') THEN 1 ELSE 0 END) AS accepted,
+        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) AS delivered
+      FROM quote_requests
     `);
-    return !!stmt.get(quoteId, artisanId);
-  },
+    return {
+      total: row.total || 0,
+      bidding: row.bidding || 0,
+      accepted: row.accepted || 0,
+      delivered: row.delivered || 0
+    };
+  }
 
   /**
-   * Mark quote target as seen by artisan
+   * @param {number|string} quoteId
+   * @param {number} artisanId
+   * @returns {boolean}
    */
-  markSeen(quoteId, artisanId, customDb = null) {
-    const db = getDb(customDb);
-    const stmt = db.prepare(`
-      UPDATE quote_targets
-      SET seen_at = CURRENT_TIMESTAMP
-      WHERE quote_id = ? AND artisan_id = ? AND seen_at IS NULL
-    `);
-    return stmt.run(quoteId, artisanId);
-  },
+  isArtisanTargeted(quoteId, artisanId) {
+    return Boolean(this.db.get('SELECT 1 AS found FROM quote_targets WHERE quote_id = ? AND artisan_id = ?', [quoteId, artisanId]));
+  }
 
   /**
-   * Get list of targeted artisans for a quote
+   * Ghi nhận lần đầu nghệ nhân mở yêu cầu.
+   * @param {number|string} quoteId
+   * @param {number} artisanId
    */
-  getTargets(quoteId, customDb = null) {
-    const db = getDb(customDb);
-    const stmt = db.prepare(`
+  markSeen(quoteId, artisanId) {
+    this.db.update('quote_targets', { seen_at: this.db.now() }, { quote_id: quoteId, artisan_id: artisanId, seen_at: null });
+  }
+
+  /**
+   * @param {number|string} quoteId
+   * @returns {Object[]}
+   */
+  getTargets(quoteId) {
+    return this.db.all(`
       SELECT qt.artisan_id,
              qt.seen_at,
              u.full_name AS artisan_name,
@@ -162,21 +208,18 @@ const Quote = {
       LEFT JOIN artisan_profiles ap ON ap.user_id = qt.artisan_id
       WHERE qt.quote_id = ?
       ORDER BY u.full_name ASC
-    `);
-    return stmt.all(quoteId);
-  },
+    `, [quoteId]);
+  }
 
   /**
-   * Find approved artisans matching a category:
-   * 1. Category in profile's comma-separated categories OR published product category matches.
-   * 2. If none match, target all approved artisans.
+   * Nghệ nhân đã duyệt phù hợp danh mục: khớp danh mục hồ sơ xưởng hoặc có sản phẩm
+   * đã đăng cùng danh mục. Không ai khớp thì mời toàn bộ nghệ nhân đã duyệt.
+   * @param {string} category
+   * @returns {number[]}
    */
-  findApprovedArtisansForCategory(category, customDb = null) {
-    const db = getDb(customDb);
+  findApprovedArtisansForCategory(category) {
     const trimmed = (category || '').trim();
-
-    // First attempt: match category in artisan profile or published product
-    const matchStmt = db.prepare(`
+    const matched = this.db.all(`
       SELECT DISTINCT u.id
       FROM users u
       LEFT JOIN artisan_profiles ap ON ap.user_id = u.id
@@ -186,53 +229,48 @@ const Quote = {
           p.id IS NOT NULL
           OR (ap.categories IS NOT NULL AND LOWER(ap.categories) LIKE '%' || LOWER(?) || '%')
         )
-    `);
-    const matched = matchStmt.all(trimmed, trimmed);
+    `, [trimmed, trimmed]);
 
-    if (matched && matched.length > 0) {
-      return matched.map(r => r.id);
+    if (matched.length > 0) {
+      return matched.map((r) => r.id);
     }
 
-    // Fallback: target all approved artisans
-    const allApprovedStmt = db.prepare(`
-      SELECT u.id
-      FROM users u
-      WHERE u.role = 'artisan' AND u.status = 'approved'
-    `);
-    const allApproved = allApprovedStmt.all();
-    return (allApproved || []).map(r => r.id);
-  },
-
-  /**
-   * Insert targets for a quote
-   */
-  insertTargets(quoteId, artisanIds, customDb = null) {
-    const db = getDb(customDb);
-    const stmt = db.prepare(`
-      INSERT OR IGNORE INTO quote_targets (quote_id, artisan_id)
-      VALUES (?, ?)
-    `);
-    for (const artisanId of artisanIds) {
-      stmt.run(quoteId, artisanId);
-    }
-  },
-
-  /**
-   * Update status with optimistic version check
-   */
-  updateStatus(quoteId, newStatus, currentVersion, acceptedBidId = null, customDb = null) {
-    const db = getDb(customDb);
-    const stmt = db.prepare(`
-      UPDATE quote_requests
-      SET status = ?,
-          accepted_bid_id = COALESCE(?, accepted_bid_id),
-          version = version + 1,
-          updated_at = CURRENT_TIMESTAMP
-      WHERE id = ? AND version = ?
-    `);
-    const info = stmt.run(newStatus, acceptedBidId, quoteId, currentVersion);
-    return info.changes;
+    return this.db.all("SELECT id FROM users WHERE role = 'artisan' AND status = 'approved'").map((r) => r.id);
   }
-};
 
-module.exports = Quote;
+  /**
+   * Thêm nghệ nhân vào danh sách được mời (bỏ qua nếu đã có).
+   * @param {number|string} quoteId
+   * @param {number[]} artisanIds
+   */
+  insertTargets(quoteId, artisanIds) {
+    for (const artisanId of artisanIds) {
+      this.db.insertIgnore('quote_targets', { quote_id: quoteId, artisan_id: artisanId });
+    }
+  }
+
+  /**
+   * Chuyển trạng thái có điều kiện, tăng version (khóa lạc quan).
+   * @param {number|string} quoteId
+   * @param {{ from: string[], to: string, expectedVersion?: number, acceptedBidId?: number }} transition
+   * @returns {number} Số dòng thay đổi (0 nghĩa là trạng thái/version đã đổi ở phiên khác).
+   */
+  transitionStatus(quoteId, { from, to, expectedVersion, acceptedBidId }) {
+    const params = [to];
+    let sql = 'UPDATE quote_requests SET status = ?, version = version + 1, updated_at = CURRENT_TIMESTAMP';
+    if (acceptedBidId !== undefined) {
+      sql += ', accepted_bid_id = ?';
+      params.push(acceptedBidId);
+    }
+    sql += ` WHERE id = ? AND status IN (${from.map(() => '?').join(', ')})`;
+    params.push(quoteId, ...from);
+    if (expectedVersion !== undefined) {
+      sql += ' AND version = ?';
+      params.push(expectedVersion);
+    }
+    return this.db.run(sql, params).changes;
+  }
+}
+
+module.exports = new QuoteModel();
+module.exports.QuoteModel = QuoteModel;

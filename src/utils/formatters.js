@@ -1,3 +1,4 @@
+/** Định dạng số tiền theo đơn vị đồng Việt Nam. */
 function formatCurrency(amount) {
   if (amount === null || amount === undefined || isNaN(amount)) {
     return '0 ₫';
@@ -9,6 +10,7 @@ function formatCurrency(amount) {
   }).format(num);
 }
 
+/** Định dạng ngày hoặc ngày giờ theo cách viết tiếng Việt. */
 function formatDate(dateInput, includeTime = false) {
   if (!dateInput) return '';
   const d = new Date(dateInput);
@@ -27,6 +29,7 @@ function formatDate(dateInput, includeTime = false) {
   return `${hours}:${minutes} ${day}/${month}/${year}`;
 }
 
+/** Trả về nhãn và lớp CSS của trạng thái. */
 function getStatusBadge(status) {
   const map = {
     // User status
@@ -44,6 +47,10 @@ function getStatusBadge(status) {
     accepted: { label: 'Đã chốt báo giá', className: 'badge-accepted' },
     in_production: { label: 'Đang chế tác', className: 'badge-production' },
     delivered: { label: 'Đã giao hàng', className: 'badge-delivered' },
+    cancelled: { label: 'Đã hủy', className: 'badge-rejected' },
+
+    // Order status
+    placed: { label: 'Đã đặt', className: 'badge-approved' },
 
     // Bid status
     submitted: { label: 'Đã gửi giá', className: 'badge-submitted' },

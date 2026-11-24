@@ -14,6 +14,7 @@
     { key: 'delivered', label: 'Hoàn thành' }
   ];
   const currentBadge = getStatusBadge(quote.status);
+  const canCancel = isOwner && ['draft', 'sent', 'bidding'].includes(quote.status);
 %>
 
 <main class="site-main quote-detail-page">
@@ -48,9 +49,29 @@
 
         <div class="quote-header-actions">
           <a href="/quotes" class="btn btn-outline btn-sm">&larr; Danh sách báo giá</a>
+          <% if (isOwner && quote.status === 'draft') { %>
+            <a href="/quotes/<%= quote.id %>/edit" class="btn btn-outline btn-sm">Sửa bản nháp</a>
+            <form action="/quotes/<%= quote.id %>" method="POST" class="inline-form" data-confirm="Xóa vĩnh viễn bản nháp này?">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit" class="btn btn-outline-danger btn-sm">Xóa bản nháp</button>
+            </form>
+          <% } %>
+          <% if (canCancel) { %>
+            <form action="/quotes/<%= quote.id %>/cancel" method="POST" class="inline-form" data-confirm="Hủy yêu cầu và từ chối các báo giá đã nhận?">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <input type="hidden" name="_method" value="PATCH">
+              <button type="submit" class="btn btn-outline-danger btn-sm">Hủy yêu cầu</button>
+            </form>
+          <% } %>
         </div>
       </div>
 
+      <% if (quote.status === 'cancelled') { %>
+        <p class="alert alert-info mt-3" role="status">
+          Yêu cầu báo giá đã bị hủy. Các báo giá đã gửi không còn hiệu lực.
+        </p>
+      <% } else { %>
       <!-- Stepper component using exact shared CSS classes -->
       <div class="quote-stepper" aria-label="Tiến trình yêu cầu báo giá">
         <% stages.forEach(function(st, idx) { %>
@@ -67,6 +88,7 @@
           </div>
         <% }); %>
       </div>
+      <% } %>
     </div>
 
     <div class="grid grid-sidebar mt-4">

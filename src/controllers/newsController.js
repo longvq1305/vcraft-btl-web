@@ -1,6 +1,8 @@
 const News = require('../models/News');
+const SlugRedirect = require('../models/SlugRedirect');
 
 const newsController = {
+  /** Hiển thị danh sách bản tin đã xuất bản. */
   getIndex(req, res) {
     try {
       const articles = News.findPublished({ limit: 30 });
@@ -17,12 +19,15 @@ const newsController = {
     }
   },
 
+  /** Hiển thị bản tin hoặc chuyển hướng khi slug đã đổi. */
   getDetail(req, res) {
     try {
       const { slug } = req.params;
       const article = News.findBySlug(slug);
 
       if (!article) {
+        const target = SlugRedirect.resolve('news', slug);
+        if (target) return res.redirect(301, `/news/${encodeURIComponent(target)}`);
         return res.status(404).render('errors/404', {
           title: 'Không tìm thấy bài viết - 404',
           message: 'Bài viết bản tin bạn đang tìm kiếm không tồn tại hoặc đã bị gỡ.'

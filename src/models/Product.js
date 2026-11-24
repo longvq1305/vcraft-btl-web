@@ -1,23 +1,12 @@
-const slugify = require('slugify');
 const { db } = require('../config/database');
+const { uniqueSlug } = require('../utils/slug');
 
-function generateSlug(text, existingSlug = null) {
-  const base = slugify(text || 'tac-pham', {
-    lower: true,
-    strict: true,
-    locale: 'vi'
-  }) || 'tac-pham';
-
-  let slug = base;
-  let counter = 1;
-
-  while (true) {
-    const row = db.prepare('SELECT id, slug FROM products WHERE slug = ?').get(slug);
-    if (!row || (existingSlug && row.slug === existingSlug)) {
-      return slug;
-    }
-    slug = `${base}-${counter++}`;
-  }
+/**
+ * @param {string} text
+ * @returns {string} Slug sản phẩm chưa bị dùng.
+ */
+function generateSlug(text) {
+  return uniqueSlug(text, (s) => Boolean(db.prepare('SELECT 1 FROM products WHERE slug = ?').get(s)), 'tac-pham');
 }
 
 const Product = {

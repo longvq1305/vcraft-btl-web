@@ -1,25 +1,17 @@
 const Artisan = require('../models/Artisan');
 const Product = require('../models/Product');
-const { db } = require('../config/database');
+const News = require('../models/News');
 
 const publicController = {
+  /**
+   * GET / — trang chủ: tác phẩm, xưởng nổi bật, danh mục và 3 bản tin mới nhất.
+   */
   home(req, res, next) {
     try {
       const featuredProducts = Product.findFeatured(8);
       const featuredWorkshops = Artisan.findFeatured(4);
       const categories = Product.findDistinctCategories();
-
-      let latestNews = [];
-      try {
-        latestNews = db.prepare(`
-          SELECT * FROM news
-          WHERE is_published = 1
-          ORDER BY published_at DESC, id DESC
-          LIMIT 3
-        `).all();
-      } catch (_) {
-        latestNews = [];
-      }
+      const latestNews = News.findPublished({ limit: 3 });
 
       res.render('home', {
         title: 'vCraft - Tinh hoa Thủ công Mỹ nghệ & Nghệ nhân Làng nghề Việt',
@@ -33,6 +25,7 @@ const publicController = {
     }
   },
 
+  /** Hiển thị bộ sưu tập công khai với bộ lọc sản phẩm. */
   catalog(req, res, next) {
     try {
       const { category, workshop, q, sort } = req.query;
@@ -70,6 +63,7 @@ const publicController = {
     }
   },
 
+  /** Hiển thị danh sách xưởng công khai. */
   workshops(req, res, next) {
     try {
       const { category, q } = req.query;
@@ -94,6 +88,7 @@ const publicController = {
     }
   },
 
+  /** Hiển thị xưởng đã duyệt. */
   workshopDetail(req, res, next) {
     try {
       const { slug } = req.params;
@@ -117,6 +112,7 @@ const publicController = {
     }
   },
 
+  /** Hiển thị bản đồ xưởng đã duyệt. */
   mapView(req, res, next) {
     try {
       const workshops = Artisan.findForMap();

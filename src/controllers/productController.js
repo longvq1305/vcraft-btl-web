@@ -1,7 +1,31 @@
+const crypto = require('crypto');
 const QRCode = require('qrcode');
 const Product = require('../models/Product');
+const { REQUEST_TOKEN_PATTERN } = require('../services/orderService');
+
+/**
+ * Kết xuất trang sản phẩm, kèm lỗi và dữ liệu đã nhập nếu đặt mua không thành công.
+ * Form đặt mua mang một mã chống gửi trùng; khi hiển thị lại sau lỗi thì giữ mã cũ
+ * (chưa có đơn nào dùng mã đó vì giao dịch lỗi đã rollback).
+ * @param {import('express').Response} res
+ * @param {Object} product
+ * @param {{formData: Object, message: string}} [orderError]
+ */
+function renderProductPage(res, product, orderError = null) {
+  const previousToken = orderError?.formData?.requestToken;
+  return res.render('products/show', {
+    title: `${product.name} - vCraft`,
+    product,
+    relatedProducts: Product.getRelatedProducts(product.id, product.category, 4),
+    orderError,
+    orderRequestToken: typeof previousToken === 'string' && REQUEST_TOKEN_PATTERN.test(previousToken)
+      ? previousToken
+      : crypto.randomUUID()
+  });
+}
 
 const productController = {
+  /** Hiển thị chi tiết tác phẩm và form đặt mua. */
   show(req, res, next) {
     try {
       const { slug } = req.params;
@@ -26,18 +50,13 @@ const productController = {
         }
       }
 
-      const relatedProducts = Product.getRelatedProducts(product.id, product.category, 4);
-
-      res.render('products/show', {
-        title: `${product.name} - vCraft`,
-        product,
-        relatedProducts
-      });
+      return renderProductPage(res, product);
     } catch (err) {
       next(err);
     }
   },
 
+  /** Hiển thị nhật ký chế tác của tác phẩm. */
   story(req, res, next) {
     try {
       const { slug } = req.params;
@@ -74,6 +93,7 @@ const productController = {
     }
   },
 
+  /** Sinh ảnh QR trỏ đến nhật ký chế tác hiện tại. */
   async qrCode(req, res, next) {
     try {
       const { slug } = req.params;
@@ -109,3 +129,4 @@ const productController = {
 };
 
 module.exports = productController;
+module.exports.renderProductPage = renderProductPage;

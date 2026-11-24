@@ -43,7 +43,7 @@
   <div class="article-content-wrap">
     <div class="container container-reading">
       <div class="article-body paper-panel">
-        <%- article.body %>
+        <%- sanitizeHtml(article.body) %>
       </div>
 
       <div class="article-actions-bar">

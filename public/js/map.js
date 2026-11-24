@@ -71,25 +71,42 @@
     });
   }
 
-  // Build popup content
+  const htmlEntities = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+
+  /**
+   * Mã hóa dữ liệu để chèn an toàn vào văn bản và thuộc tính HTML của popup.
+   * @param {unknown} value
+   * @returns {string}
+   */
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => htmlEntities[char]);
+  }
+
+  // Tạo popup từ dữ liệu xưởng, không chèn trực tiếp HTML nhận từ máy chủ.
   function buildPopupContent(ws) {
     const statusText = ws.is_open ? 'Đang mở cửa đón khách' : 'Tạm đóng cửa tham quan';
     const statusClass = ws.is_open ? 'status-open' : 'status-closed';
-    const imgSrc = ws.cover_image || 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=400&q=80';
+    const coverImage = ws.cover_image;
+    const imgSrc = typeof coverImage === 'string'
+      && /^(?:\/(?!\/)|https:\/\/)/i.test(coverImage)
+      && !/[\\\p{Cc}]/u.test(coverImage)
+      ? coverImage
+      : 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=400&q=80';
+    const workshopName = escapeHtml(ws.workshop_name);
 
     return `
       <div class="map-popup-card">
         <div class="map-popup-media">
-          <img src="${imgSrc}" alt="${ws.workshop_name}" class="map-popup-img">
+          <img src="${escapeHtml(imgSrc)}" alt="${workshopName}" class="map-popup-img">
           <span class="popup-status-badge ${statusClass}">${statusText}</span>
         </div>
         <div class="map-popup-body">
-          <div class="map-popup-artisan">Nghệ nhân: ${ws.artisan_name || ''}</div>
-          <h4 class="map-popup-title">${ws.workshop_name}</h4>
-          ${ws.address ? `<p class="map-popup-address">${ws.address}</p>` : ''}
-          ${ws.visiting_hours ? `<p class="map-popup-hours">Giờ mở cửa: ${ws.visiting_hours}</p>` : ''}
+          <div class="map-popup-artisan">Nghệ nhân: ${escapeHtml(ws.artisan_name)}</div>
+          <h4 class="map-popup-title">${workshopName}</h4>
+          ${ws.address ? `<p class="map-popup-address">${escapeHtml(ws.address)}</p>` : ''}
+          ${ws.visiting_hours ? `<p class="map-popup-hours">Giờ mở cửa: ${escapeHtml(ws.visiting_hours)}</p>` : ''}
           <div class="map-popup-footer">
-            <a href="/workshops/${ws.slug}" class="btn btn-primary btn-xs">Xem hồ sơ xưởng</a>
+            <a href="/workshops/${encodeURIComponent(ws.slug ?? '')}" class="btn btn-primary btn-xs">Xem hồ sơ xưởng</a>
           </div>
         </div>
       </div>

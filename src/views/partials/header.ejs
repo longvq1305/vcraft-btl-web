@@ -52,11 +52,13 @@
               <button type="submit" class="btn btn-ghost btn-sm btn-logout" title="Đăng xuất khỏi hệ thống">Đăng xuất</button>
             </form>
           </div>
+          <a href="/orders" class="btn btn-outline btn-sm">Đơn hàng</a>
           <% if (currentUser.role === 'buyer') { %>
             <a href="/quotes" class="btn btn-outline btn-sm">Báo giá của tôi</a>
             <a href="/quotes/new" class="btn btn-primary btn-sm">+ Đặt chế tác</a>
           <% } else if (currentUser.role === 'artisan') { %>
             <a href="/artisan/dashboard" class="btn btn-outline btn-sm">Bàn làm việc</a>
+            <a href="/quotes" class="btn btn-outline btn-sm">Yêu cầu báo giá</a>
             <a href="/artisan/products/new" class="btn btn-primary btn-sm">+ Đăng tác phẩm</a>
           <% } else if (currentUser.role === 'admin') { %>
             <a href="/admin" class="btn btn-outline btn-sm">Quản trị</a>
@@ -71,11 +73,13 @@
         <a href="/auth/login" class="btn btn-ghost btn-sm">Đăng nhập</a>
         <a href="/auth/register" class="btn btn-primary btn-sm">Đăng ký</a>
       <% } else { %>
+        <a href="/orders" class="btn btn-outline btn-sm">Đơn hàng</a>
         <% if (currentUser.role === 'buyer') { %>
           <a href="/quotes" class="btn btn-outline btn-sm">Báo giá của tôi</a>
           <a href="/quotes/new" class="btn btn-primary btn-sm">+ Đặt chế tác</a>
         <% } else if (currentUser.role === 'artisan') { %>
           <a href="/artisan/dashboard" class="btn btn-outline btn-sm">Bàn làm việc</a>
+          <a href="/quotes" class="btn btn-outline btn-sm">Yêu cầu báo giá</a>
           <a href="/artisan/products/new" class="btn btn-primary btn-sm">+ Đăng tác phẩm</a>
         <% } else if (currentUser.role === 'admin') { %>
           <a href="/admin" class="btn btn-outline btn-sm">Quản trị</a>

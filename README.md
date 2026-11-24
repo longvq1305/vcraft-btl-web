@@ -147,12 +147,15 @@ vcraft/
 | `NODE_ENV` | `development` | Môi trường (`development` hoặc `production`) |
 | `SESSION_SECRET` | `vcraft-session-secret...` | Chuỗi bí mật ký cookie phiên làm việc (tối thiểu 32 ký tự) |
 | `DB_FILE` | `data/vcraft.db` | Đường dẫn file cơ sở dữ liệu SQLite |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | (trống) | Chỉ production: tạo admin đầu tiên nếu CSDL chưa có admin (mật khẩu ≥ 12 ký tự) |
+
+Production bật `trust proxy` và cookie `secure`: cần chạy sau reverse proxy HTTPS có gửi `X-Forwarded-Proto`.
 
 ---
 
 ## 5. Tài Khoản Thử Nghiệm Sẵn Có (Seed Demo Accounts)
 
-Hệ thống đã nạp sẵn 4 tài khoản chuẩn đại diện cho đầy đủ các vai trò:
+Ngoài production, hệ thống tự nạp 5 tài khoản demo dưới đây. Khi `NODE_ENV=production`, dữ liệu demo **không** được nạp và thông tin demo bị ẩn khỏi giao diện/log; admin đầu tiên được tạo từ `ADMIN_EMAIL`/`ADMIN_PASSWORD`.
 
 | Vai trò | Email đăng nhập | Mật khẩu | Thông tin đại diện |
 |---|---|---|---|
@@ -193,7 +196,7 @@ Hệ thống đã nạp sẵn 4 tài khoản chuẩn đại diện cho đầy đ
 
 4. **Quản trị viên (Admin):**
    - Truy cập bảng điều khiển vận hành tổng thể (`/admin`): xem tổng số người dùng, nghệ nhân, sản phẩm, yêu cầu đặt hàng và bản tin.
-   - Xem danh sách nghệ nhân chờ duyệt và nhấp **Phê duyệt (`approve`)** hoặc **Tạm ngưng (`suspend`)**.
+   - Phê duyệt nghệ nhân chờ duyệt, tạm ngưng tài khoản hoặc khôi phục nghệ nhân đã bị tạm ngưng. Lần duyệt đầu mở cửa xưởng; tạm ngưng/khôi phục giữ nguyên lựa chọn mở/đóng cửa của nghệ nhân (xưởng bị tạm ngưng vẫn bị ẩn khỏi trang công khai).
    - Trực tiếp tạo mới tài khoản nghệ nhân đã được phê duyệt sẵn (`/admin/artisans/new`).
    - Quản trị toàn bộ Bản tin làng nghề: Soạn bài mới, cập nhật nội dung, bật/tắt trạng thái xuất bản, xóa bài viết (`/admin/news`).
 
@@ -201,7 +204,7 @@ Hệ thống đã nạp sẵn 4 tài khoản chuẩn đại diện cho đầy đ
 
 ## 7. Chu Trình Đặt Chế Tác & Máy Trạng Thái (Quotation State Machine)
 
-Chu trình báo giá tuân thủ nghiêm ngặt 6 trạng thái bất biến tuần tự:
+Chu trình báo giá có sáu trạng thái theo tiến độ chế tác và một trạng thái kết thúc khi hủy:
 
 ```
 [Draft] (Bản nháp của Buyer)
@@ -224,8 +227,64 @@ Chu trình báo giá tuân thủ nghiêm ngặt 6 trạng thái bất biến tu�
 
 ### Nguyên Tắc Bất Biến & Chống Xung Đột Concurrency:
 - **Nguyên tử hóa giao dịch (Immediate Transactions):** Toàn bộ các bước chuyển trạng thái, ghi nhận báo giá và chốt thầu được bọc trong giao dịch `db.transaction(...).immediate()` của SQLite.
-- **Khóa lạc quan (Optimistic Version Locking):** Mỗi yêu cầu báo giá sở hữu một trường `version INTEGER DEFAULT 0`. Khi Buyer gửi lệnh chốt thầu, form gửi kèm phiên bản hiện tại. Câu lệnh cập nhật kiểm tra `WHERE id = ? AND version = ? AND status IN ('sent', 'bidding')`. Nếu xảy ra việc ấn đúp hoặc hai phiên làm việc cùng chấp thuận, yêu cầu thứ hai sẽ nhận mã lỗi `409 Conflict` và giữ nguyên nghệ nhân chiến thắng ban đầu mà không bị ghi đè.
+- **Khóa lạc quan (Optimistic Version Locking):** Mỗi yêu cầu báo giá sở hữu một trường `version INTEGER DEFAULT 0`. Khi Buyer gửi lệnh chốt thầu, form gửi kèm phiên bản hiện tại. Câu lệnh cập nhật kiểm tra `WHERE id = ? AND version = ? AND status IN ('sent', 'bidding')`. Nếu xảy ra việc ấn đúp hoặc hai phiên làm việc cùng chấp thuận, yêu cầu thứ hai sẽ nhận mã lỗi `409 Conflict` và giữ nguyên nghệ nhân chiến thắng ban đầu mà không bị ghi đè. Mỗi lần nghệ nhân gửi hoặc sửa báo giá cũng tăng `version`, nên người mua đang mở trang cũ không thể chốt theo giá mình chưa thấy (nhận `409`, tải lại để xem giá mới).
+- **Ngày theo giờ Việt Nam:** Hạn chót và ngày hoàn thành phải đúng dạng `YYYY-MM-DD`, là ngày có thật và không trước "hôm nay" tính theo múi giờ `Asia/Ho_Chi_Minh` (`src/utils/date.js`), không theo UTC của máy chủ.
 - **Kiểm soát quyền truy cập chặt chẽ:** Chỉ chủ sở hữu Buyer mới có quyền gửi yêu cầu hoặc chốt thầu. Chỉ các nghệ nhân được nhắm chọn (`quote_targets`) mới có thể gửi báo giá. Chỉ nghệ nhân có báo giá được chấp thuận mới có thể chuyển trạng thái sang `in_production` và `delivered`.
+
+### Sửa, xóa và hủy yêu cầu
+
+- Chỉ người mua sở hữu yêu cầu mới được sửa hoặc xóa bản nháp (`draft`). Xóa là vĩnh viễn.
+- Người mua có thể hủy yêu cầu ở `draft`, `sent` hoặc `bidding`. Yêu cầu chuyển sang `cancelled`, các báo giá `submitted` chuyển sang `rejected` trong cùng giao dịch. Không thể chào giá hoặc chốt yêu cầu đã hủy.
+- Thao tác không hợp lệ với trạng thái hiện tại trả `409`; sửa và hủy tăng `version`.
+
+### Định tuyến RESTful
+
+Các tham số `:id`, `:stepId` và `:imageId` chỉ nhận chữ số.
+
+| Phương thức | Đường dẫn | Thao tác |
+|---|---|---|
+| POST | `/auth/login`, `/auth/register`, `/auth/logout` | Đăng nhập, đăng ký, đăng xuất |
+| PATCH | `/admin/artisans/:id/status` | Đổi `status` sang `approved` hoặc `suspended` |
+| POST | `/admin/news` | Tạo bản tin |
+| PUT, DELETE | `/admin/news/:id` | Sửa, xóa bản tin |
+| PUT | `/artisan/profile` | Cập nhật hồ sơ xưởng (multipart) |
+| POST | `/artisan/products` | Đăng tác phẩm (multipart) |
+| PUT, DELETE | `/artisan/products/:id` | Sửa tác phẩm (multipart), xóa tác phẩm |
+| POST | `/artisan/products/:id/steps` | Thêm công đoạn (multipart) |
+| DELETE | `/artisan/products/:id/steps/:stepId` | Xóa công đoạn |
+| DELETE | `/artisan/products/:id/images/:imageId` | Xóa ảnh tác phẩm |
+| GET | `/quotes`, `/quotes/new`, `/quotes/:id`, `/quotes/:id/edit` | Danh sách, form tạo, chi tiết, form sửa |
+| POST | `/quotes` | Tạo bản nháp |
+| PUT, DELETE | `/quotes/:id` | Sửa, xóa bản nháp |
+| PATCH | `/quotes/:id/cancel` | Hủy yêu cầu chưa chốt |
+| POST | `/quotes/:id/send`, `/quotes/:id/bids`, `/quotes/:id/accept`, `/quotes/:id/start`, `/quotes/:id/deliver` | Gửi, chào giá, chốt, bắt đầu chế tác, bàn giao |
+| GET | `/orders`, `/orders/:id` | Danh sách phân trang và chi tiết đơn mua |
+| POST | `/orders` | Đặt mua sản phẩm có sẵn |
+| PATCH | `/orders/:id/cancel` | Hủy đơn mua |
+
+Form HTML gửi POST và dùng `_method` trong body để yêu cầu `PUT`, `PATCH` hoặc `DELETE`. Hai form cập nhật multipart dùng `?_method=PUT` vì trình phân tích multipart chạy ở router. Token CSRF dùng trường ẩn `_csrf` trong body hoặc header `X-CSRF-Token`, không đặt token trong URL.
+
+### Chuẩn hóa URL và chuyển hướng 301
+
+`GET` và `HEAD` chuyển hướng 301 về đường dẫn viết thường, không có dấu `/` ở cuối (trừ `/`), giữ nguyên query; không áp dụng cho `/css`, `/js`, `/images`, `/uploads`. Các URL tiếng Việt được chuyển hướng như sau:
+
+| Alias | URL chuẩn |
+|---|---|
+| `/san-pham/:slug` | `/products/:slug` |
+| `/xuong/:slug` | `/workshops/:slug` |
+| `/tin-tuc`, `/tin-tuc/:slug` | `/news`, `/news/:slug` |
+| `/ban-do` | `/map` |
+| `/bao-gia` | `/quotes` |
+
+Khi tiêu đề bản tin làm đổi slug, slug cũ được ghi vào `slug_redirects` và trỏ thẳng tới slug hiện tại. Slug của sản phẩm và xưởng không đổi khi sửa tên (giữ ổn định cho mã QR đã in), nên không cần bảng chuyển hướng.
+
+### Đặt mua nhanh sản phẩm có sẵn
+
+Người mua đặt ngay trên trang tác phẩm đã xuất bản của nghệ nhân được duyệt. Form yêu cầu số lượng nguyên dương, tên người nhận, số điện thoại Việt Nam và địa chỉ giao hàng. Đơn giữ tên, slug và đơn giá tại thời điểm đặt. Trừ tồn kho và tạo đơn `placed` chạy trong cùng giao dịch; không đủ hàng trả `409` và không làm đổi số lượng tồn.
+
+Chống đặt trùng: mỗi lần hiển thị form có một mã `requestToken` (UUID) ẩn; cột `orders.request_token` có chỉ mục duy nhất theo `(buyer_id, request_token)`. Gửi lại cùng form (bấm đúp, F5 sau POST) chuyển về đơn đã tạo, không tạo đơn mới và không trừ kho lần hai.
+
+Người mua chỉ xem và hủy đơn của mình; nghệ nhân xem đơn trên sản phẩm của mình; quản trị viên xem mọi đơn. Hủy đơn `placed` chuyển sang `cancelled` và hoàn tồn kho đúng một lần nếu sản phẩm vẫn còn.
 
 ---
 

@@ -1,3 +1,36 @@
+const { formatCurrency, formatDate, getStatusBadge } = require('../utils/formatters');
+
+/**
+ * Bổ sung biến mà layout (header/footer) cần khi lỗi xảy ra trước localsMiddleware
+ * (body JSON hỏng, body quá lớn, lỗi session store).
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+function ensureViewLocals(req, res) {
+  const defaults = {
+    currentPath: req.path || '/',
+    currentUrl: req.originalUrl || '/',
+    currentUser: null,
+    csrfToken: '',
+    flash: [],
+    showDemoAccounts: false,
+    formatCurrency,
+    formatDate,
+    getStatusBadge
+  };
+  for (const [key, value] of Object.entries(defaults)) {
+    if (res.locals[key] === undefined) {
+      res.locals[key] = value;
+    }
+  }
+}
+
+/**
+ * Trả lỗi 404 bằng HTML hoặc JSON khi không có route khớp.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {import('express').Response|void}
+ */
 function notFoundHandler(req, res) {
   res.status(404);
   if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
@@ -9,11 +42,20 @@ function notFoundHandler(req, res) {
   });
 }
 
+/**
+ * Ghi log và trả lỗi tập trung cho yêu cầu.
+ * @param {Error & {status?: number, statusCode?: number}} err
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next Tham số bắt buộc của middleware lỗi Express.
+ * @returns {import('express').Response|void}
+ */
 function errorHandler(err, req, res, next) {
-  // eslint-disable-next-line no-console
-  console.error('[App Error]', err);
-
   const status = err.status || err.statusCode || 500;
+  if (status >= 500) {
+    console.error('[App Error]', err);
+  }
+  ensureViewLocals(req, res);
   res.status(status);
 
   const message = err.message || 'Đã có lỗi hệ thống xảy ra. Vui lòng thử lại sau.';

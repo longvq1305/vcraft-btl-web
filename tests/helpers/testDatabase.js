@@ -1,34 +1,42 @@
-const Database = require('better-sqlite3');
+const SqliteAdapter = require('../../src/db/SqliteAdapter');
 const { initializeDatabase } = require('../../src/config/database');
 
+/**
+ * CSDL SQLite trong bộ nhớ đã có schema, cô lập cho từng test.
+ * @returns {SqliteAdapter}
+ */
 function createTestDatabase() {
-  const db = new Database(':memory:');
-  initializeDatabase(db);
-  return db;
+  const adapter = new SqliteAdapter(':memory:');
+  initializeDatabase(adapter);
+  return adapter;
 }
 
+/**
+ * Nạp người dùng mẫu cho test máy trạng thái báo giá.
+ * @param {SqliteAdapter} db
+ */
 function seedTestUsers(db) {
-  const insertUser = db.prepare(`
+  const insertUser = (...params) => db.run(`
     INSERT INTO users (id, full_name, email, password_hash, role, status)
     VALUES (?, ?, ?, ?, ?, ?)
-  `);
+  `, params);
 
-  const insertProfile = db.prepare(`
+  const insertProfile = (...params) => db.run(`
     INSERT INTO artisan_profiles (
       user_id, slug, workshop_name, story, address, latitude, longitude,
       is_open, categories, phone
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+  `, params);
 
   // Dummy password hash
   const dummyHash = '$2a$10$abcdefghijklmnopqrstuvwxyz012345';
 
   // Buyer 1
-  insertUser.run(1, 'Khách Mua Test', 'buyer1@vcraft.vn', dummyHash, 'buyer', 'approved');
+  insertUser(1, 'Khách Mua Test', 'buyer1@vcraft.vn', dummyHash, 'buyer', 'approved');
 
   // Artisan 1 - Ceramic (Approved)
-  insertUser.run(2, 'Nghệ nhân Gốm', 'artisan.gom@vcraft.vn', dummyHash, 'artisan', 'approved');
-  insertProfile.run(
+  insertUser(2, 'Nghệ nhân Gốm', 'artisan.gom@vcraft.vn', dummyHash, 'artisan', 'approved');
+  insertProfile(
     2,
     'xuong-gom-test',
     'Xưởng Gốm Bát Tràng Test',
@@ -42,8 +50,8 @@ function seedTestUsers(db) {
   );
 
   // Artisan 2 - Silk (Approved)
-  insertUser.run(3, 'Nghệ nhân Lụa', 'artisan.lua@vcraft.vn', dummyHash, 'artisan', 'approved');
-  insertProfile.run(
+  insertUser(3, 'Nghệ nhân Lụa', 'artisan.lua@vcraft.vn', dummyHash, 'artisan', 'approved');
+  insertProfile(
     3,
     'xuong-lua-test',
     'Xưởng Lụa Vạn Phúc Test',
@@ -57,8 +65,8 @@ function seedTestUsers(db) {
   );
 
   // Artisan 3 - Bamboo (Approved)
-  insertUser.run(4, 'Nghệ nhân Mây Tre', 'artisan.tre@vcraft.vn', dummyHash, 'artisan', 'approved');
-  insertProfile.run(
+  insertUser(4, 'Nghệ nhân Mây Tre', 'artisan.tre@vcraft.vn', dummyHash, 'artisan', 'approved');
+  insertProfile(
     4,
     'xuong-tre-test',
     'Xưởng Mây Tre Phú Vinh Test',
@@ -72,8 +80,8 @@ function seedTestUsers(db) {
   );
 
   // Artisan 4 - Pending approval
-  insertUser.run(5, 'Nghệ nhân Chưa Duyệt', 'artisan.pending@vcraft.vn', dummyHash, 'artisan', 'pending');
-  insertProfile.run(
+  insertUser(5, 'Nghệ nhân Chưa Duyệt', 'artisan.pending@vcraft.vn', dummyHash, 'artisan', 'pending');
+  insertProfile(
     5,
     'xuong-pending-test',
     'Xưởng Chưa Duyệt',
@@ -87,7 +95,7 @@ function seedTestUsers(db) {
   );
 
   // Buyer 2 (Another buyer)
-  insertUser.run(6, 'Khách Mua Khác', 'buyer2@vcraft.vn', dummyHash, 'buyer', 'approved');
+  insertUser(6, 'Khách Mua Khác', 'buyer2@vcraft.vn', dummyHash, 'buyer', 'approved');
 
   return {
     buyer1: { id: 1, fullName: 'Khách Mua Test', email: 'buyer1@vcraft.vn', role: 'buyer', status: 'approved' },

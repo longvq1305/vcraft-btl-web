@@ -1,8 +1,41 @@
-const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
+const SqliteAdapter = require('../db/SqliteAdapter');
 
+/** Phiên bản schema hiện tại, lưu trong PRAGMA user_version. */
+const SCHEMA_VERSION = 3;
+
+const QUOTE_STATUSES = ['draft', 'sent', 'bidding', 'accepted', 'in_production', 'delivered', 'cancelled'];
+
+/**
+ * Câu CREATE cho bảng quote_requests; dùng chung cho schema gốc và migration dựng lại bảng.
+ * @param {string} tableName
+ * @returns {string}
+ */
+function quoteRequestsDdl(tableName) {
+  return `
+    CREATE TABLE IF NOT EXISTS ${tableName} (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      buyer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      category TEXT NOT NULL,
+      quantity INTEGER NOT NULL,
+      deadline TEXT NOT NULL,
+      status TEXT NOT NULL CHECK(status IN (${QUOTE_STATUSES.map((s) => `'${s}'`).join(', ')})),
+      accepted_bid_id INTEGER,
+      version INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `;
+}
+
+/**
+ * Đường dẫn file CSDL từ biến môi trường DB_FILE (mặc định data/vcraft.db).
+ * @returns {string}
+ */
 function resolveDbPath() {
   const envPath = process.env.DB_FILE;
   if (envPath) {
@@ -14,26 +47,78 @@ function resolveDbPath() {
   return path.resolve(process.cwd(), 'data/vcraft.db');
 }
 
-const dbPath = resolveDbPath();
-if (dbPath !== ':memory:') {
-  const dir = path.dirname(dbPath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+/**
+ * Tạo adapter CSDL cho đường dẫn chỉ định. Đây là nơi duy nhất chọn driver.
+ * @param {string} [dbPath]
+ * @returns {import('../db/DatabaseAdapter')}
+ */
+function createAdapter(dbPath = resolveDbPath()) {
+  if (dbPath !== ':memory:') {
+    fs.mkdirSync(path.dirname(dbPath), { recursive: true });
   }
+  return new SqliteAdapter(dbPath);
 }
 
-const db = new Database(dbPath);
-try {
-  db.pragma('journal_mode = WAL');
-} catch (e) {
-  // Ignored for in-memory or unsupported environments
+/** Adapter mặc định của ứng dụng. */
+const adapter = createAdapter();
+
+/**
+ * Kết nối better-sqlite3 gốc. Chỉ dành cho các model chưa chuyển sang BaseModel
+ * (Artisan, Product, News); code mới phải dùng `adapter`.
+ */
+const db = adapter.connection;
+
+/**
+ * Dựng lại quote_requests để CHECK chấp nhận trạng thái 'cancelled' (CSDL tạo trước schema v2).
+ * Theo quy trình đổi cấu trúc bảng của SQLite: tạo bảng mới, chép dữ liệu, xóa bảng cũ, đổi tên.
+ * @param {SqliteAdapter} target
+ */
+function rebuildQuoteRequests(target) {
+  target.withoutForeignKeys(() => {
+    target.transaction(() => {
+      target.exec(quoteRequestsDdl('quote_requests_v2'));
+      target.exec(`
+        INSERT INTO quote_requests_v2 (id, buyer_id, title, description, category, quantity, deadline,
+                                       status, accepted_bid_id, version, created_at, updated_at)
+        SELECT id, buyer_id, title, description, category, quantity, deadline,
+               status, accepted_bid_id, version, created_at, updated_at
+        FROM quote_requests;
+        DROP TABLE quote_requests;
+        ALTER TABLE quote_requests_v2 RENAME TO quote_requests;
+        CREATE INDEX IF NOT EXISTS idx_quote_requests_buyer_id ON quote_requests(buyer_id);
+        CREATE INDEX IF NOT EXISTS idx_quote_requests_status ON quote_requests(status);
+      `);
+    });
+  });
 }
-db.pragma('foreign_keys = ON');
 
-function initializeDatabase(targetDb = db) {
-  targetDb.pragma('foreign_keys = ON');
+/**
+ * Áp dụng các thay đổi schema cho CSDL tạo từ phiên bản cũ.
+ * @param {SqliteAdapter} target
+ */
+function migrate(target) {
+  if (target.getSchemaVersion() >= SCHEMA_VERSION) {
+    return;
+  }
+  const quoteDefinition = target.getTableDefinition('quote_requests');
+  if (quoteDefinition && !quoteDefinition.includes("'cancelled'")) {
+    rebuildQuoteRequests(target);
+  }
+  // v3: mã chống gửi trùng cho đơn mua nhanh (mỗi lần mở form một mã, mỗi mã tối đa một đơn).
+  if (!target.getTableDefinition('orders').includes('request_token')) {
+    target.exec('ALTER TABLE orders ADD COLUMN request_token TEXT');
+  }
+  target.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_buyer_request_token ON orders(buyer_id, request_token)');
+  target.setSchemaVersion(SCHEMA_VERSION);
+}
 
-  targetDb.exec(`
+/**
+ * Tạo bảng/chỉ mục còn thiếu và chạy migration.
+ * @param {SqliteAdapter} [target]
+ */
+function initializeDatabase(target = adapter) {
+  target.exec(quoteRequestsDdl('quote_requests'));
+  target.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       full_name TEXT NOT NULL,
@@ -97,19 +182,38 @@ function initializeDatabase(targetDb = db) {
       sort_order INTEGER NOT NULL DEFAULT 0
     );
 
-    CREATE TABLE IF NOT EXISTS quote_requests (
+    CREATE TABLE IF NOT EXISTS orders (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       buyer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      category TEXT NOT NULL,
-      quantity INTEGER NOT NULL,
-      deadline TEXT NOT NULL,
-      status TEXT NOT NULL CHECK(status IN ('draft', 'sent', 'bidding', 'accepted', 'in_production', 'delivered')),
-      accepted_bid_id INTEGER,
-      version INTEGER NOT NULL DEFAULT 0,
+      artisan_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      product_id INTEGER REFERENCES products(id) ON DELETE SET NULL,
+      product_name TEXT NOT NULL,
+      product_slug TEXT,
+      quantity INTEGER NOT NULL CHECK(quantity > 0),
+      unit_price REAL NOT NULL,
+      total_amount REAL NOT NULL,
+      recipient_name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      shipping_address TEXT NOT NULL,
+      note TEXT,
+      request_token TEXT,
+      status TEXT NOT NULL DEFAULT 'placed' CHECK(status IN ('placed', 'cancelled')),
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS slug_redirects (
+      entity TEXT NOT NULL CHECK(entity IN ('news')),
+      old_slug TEXT NOT NULL,
+      new_slug TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      PRIMARY KEY (entity, old_slug)
+    );
+
+    CREATE TABLE IF NOT EXISTS sessions (
+      sid TEXT PRIMARY KEY,
+      sess TEXT NOT NULL,
+      expires_at INTEGER NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS bids (
@@ -163,22 +267,57 @@ function initializeDatabase(targetDb = db) {
     CREATE INDEX IF NOT EXISTS idx_bids_artisan_id ON bids(artisan_id);
     CREATE INDEX IF NOT EXISTS idx_news_slug ON news(slug);
     CREATE INDEX IF NOT EXISTS idx_news_published ON news(is_published, published_at);
+    CREATE INDEX IF NOT EXISTS idx_orders_buyer_id ON orders(buyer_id);
+    CREATE INDEX IF NOT EXISTS idx_orders_artisan_id ON orders(artisan_id);
+    CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
   `);
+  migrate(target);
 }
 
-function seedDatabase(targetDb = db) {
-  // Check if seed has already been applied
-  const existingAdmin = targetDb.prepare('SELECT id FROM users WHERE email = ?').get('admin@vcraft.vn');
+/**
+ * Tạo tài khoản quản trị đầu tiên cho môi trường production (không nạp dữ liệu demo).
+ * Không làm gì nếu đã có admin.
+ * @param {{ email?: string, password?: string, fullName?: string }} credentials Lấy từ ADMIN_EMAIL/ADMIN_PASSWORD.
+ * @param {SqliteAdapter} [target]
+ * @returns {boolean} true nếu vừa tạo admin.
+ */
+function bootstrapAdmin({ email, password, fullName = 'Quản Trị Viên vCraft' }, target = adapter) {
+  if (target.get("SELECT id FROM users WHERE role = 'admin' LIMIT 1")) {
+    return false;
+  }
+  if (!email || !email.includes('@') || !password || password.length < 12) {
+    throw new Error('Chưa có tài khoản admin: đặt ADMIN_EMAIL và ADMIN_PASSWORD (tối thiểu 12 ký tự) để khởi tạo.');
+  }
+  target.insert('users', {
+    full_name: fullName,
+    email: email.trim().toLowerCase(),
+    password_hash: bcrypt.hashSync(password, 10),
+    role: 'admin',
+    status: 'approved'
+  });
+  return true;
+}
+
+/**
+ * Nạp dữ liệu mẫu cố định (tài khoản demo mật khẩu công khai) nếu CSDL chưa có admin demo.
+ * Chỉ dùng cho phát triển/demo; production dùng {@link bootstrapAdmin}.
+ * @param {SqliteAdapter} [target]
+ */
+function seedDatabase(target = adapter) {
+  const existingAdmin = target.get('SELECT id FROM users WHERE email = ?', ['admin@vcraft.vn']);
   if (existingAdmin) {
     return;
   }
 
-  const seedTransaction = targetDb.transaction(() => {
+  /** Câu lệnh ghi gắn sẵn SQL; `run(...params)` trả về { changes, lastInsertId }. */
+  const statement = (sql) => ({ run: (...params) => target.run(sql, params) });
+
+  target.transaction(() => {
     const adminPass = bcrypt.hashSync('Admin@123', 10);
     const buyerPass = bcrypt.hashSync('Buyer@123', 10);
     const artisanPass = bcrypt.hashSync('Artisan@123', 10);
 
-    const insertUser = targetDb.prepare(`
+    const insertUser = statement(`
       INSERT INTO users (full_name, email, password_hash, role, status, created_at)
       VALUES (?, ?, ?, ?, ?, datetime('now'))
     `);
@@ -189,7 +328,7 @@ function seedDatabase(targetDb = db) {
       adminPass,
       'admin',
       'approved'
-    ).lastInsertRowid;
+    ).lastInsertId;
 
     const buyerId = insertUser.run(
       'Nguyễn Văn An',
@@ -197,7 +336,7 @@ function seedDatabase(targetDb = db) {
       buyerPass,
       'buyer',
       'approved'
-    ).lastInsertRowid;
+    ).lastInsertId;
 
     const artisan1Id = insertUser.run(
       'Nghệ nhân Trần Văn Độ',
@@ -205,7 +344,7 @@ function seedDatabase(targetDb = db) {
       artisanPass,
       'artisan',
       'approved'
-    ).lastInsertRowid;
+    ).lastInsertId;
 
     const artisan2Id = insertUser.run(
       'Nghệ nhân Triệu Thị Mão',
@@ -213,7 +352,7 @@ function seedDatabase(targetDb = db) {
       artisanPass,
       'artisan',
       'approved'
-    ).lastInsertRowid;
+    ).lastInsertId;
 
     const artisan3Id = insertUser.run(
       'Nghệ nhân Nguyễn Văn Tĩnh',
@@ -221,10 +360,10 @@ function seedDatabase(targetDb = db) {
       artisanPass,
       'artisan',
       'pending'
-    ).lastInsertRowid;
+    ).lastInsertId;
 
     // Artisan Profiles
-    const insertProfile = targetDb.prepare(`
+    const insertProfile = statement(`
       INSERT INTO artisan_profiles (
         user_id, slug, workshop_name, story, address, latitude, longitude,
         is_open, visiting_hours, categories, phone, cover_image, gallery_images, certificate_image
@@ -288,7 +427,7 @@ function seedDatabase(targetDb = db) {
     );
 
     // Products
-    const insertProduct = targetDb.prepare(`
+    const insertProduct = statement(`
       INSERT INTO products (
         artisan_id, slug, name, category, description, price, inventory, hero_image, status
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -304,7 +443,7 @@ function seedDatabase(targetDb = db) {
       8,
       'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80',
       'published'
-    ).lastInsertRowid;
+    ).lastInsertId;
 
     const p2Id = insertProduct.run(
       artisan1Id,
@@ -316,7 +455,7 @@ function seedDatabase(targetDb = db) {
       15,
       'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=800&q=80',
       'published'
-    ).lastInsertRowid;
+    ).lastInsertId;
 
     const p3Id = insertProduct.run(
       artisan2Id,
@@ -328,10 +467,10 @@ function seedDatabase(targetDb = db) {
       20,
       'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=800&q=80',
       'published'
-    ).lastInsertRowid;
+    ).lastInsertId;
 
     // Production Steps for Product 1
-    const insertStep = targetDb.prepare(`
+    const insertStep = statement(`
       INSERT INTO production_steps (product_id, title, description, occurred_at, image_path, sort_order)
       VALUES (?, ?, ?, ?, ?, ?)
     `);
@@ -401,7 +540,7 @@ function seedDatabase(targetDb = db) {
     );
 
     // Product Images
-    const insertImage = targetDb.prepare(`
+    const insertImage = statement(`
       INSERT INTO product_images (product_id, image_path, alt_text, sort_order)
       VALUES (?, ?, ?, ?)
     `);
@@ -420,7 +559,7 @@ function seedDatabase(targetDb = db) {
     );
 
     // News
-    const insertNews = targetDb.prepare(`
+    const insertNews = statement(`
       INSERT INTO news (title, slug, excerpt, body, cover_image, is_published, published_at)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
@@ -446,7 +585,7 @@ function seedDatabase(targetDb = db) {
     );
 
     // Quote Request Scenario
-    const insertQuote = targetDb.prepare(`
+    const insertQuote = statement(`
       INSERT INTO quote_requests (buyer_id, title, description, category, quantity, deadline, status, version)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
@@ -460,10 +599,10 @@ function seedDatabase(targetDb = db) {
       '2026-12-15',
       'bidding',
       1
-    ).lastInsertRowid;
+    ).lastInsertId;
 
     // Quote Target
-    const insertTarget = targetDb.prepare(`
+    const insertTarget = statement(`
       INSERT INTO quote_targets (quote_id, artisan_id, seen_at)
       VALUES (?, ?, ?)
     `);
@@ -471,7 +610,7 @@ function seedDatabase(targetDb = db) {
     insertTarget.run(quote1Id, artisan1Id, '2026-10-20 09:00:00');
 
     // Bid
-    const insertBid = targetDb.prepare(`
+    const insertBid = statement(`
       INSERT INTO bids (quote_id, artisan_id, unit_price, lead_days, completion_date, note, status)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
@@ -486,12 +625,13 @@ function seedDatabase(targetDb = db) {
       'submitted'
     );
   });
-
-  seedTransaction();
 }
 
 module.exports = {
+  adapter,
   db,
+  createAdapter,
   initializeDatabase,
-  seedDatabase
+  seedDatabase,
+  bootstrapAdmin
 };

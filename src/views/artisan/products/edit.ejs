@@ -39,7 +39,7 @@
       </div>
       <div class="card-body">
         <form
-          action="/artisan/products/<%= product.id %>?_csrf=<%= csrfToken %>"
+          action="/artisan/products/<%= product.id %>?_method=PUT"
           method="POST"
           enctype="multipart/form-data"
           class="vcraft-form"
@@ -162,14 +162,7 @@
                     <div class="edit-gallery-card">
                       <img src="<%= img.image_path %>" alt="<%= img.alt_text || 'Ảnh chi tiết' %>" class="edit-gallery-thumb">
                       <div class="edit-gallery-overlay">
-                        <form
-                          action="/artisan/products/<%= product.id %>/images/<%= img.id %>/delete"
-                          method="POST"
-                          data-confirm="Bạn có chắc chắn muốn xóa ảnh này khỏi tác phẩm?"
-                        >
-                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                          <button type="submit" class="btn btn-xs btn-danger" title="Xóa ảnh này">Xóa</button>
-                        </form>
+                        <button type="submit" form="delete-image-<%= img.id %>" class="btn btn-xs btn-danger" title="Xóa ảnh này">Xóa</button>
                       </div>
                     </div>
                   <% }); %>
@@ -197,6 +190,12 @@
             <a href="/artisan/dashboard" class="btn btn-outline btn-lg">Về Bảng điều khiển</a>
           </div>
         </form>
+        <% for (const img of product.images || []) { %>
+          <form id="delete-image-<%= img.id %>" action="/artisan/products/<%= product.id %>/images/<%= img.id %>" method="POST" data-confirm="Bạn có chắc chắn muốn xóa ảnh này khỏi tác phẩm?">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden" name="_method" value="DELETE">
+          </form>
+        <% } %>
       </div>
     </div>
 
@@ -243,12 +242,13 @@
                       <td><%= step.description || '—' %></td>
                       <td class="text-right">
                         <form
-                          action="/artisan/products/<%= product.id %>/steps/<%= step.id %>/delete"
+                          action="/artisan/products/<%= product.id %>/steps/<%= step.id %>"
                           method="POST"
                           class="d-inline"
                           data-confirm="Bạn có chắc chắn muốn xóa công đoạn chế tác này?"
                         >
                           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                          <input type="hidden" name="_method" value="DELETE">
                           <button type="submit" class="btn btn-xs btn-danger">Xóa bước</button>
                         </form>
                       </td>
@@ -268,7 +268,7 @@
         <div class="add-step-box">
           <h3 class="subsection-title">+ Thêm công đoạn chế tác mới</h3>
           <form
-            action="/artisan/products/<%= product.id %>/steps?_csrf=<%= csrfToken %>"
+            action="/artisan/products/<%= product.id %>/steps"
             method="POST"
             enctype="multipart/form-data"
             class="vcraft-form"
@@ -341,11 +341,12 @@
           </p>
         </div>
         <form
-          action="/artisan/products/<%= product.id %>/delete"
+          action="/artisan/products/<%= product.id %>"
           method="POST"
           data-confirm="Bạn có CHẮC CHẮN muốn xóa vĩnh viễn tác phẩm này?"
         >
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="_method" value="DELETE">
           <button type="submit" class="btn btn-danger">Xóa Vĩnh Viễn Tác Phẩm</button>
         </form>
       </div>

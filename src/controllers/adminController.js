@@ -1,109 +1,27 @@
-const { db } = require('../config/database');
 const User = require('../models/User');
 const News = require('../models/News');
+const dashboardService = require('../services/dashboardService');
+const { ValidationError } = require('../errors/AppError');
 
 const adminController = {
+  /**
+   * GET /admin — thống kê, danh sách nghệ nhân theo trạng thái và hoạt động gần đây.
+   */
   getDashboard(req, res) {
     try {
-      // 1. User and Artisan counts
-      const userCounts = db.prepare(`
-        SELECT role, status, COUNT(*) as count
-        FROM users
-        GROUP BY role, status
-      `).all();
-
-      const stats = {
-        totalUsers: 0,
-        buyers: 0,
-        artisansPending: 0,
-        artisansApproved: 0,
-        artisansSuspended: 0,
-        productsTotal: 0,
-        productsPublished: 0,
-        quotesTotal: 0,
-        quotesBidding: 0,
-        quotesAccepted: 0,
-        quotesDelivered: 0,
-        newsTotal: 0,
-        newsPublished: 0
-      };
-
-      for (const row of userCounts) {
-        stats.totalUsers += row.count;
-        if (row.role === 'buyer') {
-          stats.buyers += row.count;
-        } else if (row.role === 'artisan') {
-          if (row.status === 'pending') stats.artisansPending += row.count;
-          else if (row.status === 'approved') stats.artisansApproved += row.count;
-          else if (row.status === 'suspended') stats.artisansSuspended += row.count;
-        }
-      }
-
-      // 2. Product counts
-      const prodStats = db.prepare(`
-        SELECT
-          COUNT(*) as total,
-          SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as published
-        FROM products
-      `).get();
-      if (prodStats) {
-        stats.productsTotal = prodStats.total || 0;
-        stats.productsPublished = prodStats.published || 0;
-      }
-
-      // 3. Quote counts
-      const quoteStats = db.prepare(`
-        SELECT
-          COUNT(*) as total,
-          SUM(CASE WHEN status IN ('sent', 'bidding') THEN 1 ELSE 0 END) as bidding,
-          SUM(CASE WHEN status IN ('accepted', 'in_production') THEN 1 ELSE 0 END) as accepted,
-          SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered
-        FROM quote_requests
-      `).get();
-      if (quoteStats) {
-        stats.quotesTotal = quoteStats.total || 0;
-        stats.quotesBidding = quoteStats.bidding || 0;
-        stats.quotesAccepted = quoteStats.accepted || 0;
-        stats.quotesDelivered = quoteStats.delivered || 0;
-      }
-
-      // 4. News counts
-      stats.newsTotal = News.countAll();
-      stats.newsPublished = News.countPublished();
-
-      // 5. Pending artisans list
+      const stats = dashboardService.getStats();
       const pendingArtisans = User.listArtisans({ status: 'pending', limit: 20 });
-
-      // 6. Approved artisans list
       const approvedArtisans = User.listArtisans({ status: 'approved', limit: 20 });
-
-      // 7. Recent products
-      const recentProducts = db.prepare(`
-        SELECT p.id, p.name, p.slug, p.category, p.price, p.inventory, p.status, p.created_at,
-               u.full_name as artisan_name, ap.workshop_name
-        FROM products p
-        JOIN users u ON p.artisan_id = u.id
-        LEFT JOIN artisan_profiles ap ON u.id = ap.user_id
-        ORDER BY p.created_at DESC
-        LIMIT 10
-      `).all();
-
-      // 8. Recent quotes
-      const recentQuotes = db.prepare(`
-        SELECT q.id, q.title, q.category, q.quantity, q.status, q.deadline, q.created_at,
-               u.full_name as buyer_name, u.email as buyer_email,
-               (SELECT COUNT(*) FROM bids b WHERE b.quote_id = q.id) as bid_count
-        FROM quote_requests q
-        JOIN users u ON q.buyer_id = u.id
-        ORDER BY q.created_at DESC
-        LIMIT 10
-      `).all();
+      const suspendedArtisans = User.listArtisans({ status: 'suspended', limit: 20 });
+      const recentProducts = dashboardService.getRecentProducts(10);
+      const recentQuotes = dashboardService.getRecentQuotes(10);
 
       res.render('admin/dashboard', {
         title: 'Bàn Làm Việc Quản Trị Viên - vCraft',
         stats,
         pendingArtisans,
         approvedArtisans,
+        suspendedArtisans,
         recentProducts,
         recentQuotes
       });
@@ -116,6 +34,7 @@ const adminController = {
     }
   },
 
+  /** Hiển thị biểu mẫu tạo tài khoản nghệ nhân. */
   getNewArtisan(req, res) {
     res.render('admin/artisan-new', {
       title: 'Tạo Tài Khoản Nghệ Nhân Mới - Quản Trị',
@@ -124,6 +43,7 @@ const adminController = {
     });
   },
 
+  /** Kiểm tra hồ sơ và tạo tài khoản nghệ nhân đã duyệt. */
   postNewArtisan(req, res) {
     const {
       fullName,
@@ -193,47 +113,33 @@ const adminController = {
     }
   },
 
-  postApproveArtisan(req, res) {
-    const id = parseInt(req.params.id, 10);
-    if (!id) {
-      if (req.flash) req.flash('error', 'ID nghệ nhân không hợp lệ.');
-      return res.redirect('/admin');
+  /** Cập nhật trạng thái duyệt của nghệ nhân, kể cả khi khôi phục tài khoản. */
+  patchArtisanStatus(req, res, next) {
+    const { status } = req.body;
+    if (status !== 'approved' && status !== 'suspended') {
+      return next(new ValidationError('Trạng thái nghệ nhân phải là approved hoặc suspended.'));
     }
 
+    const id = Number(req.params.id);
     const artisan = User.getArtisanDetail(id);
     if (!artisan) {
       if (req.flash) req.flash('error', 'Không tìm thấy hồ sơ nghệ nhân yêu cầu.');
       return res.redirect('/admin');
     }
 
-    User.updateStatus(id, 'approved');
+    User.updateStatus(id, status);
     if (req.flash) {
-      req.flash('success', `Đã phê duyệt tài khoản nghệ nhân "${artisan.full_name}" (${artisan.workshop_name || 'Xưởng thủ công'}). Tài khoản đã được kích hoạt.`);
+      if (status === 'approved') {
+        const action = artisan.status === 'suspended' ? 'khôi phục' : 'phê duyệt';
+        req.flash('success', `Đã ${action} tài khoản nghệ nhân "${artisan.full_name}".`);
+      } else {
+        req.flash('info', `Đã tạm ngưng tài khoản nghệ nhân "${artisan.full_name}".`);
+      }
     }
-    res.redirect('/admin');
+    return res.redirect('/admin');
   },
 
-  postSuspendArtisan(req, res) {
-    const id = parseInt(req.params.id, 10);
-    if (!id) {
-      if (req.flash) req.flash('error', 'ID nghệ nhân không hợp lệ.');
-      return res.redirect('/admin');
-    }
-
-    const artisan = User.getArtisanDetail(id);
-    if (!artisan) {
-      if (req.flash) req.flash('error', 'Không tìm thấy hồ sơ nghệ nhân yêu cầu.');
-      return res.redirect('/admin');
-    }
-
-    User.updateStatus(id, 'suspended');
-    if (req.flash) {
-      req.flash('info', `Đã tạm ngưng tài khoản nghệ nhân "${artisan.full_name}".`);
-    }
-    res.redirect('/admin');
-  },
-
-  // News Admin Operations
+  /** Hiển thị danh sách bản tin cho quản trị viên. */
   getNewsList(req, res) {
     const articles = News.findAllAdmin();
     res.render('admin/news-list', {
@@ -242,6 +148,7 @@ const adminController = {
     });
   },
 
+  /** Hiển thị biểu mẫu soạn bản tin. */
   getNewsNew(req, res) {
     res.render('admin/news-form', {
       title: 'Soạn Bản Tin Mới - Quản Trị',
@@ -251,6 +158,7 @@ const adminController = {
     });
   },
 
+  /** Kiểm tra và lưu bản tin mới. */
   postNewsNew(req, res) {
     const { title, excerpt, body, coverImage, isPublished } = req.body;
     const errors = [];
@@ -292,6 +200,7 @@ const adminController = {
     }
   },
 
+  /** Hiển thị biểu mẫu chỉnh sửa bản tin. */
   getNewsEdit(req, res) {
     const id = parseInt(req.params.id, 10);
     const article = News.findById(id);
@@ -308,6 +217,7 @@ const adminController = {
     });
   },
 
+  /** Kiểm tra và cập nhật bản tin. */
   postNewsEdit(req, res) {
     const id = parseInt(req.params.id, 10);
     const article = News.findById(id);
@@ -356,6 +266,7 @@ const adminController = {
     }
   },
 
+  /** Xóa bản tin và quay lại danh sách. */
   postNewsDelete(req, res) {
     const id = parseInt(req.params.id, 10);
     News.delete(id);

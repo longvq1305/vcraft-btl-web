@@ -39,6 +39,9 @@
         novalidate
       >
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <% if (article) { %>
+          <input type="hidden" name="_method" value="PUT">
+        <% } %>
 
         <div class="form-group">
           <label for="title" class="form-label">Tiêu đề bài viết <span class="required">*</span></label>

@@ -13,7 +13,7 @@ router.get('/dashboard', requireRole('artisan'), artisanController.dashboard);
 router.get('/profile', requireRole('artisan'), artisanController.profileForm);
 
 // Profile mutation requires approved artisan status
-router.post(
+router.put(
   '/profile',
   requireApprovedArtisan,
   imageService.uploadProfileImages,
@@ -31,9 +31,9 @@ router.post(
   artisanController.createProduct
 );
 
-router.get('/products/:id/edit', requireApprovedArtisan, artisanController.editProductForm);
-router.post(
-  '/products/:id',
+router.get('/products/:id(\\d+)/edit', requireApprovedArtisan, artisanController.editProductForm);
+router.put(
+  '/products/:id(\\d+)',
   requireApprovedArtisan,
   imageService.uploadProductImages,
   validateCsrf,
@@ -41,25 +41,25 @@ router.post(
 );
 
 router.post(
-  '/products/:id/steps',
+  '/products/:id(\\d+)/steps',
   requireApprovedArtisan,
   imageService.uploadStepImage,
   validateCsrf,
   artisanController.addStep
 );
 
-router.post(
-  '/products/:id/steps/:stepId/delete',
+router.delete(
+  '/products/:id(\\d+)/steps/:stepId(\\d+)',
   requireApprovedArtisan,
   artisanController.deleteStep
 );
 
-router.post(
-  '/products/:id/images/:imageId/delete',
+router.delete(
+  '/products/:id(\\d+)/images/:imageId(\\d+)',
   requireApprovedArtisan,
   artisanController.deleteImage
 );
 
-router.post('/products/:id/delete', requireApprovedArtisan, artisanController.deleteProduct);
+router.delete('/products/:id(\\d+)', requireApprovedArtisan, artisanController.deleteProduct);
 
 module.exports = router;

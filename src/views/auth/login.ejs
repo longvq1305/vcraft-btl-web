@@ -72,6 +72,7 @@
         <p>Chưa có tài khoản? <a href="/auth/register" class="link-primary">Đăng ký ngay</a></p>
       </div>
 
+      <% if (showDemoAccounts) { %>
       <div class="demo-login-helper paper-panel">
         <h3 class="demo-helper-title">Tài khoản thử nghiệm sẵn có</h3>
         <div class="demo-grid">
@@ -93,6 +94,7 @@
           </button>
         </div>
       </div>
+      <% } %>
     </div>
   </div>
 </main>

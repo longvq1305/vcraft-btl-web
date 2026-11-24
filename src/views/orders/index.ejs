@@ -1,0 +1,69 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<main class="site-main">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Đơn hàng</h1>
+      <p class="page-subtitle">
+        <% if (currentUser.role === 'buyer') { %>
+          Theo dõi đơn mua sản phẩm có sẵn của bạn.
+        <% } else if (currentUser.role === 'artisan') { %>
+          Các đơn đặt mua sản phẩm của xưởng bạn.
+        <% } else { %>
+          Tất cả đơn mua nhanh trên vCraft.
+        <% } %>
+      </p>
+    </div>
+
+    <% if (items.length) { %>
+      <div class="card paper-panel table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Mã đơn</th><th scope="col">Sản phẩm</th><th scope="col">Số lượng</th>
+              <th scope="col">Tổng tiền</th><th scope="col">Trạng thái</th><th scope="col">Ngày đặt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (const order of items) { %>
+              <% const badge = getStatusBadge(order.status); %>
+              <tr>
+                <th scope="row"><a href="/orders/<%= order.id %>">#<%= order.id %></a></th>
+                <td><%= order.product_name %></td>
+                <td><%= order.quantity %></td>
+                <td><%= formatCurrency(order.total_amount) %></td>
+                <td><span class="badge <%= badge.className %>"><%= badge.label %></span></td>
+                <td><time datetime="<%= order.created_at %>"><%= formatDate(order.created_at, true) %></time></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="card paper-panel empty-state">
+        <p><%= pagination.total ? 'Không có đơn hàng trên trang này.' : 'Chưa có đơn hàng nào.' %></p>
+        <% if (!pagination.total && currentUser.role === 'buyer') { %>
+          <a href="/catalog" class="btn btn-primary">Xem bộ sưu tập</a>
+        <% } %>
+      </div>
+    <% } %>
+
+    <% if (pagination.hasPrev || pagination.hasNext) { %>
+      <nav class="pagination mt-3" aria-label="Phân trang đơn hàng">
+        <% if (pagination.hasPrev) { %>
+          <a href="/orders?page=<%= Math.min(pagination.page - 1, pagination.totalPages) %>" class="btn btn-outline" rel="prev">&larr; Trang trước</a>
+        <% } %>
+        <% if (pagination.page <= pagination.totalPages) { %>
+          <span>Trang <%= pagination.page %> / <%= pagination.totalPages %></span>
+        <% } %>
+        <% if (pagination.hasNext) { %>
+          <a href="/orders?page=<%= pagination.page + 1 %>" class="btn btn-outline" rel="next">Trang sau &rarr;</a>
+        <% } %>
+      </nav>
+    <% } %>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

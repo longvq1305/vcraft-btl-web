@@ -1,23 +1,12 @@
-const slugify = require('slugify');
 const { db } = require('../config/database');
+const { uniqueSlug } = require('../utils/slug');
 
-function generateSlug(text, existingSlug = null) {
-  const base = slugify(text || 'xuong-thu-cong', {
-    lower: true,
-    strict: true,
-    locale: 'vi'
-  }) || 'xuong-thu-cong';
-
-  let slug = base;
-  let counter = 1;
-
-  while (true) {
-    const row = db.prepare('SELECT id, slug FROM artisan_profiles WHERE slug = ?').get(slug);
-    if (!row || (existingSlug && row.slug === existingSlug)) {
-      return slug;
-    }
-    slug = `${base}-${counter++}`;
-  }
+/**
+ * @param {string} text
+ * @returns {string} Slug xưởng chưa bị dùng.
+ */
+function generateSlug(text) {
+  return uniqueSlug(text, (s) => Boolean(db.prepare('SELECT 1 FROM artisan_profiles WHERE slug = ?').get(s)), 'xuong-thu-cong');
 }
 
 function parseGallery(galleryImages) {

@@ -175,12 +175,13 @@
                         Sửa & Nhật ký
                       </a>
                       <form
-                        action="/artisan/products/<%= product.id %>/delete"
+                        action="/artisan/products/<%= product.id %>"
                         method="POST"
                         class="d-inline"
                         data-confirm="Bạn có chắc chắn muốn xóa tác phẩm này? Mọi hình ảnh và công đoạn chế tác liên quan sẽ bị xóa vĩnh viễn."
                       >
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
                       </form>
                     </div>

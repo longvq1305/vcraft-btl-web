@@ -2,22 +2,27 @@
 <%- include('../partials/header') %>
 <%- include('../partials/flash') %>
 
+<% const isEdit = Boolean(quote); %>
 <main class="site-main quotes-new-page">
   <div class="container">
     <nav class="breadcrumb-nav" aria-label="Đường dẫn">
       <ol class="breadcrumb-list">
         <li><a href="/">Trang chủ</a></li>
         <li><a href="/quotes">Yêu cầu Báo giá</a></li>
-        <li aria-current="page">Tạo yêu cầu mới</li>
+        <li aria-current="page"><%= isEdit ? 'Sửa bản nháp' : 'Tạo yêu cầu mới' %></li>
       </ol>
     </nav>
 
     <div class="page-header">
-      <span class="slide-kicker">Khởi Tạo Đơn Hàng</span>
-      <h1 class="page-title">Đặt hàng Chế tác &amp; Yêu cầu Báo giá</h1>
+      <span class="slide-kicker"><%= isEdit ? 'Bản nháp yêu cầu báo giá' : 'Khởi Tạo Đơn Hàng' %></span>
+      <h1 class="page-title"><%= isEdit ? title : 'Đặt hàng Chế tác & Yêu cầu Báo giá' %></h1>
       <div class="editorial-rule"></div>
       <p class="page-subtitle">
-        Cung cấp thông tin chi tiết về sản phẩm bạn mong muốn đặt làm. Yêu cầu sẽ được tạo dưới dạng bản nháp để bạn kiểm tra trước khi gửi tới các nghệ nhân trong làng nghề.
+        <% if (isEdit) { %>
+          Cập nhật thông tin yêu cầu trước khi gửi đến các nghệ nhân.
+        <% } else { %>
+          Cung cấp thông tin chi tiết về sản phẩm bạn mong muốn đặt làm. Yêu cầu sẽ được tạo dưới dạng bản nháp để bạn kiểm tra trước khi gửi tới các nghệ nhân trong làng nghề.
+        <% } %>
       </p>
     </div>
 
@@ -31,8 +36,11 @@
     <div class="grid grid-sidebar">
       <div class="main-column">
         <div class="card form-card paper-panel">
-          <form action="/quotes" method="POST" class="form-standard" novalidate>
+          <form action="<%= isEdit ? '/quotes/' + quote.id : '/quotes' %>" method="POST" class="form-standard" novalidate>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <% if (isEdit) { %>
+              <input type="hidden" name="_method" value="PUT">
+            <% } %>
 
             <div class="form-group">
               <label for="title" class="form-label">
@@ -118,9 +126,9 @@
 
             <div class="form-actions">
               <button type="submit" class="btn btn-primary btn-lg">
-                Tạo yêu cầu (Lưu bản nháp) &rarr;
+                <%= isEdit ? 'Lưu thay đổi' : 'Tạo yêu cầu (Lưu bản nháp)' %> &rarr;
               </button>
-              <a href="/quotes" class="btn btn-outline btn-lg">Hủy bỏ</a>
+              <a href="<%= isEdit ? '/quotes/' + quote.id : '/quotes' %>" class="btn btn-outline btn-lg">Hủy bỏ</a>
             </div>
           </form>
         </div>

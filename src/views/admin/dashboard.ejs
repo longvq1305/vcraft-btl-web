@@ -88,12 +88,16 @@
                   </td>
                   <td class="action-cell">
                     <div class="btn-group-actions">
-                      <form action="/admin/artisans/<%= artisan.id %>/approve" method="POST" class="inline-form">
+                      <form action="/admin/artisans/<%= artisan.id %>/status" method="POST" class="inline-form">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <input type="hidden" name="_method" value="PATCH">
+                        <input type="hidden" name="status" value="approved">
                         <button type="submit" class="btn btn-sm btn-success">✓ Phê duyệt</button>
                       </form>
-                      <form action="/admin/artisans/<%= artisan.id %>/suspend" method="POST" class="inline-form" data-confirm="Bạn có chắc muốn từ chối / tạm ngưng nghệ nhân này?">
+                      <form action="/admin/artisans/<%= artisan.id %>/status" method="POST" class="inline-form" data-confirm="Bạn có chắc muốn từ chối / tạm ngưng nghệ nhân này?">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <input type="hidden" name="_method" value="PATCH">
+                        <input type="hidden" name="status" value="suspended">
                         <button type="submit" class="btn btn-sm btn-danger">Từ chối</button>
                       </form>
                     </div>
@@ -157,8 +161,10 @@
                     <span class="badge badge-approved">Đã duyệt</span>
                   </td>
                   <td>
-                    <form action="/admin/artisans/<%= artisan.id %>/suspend" method="POST" class="inline-form" data-confirm="Bạn có chắc muốn tạm ngưng tài khoản nghệ nhân này?">
+                    <form action="/admin/artisans/<%= artisan.id %>/status" method="POST" class="inline-form" data-confirm="Bạn có chắc muốn tạm ngưng tài khoản nghệ nhân này?">
                       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <input type="hidden" name="_method" value="PATCH">
+                      <input type="hidden" name="status" value="suspended">
                       <button type="submit" class="btn btn-sm btn-outline-danger">Tạm ngưng</button>
                     </form>
                   </td>
@@ -171,6 +177,43 @@
         <div class="empty-state-card">
           <p>Chưa có nghệ nhân nào được duyệt.</p>
         </div>
+      <% } %>
+    </section>
+
+    <section class="admin-section">
+      <div class="section-header-row">
+        <div>
+          <h2 class="section-title">Nghệ nhân bị tạm ngưng</h2>
+          <p class="section-subtitle">Khôi phục tài khoản để nghệ nhân có thể hoạt động trở lại.</p>
+        </div>
+        <span class="badge badge-suspended"><%= suspendedArtisans.length %> tài khoản</span>
+      </div>
+      <% if (suspendedArtisans.length) { %>
+        <div class="table-responsive">
+          <table class="table admin-table">
+            <thead>
+              <tr><th scope="col">Nghệ nhân</th><th scope="col">Xưởng thủ công</th><th scope="col">Thao tác</th></tr>
+            </thead>
+            <tbody>
+              <% suspendedArtisans.forEach(function(artisan) { %>
+                <tr>
+                  <td><strong><%= artisan.full_name %></strong><br><span class="text-muted"><%= artisan.email %></span></td>
+                  <td><%= artisan.workshop_name || 'Đang cập nhật' %></td>
+                  <td>
+                    <form action="/admin/artisans/<%= artisan.id %>/status" method="POST" class="inline-form">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <input type="hidden" name="_method" value="PATCH">
+                      <input type="hidden" name="status" value="approved">
+                      <button type="submit" class="btn btn-sm btn-success">Khôi phục</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state-card"><p>Không có tài khoản nghệ nhân bị tạm ngưng.</p></div>
       <% } %>
     </section>
 

@@ -1,0 +1,57 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<% const badge = getStatusBadge(order.status); %>
+<main class="site-main">
+  <div class="container">
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li><a href="/orders">Đơn hàng</a></li>
+        <li aria-current="page">#<%= order.id %></li>
+      </ol>
+    </nav>
+    <div class="page-header">
+      <span class="badge <%= badge.className %>"><%= badge.label %></span>
+      <h1 class="page-title">Đơn hàng #<%= order.id %></h1>
+    </div>
+
+    <div class="grid grid-2">
+      <section class="card paper-panel">
+        <h2 class="card-title">Thông tin sản phẩm</h2>
+        <p><strong><%= order.product_name %></strong></p>
+        <dl>
+          <dt>Số lượng</dt><dd><%= order.quantity %></dd>
+          <dt>Đơn giá lúc đặt</dt><dd><%= formatCurrency(order.unit_price) %></dd>
+          <dt>Tổng tiền</dt><dd><strong><%= formatCurrency(order.total_amount) %></strong></dd>
+          <dt>Ngày đặt</dt><dd><time datetime="<%= order.created_at %>"><%= formatDate(order.created_at, true) %></time></dd>
+        </dl>
+        <% if (order.product_id && order.product_slug) { %>
+          <a href="/products/<%= encodeURIComponent(order.product_slug) %>">Xem trang sản phẩm</a>
+        <% } %>
+      </section>
+      <section class="card paper-panel">
+        <h2 class="card-title">Giao hàng</h2>
+        <dl>
+          <dt>Người nhận</dt><dd><%= order.recipient_name %></dd>
+          <dt>Số điện thoại</dt><dd><%= order.phone %></dd>
+          <dt>Địa chỉ</dt><dd><%= order.shipping_address %></dd>
+          <% if (order.note) { %>
+            <dt>Ghi chú</dt><dd><%= order.note %></dd>
+          <% } %>
+        </dl>
+      </section>
+    </div>
+
+    <% if (currentUser.role === 'buyer' && currentUser.id === order.buyer_id && order.status === 'placed') { %>
+      <form action="/orders/<%= order.id %>/cancel" method="POST" class="mt-3" data-confirm="Bạn có chắc muốn hủy đơn hàng này?">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" name="_method" value="PATCH">
+        <button type="submit" class="btn btn-outline-danger">Hủy đơn hàng</button>
+      </form>
+    <% } %>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
