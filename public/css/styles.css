@@ -3,8 +3,8 @@
  * Master Stylesheet: Presentation Editorial Design System
  * 
  * Visual Grammar grounded in PowerPoint evidence:
- * - Light palette: ivory, oxblood and antique gold ("Giấy Dó & Đất Lửa").
- * - Dark palette: warm ebony, cinnabar vermilion and gold leaf ("Sơn Mài & Gỗ Mun").
+ * - Light palette: warm ivory, cinnabar oxblood & antique gold ("Giấy Dó & Son Đất" — Warm Heritage).
+ * - Dark palette: nocturnal cobalt-indigo, Lý-Trần celadon jade & Huế gilded bronze ("Men Lam & Ngọc Bích" — Cool Contrasting Heritage).
  * - Typography: Bricolage Grotesque (body/UI), Calistoga (heritage display), Allison (calligraphic accent)
  * - Texture: Subtle handmade paper texture (paper-texture.webp)
  * - Minimal rounding: 0-4px radii, hard/offset editorial borders/shadows, rectangular burgundy caption tabs
@@ -162,120 +162,123 @@
 }
 
 /* ==========================================================================
-   1b. Dark Theme Palette ("Sơn Mài & Gỗ Mun" — Lacquer Ebony, Vermilion & Gold)
+   1b. Dark Theme Palette ("Men Lam & Ngọc Bích" — Contrasting Cultural Heritage)
    ========================================================================== */
 html[data-theme="dark"] {
   color-scheme: dark;
 
-  /* Traditional Vietnamese lacquerware palette: warm ebony ("sơn then"),
-     cinnabar vermilion ("sơn son"), gold leaf ("thếp vàng quỳ"), and fired clay */
-  --oxblood: #8E1D1A;
-  --oxblood-hover: #A92521;
-  --oxblood-dark: #240A09;
-  --wine: #4A1311;
-  --parchment: #F5ECD7;
-  --parchment-light: #2B201C;
-  --aged-paper: #241B17;
-  --aged-paper-border: #4D3A2F;
-  --ink: #16100E;
-  --ink-secondary: #D7C7B2;
-  --ink-muted: #B5A28C;
-  --antique-gold: #D8AD42;
-  --antique-gold-hover: #EBC35E;
-  --antique-gold-light: #2E2314;
-  --antique-gold-border: #7A5D20;
-  --primary: #8E1D1A;
-  --primary-hover: #A92521;
-  --primary-light: #2D1917;
-  --primary-focus: rgba(216, 173, 66, 0.28);
-  --primary-border: #C4453E;
-  --terracotta: #A34122;
-  --terracotta-hover: #BE4E2B;
-  --terracotta-light: #2F1B15;
-  --terracotta-border: #8C442B;
-  --gold: #D8AD42;
-  --gold-light: #2E2314;
-  --gold-border: #7A5D20;
+  /* Contrasting cool-spectrum Vietnamese heritage palette:
+     - Surfaces: Chu Đậu cobalt-indigo & traditional indigo dye ("Chàm Lam Đêm")
+     - Primary & Headings: Lý-Trần celadon jade glaze ("Men Ngọc Bích")
+     - Ornamental Accents: Huế Pháp Lam gilded gold ("Vàng Thế Pháp Lam") & antique bronze ("Đồng Cổ")
+     - Body Ink: Mother-of-pearl ivory ("Ánh Ngà Khảm Trai") */
+  --oxblood: #165950;
+  --oxblood-hover: #1D6E63;
+  --oxblood-dark: #09222C;
+  --wine: #12384F;
+  --parchment: #F2EFE4;
+  --parchment-light: #192E43;
+  --aged-paper: #152638;
+  --aged-paper-border: #2E4A63;
+  --ink: #0B1520;
+  --ink-secondary: #C8D6DF;
+  --ink-muted: #9BB2C4;
+  --antique-gold: #E0B658;
+  --antique-gold-hover: #F0C96E;
+  --antique-gold-light: #262519;
+  --antique-gold-border: #856A2B;
+  --primary: #165950;
+  --primary-hover: #1D6E63;
+  --primary-light: #133538;
+  --primary-focus: rgba(134, 219, 196, 0.28);
+  --primary-border: #388E7F;
+  --terracotta: #985821;
+  --terracotta-hover: #B06728;
+  --terracotta-light: #2B2118;
+  --terracotta-border: #8C5A2B;
+  --gold: #E0B658;
+  --gold-light: #262519;
+  --gold-border: #856A2B;
 
-  --bg-primary: #16100E;
-  --bg-secondary: #1E1613;
-  --bg-card: #241B17;
-  --bg-surface-raised: #2D221D;
-  --bg-alt: #1B1411;
-  --bg-dark: #100B09;
-  --bg-wine: #3B1110;
-  --bg-input: #1A1310;
+  --bg-primary: #0B1520;
+  --bg-secondary: #101E2D;
+  --bg-card: #152638;
+  --bg-surface-raised: #1C3147;
+  --bg-alt: #0E1B28;
+  --bg-dark: #070E16;
+  --bg-wine: #103347;
+  --bg-input: #0D1926;
 
-  --text-primary: #F5ECD7;
-  --text-secondary: #D7C7B2;
-  --text-muted: #B5A28C;
-  --text-light: #FFF9E1;
-  --text-inverse: #16100E;
-  --text-gold: #D8AD42;
-  --text-gold-accessible: #E2B94E;
-  --heading-color: #F3D486;
-  --link-color: #E2B94E;
-  --link-hover: #F7D983;
-  --on-brand: #FFF9E1;
+  --text-primary: #EFF3EE;
+  --text-secondary: #C8D6DF;
+  --text-muted: #9BB2C4;
+  --text-light: #F4F6F0;
+  --text-inverse: #0B1520;
+  --text-gold: #E0B658;
+  --text-gold-accessible: #E6BF67;
+  --heading-color: #86DBC4;
+  --link-color: #7AD4BC;
+  --link-hover: #A7EBDA;
+  --on-brand: #F4F6F0;
 
-  --border-color: #3D2E26;
-  --border-subtle: #2F231D;
-  --border-strong: #6B5344;
-  --border-burgundy: rgba(216, 173, 66, 0.32);
-  --border-input: #6B5344;
-  --focus-color: #D8AD42;
-  --focus-ring: rgba(216, 173, 66, 0.32);
+  --border-color: #273F56;
+  --border-subtle: #1C3044;
+  --border-strong: #4B6A86;
+  --border-burgundy: rgba(134, 219, 196, 0.32);
+  --border-input: #4B6A86;
+  --focus-color: #86DBC4;
+  --focus-ring: rgba(134, 219, 196, 0.32);
 
-  --status-success-bg: #132A1E;
+  --status-success-bg: #0F2D25;
   --status-success-text: #86EFAC;
-  --status-success-border: #276749;
-  --status-warning-bg: #2F2310;
+  --status-success-border: #256F59;
+  --status-warning-bg: #2D2512;
   --status-warning-text: #FDE68A;
-  --status-warning-border: #8A651B;
-  --status-danger-bg: #361619;
+  --status-warning-border: #8A6A1F;
+  --status-danger-bg: #371820;
   --status-danger-text: #FCA5A5;
-  --status-danger-border: #9B2C2C;
-  --status-info-bg: #142638;
+  --status-danger-border: #9E3348;
+  --status-info-bg: #122A42;
   --status-info-text: #93C5FD;
-  --status-info-border: #315B85;
-  --btn-success-bg: #15803D;
-  --btn-success-hover: #166534;
+  --status-info-border: #326291;
+  --btn-success-bg: #0F766E;
+  --btn-success-hover: #115E59;
   --btn-success-text: #FFFFFF;
-  --btn-success-border: #4ADE80;
-  --btn-danger-bg: #B91C1C;
-  --btn-danger-hover: #991B1B;
+  --btn-success-border: #5EEAD4;
+  --btn-danger-bg: #9F1239;
+  --btn-danger-hover: #881337;
   --btn-danger-text: #FFFFFF;
-  --btn-danger-border: #F87171;
+  --btn-danger-border: #FB7185;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.65);
-  --shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.72);
-  --shadow-editorial: 4px 4px 0px rgba(0, 0, 0, 0.55);
-  --shadow-editorial-gold: 4px 4px 0px rgba(216, 173, 66, 0.28);
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.45);
-  --shadow-header: 0 2px 12px rgba(0, 0, 0, 0.5);
-  --shadow-image: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 1px 3px rgba(3, 8, 15, 0.42);
+  --shadow-md: 0 4px 14px rgba(3, 8, 15, 0.52);
+  --shadow-lg: 0 10px 28px rgba(3, 8, 15, 0.62);
+  --shadow-hover: 0 12px 28px rgba(3, 8, 15, 0.7);
+  --shadow-editorial: 4px 4px 0px rgba(4, 10, 18, 0.55);
+  --shadow-editorial-gold: 4px 4px 0px rgba(224, 182, 88, 0.28);
+  --shadow-card: 0 2px 8px rgba(3, 8, 15, 0.44);
+  --shadow-header: 0 2px 12px rgba(3, 8, 15, 0.48);
+  --shadow-image: 0 2px 8px rgba(3, 8, 15, 0.44);
 
-  --paper-gradient-start: rgba(45, 34, 29, 0.94);
-  --paper-gradient-end: rgba(28, 20, 17, 0.98);
-  --paper-texture: radial-gradient(circle at 18% 12%, rgba(216, 173, 66, 0.045) 0%, transparent 52%), radial-gradient(circle at 84% 82%, rgba(142, 29, 26, 0.07) 0%, transparent 55%);
-  --brand-rgb: 216, 173, 66;
-  --on-brand-rgb: 245, 236, 215;
-  --home-veil: linear-gradient(135deg, rgba(22, 10, 9, 0.95) 0%, rgba(74, 19, 17, 0.86) 52%, rgba(18, 12, 10, 0.95) 100%);
-  --hero-deep: #1E0807;
-  --hero-mid: #4A1311;
-  --hero-end: #631815;
-  --hero-workshops-end: #3D120F;
-  --hero-map-start: #190908;
-  --hero-story-start: #180706;
-  --caption-bg: rgba(24, 12, 10, 0.94);
-  --workshop-overlay: linear-gradient(180deg, rgba(24, 16, 14, 0.72) 0%, rgba(22, 16, 14, 0.96) 100%);
-  --map-pin-fill: #8E1D1A;
-  --map-pin-muted-fill: #5C4A42;
-  --map-pin-dot: #D8AD42;
-  --map-pin-muted-dot: #A89585;
-  --map-pin-ring: #F5ECD7;
+  --paper-gradient-start: rgba(24, 43, 63, 0.94);
+  --paper-gradient-end: rgba(16, 30, 45, 0.98);
+  --paper-texture: radial-gradient(circle at 16% 14%, rgba(134, 219, 196, 0.05) 0%, transparent 50%), radial-gradient(circle at 85% 82%, rgba(224, 182, 88, 0.055) 0%, transparent 52%);
+  --brand-rgb: 134, 219, 196;
+  --on-brand-rgb: 242, 239, 228;
+  --home-veil: linear-gradient(135deg, rgba(9, 23, 38, 0.95) 0%, rgba(18, 56, 79, 0.87) 52%, rgba(11, 38, 43, 0.94) 100%);
+  --hero-deep: #091726;
+  --hero-mid: #12384F;
+  --hero-end: #154A54;
+  --hero-workshops-end: #143E4A;
+  --hero-map-start: #081828;
+  --hero-story-start: #081523;
+  --caption-bg: rgba(9, 22, 36, 0.94);
+  --workshop-overlay: linear-gradient(180deg, rgba(16, 30, 45, 0.74) 0%, rgba(11, 21, 32, 0.97) 100%);
+  --map-pin-fill: #165950;
+  --map-pin-muted-fill: #475E73;
+  --map-pin-dot: #E0B658;
+  --map-pin-muted-dot: #9BB2C4;
+  --map-pin-ring: #F2EFE4;
 }
 
 /* ==========================================================================
@@ -1683,30 +1686,30 @@ img.image-preview-error {
   border: 1px solid var(--aged-paper-border);
 }
 
-/* Dark Badges & Status (Lacquerware Warm Tones) */
+/* Dark Badges & Status ("Men Lam & Ngọc Bích" Palette) */
 html[data-theme="dark"] .badge-admin {
-  background-color: #321C29;
-  color: #F5D0FE;
-  border-color: #7A3E65;
+  background-color: #24213D;
+  color: #E0E7FF;
+  border-color: #5C5799;
 }
 
 html[data-theme="dark"] .badge-artisan {
-  background-color: var(--antique-gold-light);
+  background-color: var(--primary-light);
   color: var(--heading-color);
-  border-color: var(--antique-gold-border);
+  border-color: var(--primary-border);
 }
 
 html[data-theme="dark"] .badge-buyer {
-  background-color: #1A2736;
-  color: #93C5FD;
-  border-color: #3B5F85;
+  background-color: #132C46;
+  color: #BAE6FD;
+  border-color: #366B9C;
 }
 
-html[data-theme="dark"] .badge-draft { background-color: #2A201B; color: #D7C7B2; border-color: #6B5344; }
-html[data-theme="dark"] .badge-sent { background-color: #1A2736; color: #93C5FD; border-color: #3B5F85; }
+html[data-theme="dark"] .badge-draft { background-color: #1A2B3D; color: #C8D6DF; border-color: #4B6A86; }
+html[data-theme="dark"] .badge-sent { background-color: #132C46; color: #93C5FD; border-color: #366B9C; }
 html[data-theme="dark"] .badge-bidding { background-color: var(--status-warning-bg); color: var(--status-warning-text); border-color: var(--status-warning-border); }
 html[data-theme="dark"] .badge-accepted { background-color: var(--status-success-bg); color: var(--status-success-text); border-color: var(--status-success-border); }
-html[data-theme="dark"] .badge-in_production { background-color: #2E1D2B; color: #E9D5FF; border-color: #7E4A77; }
+html[data-theme="dark"] .badge-in_production { background-color: #212442; color: #DDD6FE; border-color: #6366A8; }
 html[data-theme="dark"] .badge-delivered { background-color: var(--status-success-bg); color: #86EFAC; border-color: var(--status-success-border); }
 html[data-theme="dark"] .badge-rejected { background-color: var(--status-danger-bg); color: var(--status-danger-text); border-color: var(--status-danger-border); }
 html[data-theme="dark"] .badge-submitted { background-color: var(--status-success-bg); color: var(--status-success-text); border-color: var(--status-success-border); }
@@ -1729,9 +1732,9 @@ html[data-theme="dark"] .workshop-status-tag.status-closed {
 html[data-theme="dark"] .category-tag,
 html[data-theme="dark"] .quote-id-tag,
 html[data-theme="dark"] .bid-count-badge {
-  background-color: var(--antique-gold-light);
+  background-color: var(--primary-light);
   color: var(--heading-color);
-  border-color: var(--antique-gold-border);
+  border-color: var(--primary-border);
 }
 
 /* ==========================================================================
@@ -4896,9 +4899,9 @@ html[data-theme="dark"] .bid-count-badge {
 }
 
 html[data-theme="dark"] .badge-production {
-  background-color: #2E1D2B;
-  color: #E9D5FF;
-  border-color: #7E4A77;
+  background-color: #212442;
+  color: #DDD6FE;
+  border-color: #6366A8;
 }
 
 .badge-default {

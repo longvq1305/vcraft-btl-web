@@ -33,9 +33,9 @@
     var isDark = theme === 'dark';
     var nextActionLabel = isDark
       ? 'Chuyển sang giao diện Giấy dó (Sáng)'
-      : 'Chuyển sang giao diện Sơn mài (Tối)';
+      : 'Chuyển sang giao diện Men lam (Tối)';
     var modeStatusLabel = isDark
-      ? 'Giao diện: Sơn mài (Tối)'
+      ? 'Giao diện: Men lam (Tối)'
       : 'Giao diện: Giấy dó (Sáng)';
 
     var buttons = document.querySelectorAll('[data-theme-toggle]');
