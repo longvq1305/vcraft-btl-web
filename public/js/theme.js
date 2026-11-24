@@ -3,6 +3,9 @@
 
   var STORAGE_KEY = 'vcraft-theme';
   var DEFAULT_THEME = 'light';
+  var TRANSITION_CLASS = 'theme-transitioning';
+  var TRANSITION_DURATION_MS = 1350;
+  var transitionTimer = null;
 
   function readStoredTheme() {
     try {
@@ -29,6 +32,27 @@
     return current === 'dark' ? 'dark' : DEFAULT_THEME;
   }
 
+  function prefersReducedMotion() {
+    return typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function triggerKineticTransition() {
+    var root = document.documentElement;
+    if (!root || !root.classList || prefersReducedMotion()) {
+      return;
+    }
+
+    root.classList.add(TRANSITION_CLASS);
+    if (transitionTimer) {
+      window.clearTimeout(transitionTimer);
+    }
+    transitionTimer = window.setTimeout(function() {
+      root.classList.remove(TRANSITION_CLASS);
+      transitionTimer = null;
+    }, TRANSITION_DURATION_MS);
+  }
+
   function syncToggleButtons(theme) {
     var isDark = theme === 'dark';
     var nextActionLabel = isDark
@@ -52,8 +76,11 @@
     }
   }
 
-  function applyTheme(theme, persist) {
+  function applyTheme(theme, persist, animate) {
     var normalized = theme === 'dark' ? 'dark' : DEFAULT_THEME;
+    if (animate) {
+      triggerKineticTransition();
+    }
     document.documentElement.setAttribute('data-theme', normalized);
     if (persist) {
       saveTheme(normalized);
@@ -61,7 +88,7 @@
     syncToggleButtons(normalized);
   }
 
-  // Default strictly to Light Mode ("Giấy dó") unless user explicitly chose Dark Mode ("Sơn mài")
+  // Default strictly to Light Mode ("Giấy dó") unless user explicitly chose Dark Mode ("Men lam")
   var initialTheme = readStoredTheme() || DEFAULT_THEME;
   document.documentElement.setAttribute('data-theme', initialTheme);
 
@@ -79,13 +106,13 @@
 
     event.preventDefault();
     var nextTheme = getActiveTheme() === 'dark' ? 'light' : 'dark';
-    applyTheme(nextTheme, true);
+    applyTheme(nextTheme, true, true);
   });
 
   window.addEventListener('storage', function(event) {
     if (event.key === STORAGE_KEY) {
       var updated = event.newValue === 'dark' ? 'dark' : DEFAULT_THEME;
-      applyTheme(updated, false);
+      applyTheme(updated, false, true);
     }
   });
 })();

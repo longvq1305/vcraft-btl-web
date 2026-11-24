@@ -302,22 +302,398 @@ html {
 }
 
 body.site-body {
+  position: relative;
+  isolation: isolate;
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.65;
   color: var(--text-primary);
   background-color: var(--bg-primary);
-  background-image: var(--paper-texture);
-  background-repeat: repeat;
-  background-size: 800px auto;
-  background-attachment: fixed;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* ==========================================================================
+   2a. Multi-Element Responsive Heritage Background & Day-Night Dissolve
+   ========================================================================== */
+.heritage-bg-stage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  /* Warm dawn/dusk twilight bridge revealed during Day <-> Night cross-dissolve */
+  background: linear-gradient(180deg, #D9BE96 0%, #C89B7B 50%, #8C6D62 100%);
+}
+
+html[data-theme="dark"] .heritage-bg-stage {
+  background: linear-gradient(180deg, #162234 0%, #243347 52%, #2E343D 100%);
+}
+
+.heritage-realm {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+/* DAY REALM ("Giấy Dó & Son Đất") — Dó paper texture sits BEHIND the motifs */
+.heritage-realm--day {
+  background-color: #FAF6ED;
+  background-image: url('/images/heritage/paper-texture.webp');
+  background-repeat: repeat;
+  background-size: 800px auto;
+  opacity: 1;
+  transform: scale(1);
+}
+
+html[data-theme="dark"] .heritage-realm--day {
+  opacity: 0;
+  transform: scale(0.985);
+}
+
+/* NIGHT REALM ("Men Lam & Ngọc Bích") — Indigo night sky with subtle celadon/gold shimmer */
+.heritage-realm--night {
+  background-color: #0B1520;
+  background-image:
+    radial-gradient(circle at 82% 18%, rgba(134, 219, 196, 0.10) 0%, transparent 45%),
+    radial-gradient(circle at 18% 82%, rgba(224, 182, 88, 0.08) 0%, transparent 48%),
+    linear-gradient(180deg, #08111B 0%, #0B1520 55%, #0E1D2C 100%);
+  opacity: 0;
+  transform: scale(1.015);
+}
+
+html[data-theme="dark"] .heritage-realm--night {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Individual Cultural Symbol Elements */
+.heritage-motif {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* --- Day Motifs (Standard 16:9 / 16:10 Layout) --- */
+.motif-dong-son-sun {
+  top: 48px;
+  left: -58px;
+  width: clamp(280px, 27vw, 430px);
+  aspect-ratio: 1 / 1;
+  background-image: url('/images/heritage/motifs/day-dong-son-sun.svg');
+  background-position: top left;
+  opacity: 0.90;
+  transform: translate3d(0, 0, 0) rotate(0deg);
+}
+
+.motif-chim-lac {
+  top: 76px;
+  left: clamp(145px, 13.5vw, 255px);
+  width: clamp(240px, 23.5vw, 380px);
+  aspect-ratio: 620 / 420;
+  background-image: url('/images/heritage/motifs/day-chim-lac.svg');
+  background-position: center;
+  opacity: 0.88;
+  transform: translate3d(0, 0, 0);
+}
+
+.motif-rooster-terraces {
+  bottom: 3vh;
+  left: -6px;
+  width: clamp(300px, 30vw, 480px);
+  aspect-ratio: 680 / 480;
+  background-image: url('/images/heritage/motifs/day-rooster-terraces.svg');
+  background-position: bottom left;
+  opacity: 0.92;
+  transform: translate3d(0, 0, 0);
+}
+
+.motif-rice-wind-right {
+  bottom: 4vh;
+  right: -6px;
+  width: clamp(250px, 24vw, 390px);
+  aspect-ratio: 440 / 460;
+  background-image: url('/images/heritage/motifs/day-rice-wind-right.svg');
+  background-position: bottom right;
+  opacity: 0.88;
+  transform: translate3d(0, 0, 0);
+}
+
+html[data-theme="dark"] .motif-dong-son-sun {
+  transform: translate3d(-14px, 18px, 0) rotate(-8deg);
+}
+html[data-theme="dark"] .motif-chim-lac {
+  transform: translate3d(18px, -14px, 0);
+}
+html[data-theme="dark"] .motif-rooster-terraces,
+html[data-theme="dark"] .motif-rice-wind-right {
+  transform: translate3d(0, 16px, 0);
+}
+
+/* --- Night Motifs (Standard 16:9 / 16:10 Layout) --- */
+.motif-moon-cuoi {
+  top: 52px;
+  right: -12px;
+  width: clamp(275px, 26.5vw, 425px);
+  aspect-ratio: 540 / 460;
+  background-image: url('/images/heritage/motifs/night-moon-cuoi.svg');
+  background-position: top right;
+  opacity: 0.94;
+  transform: translate3d(12px, -18px, 0);
+}
+
+.motif-night-clouds {
+  top: 82px;
+  left: -8px;
+  width: clamp(250px, 24vw, 385px);
+  aspect-ratio: 520 / 340;
+  background-image: url('/images/heritage/motifs/night-clouds-left.svg');
+  background-position: top left;
+  opacity: 0.86;
+  transform: translate3d(-16px, 0, 0);
+}
+
+.motif-ly-ngu {
+  bottom: 3vh;
+  left: clamp(8px, 2.5vw, 56px);
+  width: clamp(295px, 29vw, 460px);
+  aspect-ratio: 640 / 420;
+  background-image: url('/images/heritage/motifs/night-ly-ngu.svg');
+  background-position: bottom left;
+  opacity: 0.92;
+  transform: translate3d(0, 18px, 0);
+}
+
+.motif-bamboo-lanterns {
+  bottom: 2vh;
+  right: -4px;
+  width: clamp(235px, 22vw, 360px);
+  aspect-ratio: 460 / 680;
+  background-image: url('/images/heritage/motifs/night-bamboo-lanterns.svg');
+  background-position: bottom right;
+  opacity: 0.92;
+  transform: translate3d(14px, 14px, 0);
+}
+
+html[data-theme="dark"] .motif-moon-cuoi,
+html[data-theme="dark"] .motif-night-clouds,
+html[data-theme="dark"] .motif-ly-ngu,
+html[data-theme="dark"] .motif-bamboo-lanterns {
+  transform: translate3d(0, 0, 0);
+}
+
+/* Soft Center Negative-Space Veil (purely translucent — NEVER hides side motifs) */
+.heritage-reading-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 46% 62% at 50% 50%,
+    rgba(250, 246, 237, 0.72) 0%,
+    rgba(250, 246, 237, 0.34) 68%,
+    rgba(250, 246, 237, 0) 100%
+  );
+}
+
+html[data-theme="dark"] .heritage-reading-veil {
+  background: radial-gradient(
+    ellipse 46% 62% at 50% 50%,
+    rgba(11, 21, 32, 0.70) 0%,
+    rgba(11, 21, 32, 0.32) 68%,
+    rgba(11, 21, 32, 0) 100%
+  );
+}
+
+/* --- Aspect-Ratio Responsive Layouts for Motifs --- */
+/* 1. Ultrawide Monitors (21:9 /宽 màn hình lớn) */
+@media (min-aspect-ratio: 19/10) and (min-width: 1440px) {
+  .motif-dong-son-sun {
+    left: -24px;
+    width: clamp(360px, 24vw, 500px);
+  }
+  .motif-chim-lac {
+    left: clamp(220px, 15vw, 340px);
+    width: clamp(320px, 21vw, 430px);
+  }
+  .motif-rooster-terraces {
+    left: 1vw;
+    width: clamp(380px, 26vw, 520px);
+  }
+  .motif-rice-wind-right {
+    right: 1vw;
+    width: clamp(300px, 20vw, 410px);
+  }
+  .motif-moon-cuoi {
+    right: 1vw;
+    width: clamp(340px, 23vw, 460px);
+  }
+  .motif-night-clouds {
+    left: 1vw;
+    width: clamp(300px, 21vw, 420px);
+  }
+  .motif-ly-ngu {
+    left: 3.5vw;
+    width: clamp(360px, 25vw, 490px);
+  }
+  .motif-bamboo-lanterns {
+    right: 1vw;
+    width: clamp(270px, 19vw, 380px);
+  }
+}
+
+/* 2. Tablet / 4:3 & Narrower Desktops */
+@media (max-aspect-ratio: 5/4), (max-width: 1024px) {
+  .motif-dong-son-sun {
+    top: 56px;
+    left: -62px;
+    width: 250px;
+    opacity: 0.78;
+  }
+  .motif-chim-lac {
+    top: 78px;
+    left: 110px;
+    width: 215px;
+    opacity: 0.76;
+  }
+  .motif-rooster-terraces {
+    width: 265px;
+    left: -14px;
+    opacity: 0.80;
+  }
+  .motif-rice-wind-right {
+    width: 205px;
+    right: -12px;
+    opacity: 0.76;
+  }
+  .motif-moon-cuoi {
+    top: 58px;
+    right: -24px;
+    width: 245px;
+    opacity: 0.84;
+  }
+  .motif-night-clouds {
+    top: 78px;
+    left: -18px;
+    width: 210px;
+    opacity: 0.74;
+  }
+  .motif-ly-ngu {
+    left: -8px;
+    width: 255px;
+    opacity: 0.80;
+  }
+  .motif-bamboo-lanterns {
+    right: -10px;
+    width: 195px;
+    opacity: 0.82;
+  }
+}
+
+/* 3. Tall Portrait / Mobile Phones (9:16) — Balanced 4-Corner Sky & Horizon */
+@media (max-aspect-ratio: 3/4), (max-width: 640px) {
+  .motif-dong-son-sun {
+    top: 66px;
+    left: -52px;
+    width: 190px;
+    opacity: 0.72;
+  }
+  .motif-chim-lac {
+    top: 76px;
+    left: auto;
+    right: -8px;
+    width: 168px;
+    opacity: 0.70;
+  }
+  .motif-rooster-terraces {
+    bottom: -4px;
+    left: -12px;
+    width: 215px;
+    opacity: 0.76;
+  }
+  .motif-rice-wind-right {
+    bottom: -4px;
+    right: -12px;
+    width: 155px;
+    opacity: 0.68;
+  }
+  .motif-moon-cuoi {
+    top: 64px;
+    right: -20px;
+    width: 190px;
+    opacity: 0.80;
+  }
+  .motif-night-clouds {
+    top: 76px;
+    left: -14px;
+    width: 160px;
+    opacity: 0.68;
+  }
+  .motif-ly-ngu {
+    bottom: -6px;
+    left: -12px;
+    width: 210px;
+    opacity: 0.76;
+  }
+  .motif-bamboo-lanterns {
+    bottom: -4px;
+    right: -10px;
+    width: 155px;
+    opacity: 0.78;
+  }
+}
+
+/* --- Sequential Two-Phase Day <-> Night Cross-Dissolve Transition ---
+   Outgoing realm fades out FIRST (0s -> 0.62s) into Twilight,
+   then Incoming realm fades in CLEARLY (0.38s -> 1.25s). */
+html.theme-transitioning .heritage-bg-stage {
+  transition: background 1.2s ease-in-out;
+}
+
+/* Switching TO Dark Mode (Day fades out immediately; Night fades in after dusk) */
+html.theme-transitioning[data-theme="dark"] .heritage-realm--day {
+  transition:
+    opacity 0.62s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+    transform 0.72s ease-in 0s;
+}
+html.theme-transitioning[data-theme="dark"] .heritage-realm--night {
+  transition:
+    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.38s,
+    transform 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+}
+
+/* Switching TO Light Mode (Night fades out immediately; Day fades in after dawn) */
+html.theme-transitioning[data-theme="light"] .heritage-realm--night {
+  transition:
+    opacity 0.62s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+    transform 0.72s ease-in 0s;
+}
+html.theme-transitioning[data-theme="light"] .heritage-realm--day {
+  transition:
+    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.38s,
+    transform 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+}
+
+html.theme-transitioning .heritage-motif {
+  transition: transform 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+}
+
+html.theme-transitioning body.site-body,
+html.theme-transitioning .site-header,
+html.theme-transitioning .paper-panel,
+html.theme-transitioning .card,
+html.theme-transitioning .bg-alt,
+html.theme-transitioning .formation-section {
+  transition:
+    background-color 1.05s ease-in-out,
+    border-color 1.05s ease-in-out,
+    color 0.85s ease-in-out;
 }
 
 
@@ -7564,6 +7940,7 @@ html[data-theme="dark"] .theme-icon-sun {
 }
 
 @media print {
+  .heritage-bg-stage,
   .site-header,
   .site-footer,
   .breadcrumb-nav,

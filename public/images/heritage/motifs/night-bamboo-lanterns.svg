@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 680" fill="none">
+      <defs>
+        <radialGradient id="lanternGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#E0B658" stop-opacity="0.52"/>
+          <stop offset="52%" stop-color="#985821" stop-opacity="0.18"/>
+          <stop offset="100%" stop-color="#0B1520" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Broad swaying Banana Leaves (Tàu Chuối Đêm Trăng) -->
+      <g opacity="0.9">
+        <path d="M445,665 C390,565 322,495 238,448 C252,488 286,542 338,592 C372,625 412,650 445,665 Z"
+              fill="#165950" fill-opacity="0.45" stroke="#86DBC4" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M445,665 C386,572 318,502 238,448" stroke="#EFF3EE" stroke-width="1.4" opacity="0.75"/>
+        <path d="M278,476 L262,496 M306,498 L286,524 M336,524 L314,554 M368,556 L345,588 M398,592 L378,622"
+              stroke="#86DBC4" stroke-width="1" stroke-linecap="round" opacity="0.65"/>
+
+        <path d="M452,675 C365,612 288,582 205,578 C236,612 292,646 368,666 C402,675 432,678 452,675 Z"
+              fill="#0F2D25" fill-opacity="0.65" stroke="#86DBC4" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M452,675 C365,616 288,586 205,578" stroke="#E0B658" stroke-width="1.2" opacity="0.65"/>
+        <path d="M252,584 L242,606 M292,596 L278,622 M334,612 L318,640 M376,632 L360,658"
+              stroke="#86DBC4" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+      </g>
+
+      <!-- Slender Segmented Bamboo Stalks (Khóm Trúc) -->
+      <!-- Stalk 1 -->
+      <path d="M418,680 C412,520 392,360 356,165 C346,110 332,65 315,24" stroke="#86DBC4" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M408,560 L418,558 M398,445 L408,442 M382,332 L392,329 M362,222 L372,218 M338,116 L347,112" stroke="#EFF3EE" stroke-width="2" stroke-linecap="round"/>
+      <!-- Stalk 2 -->
+      <path d="M446,680 C442,540 428,395 404,225 C395,162 382,108 366,58" stroke="#165950" stroke-width="4" stroke-linecap="round"/>
+      <path d="M446,680 C442,540 428,395 404,225 C395,162 382,108 366,58" stroke="#86DBC4" stroke-width="1.3" stroke-linecap="round"/>
+      <path d="M436,585 L446,583 M426,472 L436,470 M412,362 L422,359 M396,252 L406,249 M378,148 L387,145" stroke="#E0B658" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- Stalk 3 (slender foreground shoot) -->
+      <path d="M386,680 C376,565 352,448 312,312" stroke="#86DBC4" stroke-width="2.1" stroke-linecap="round" opacity="0.85"/>
+      <path d="M372,580 L380,578 M354,480 L362,477 M332,385 L340,382" stroke="#EFF3EE" stroke-width="1.6" stroke-linecap="round"/>
+
+      <!-- Rustling Bamboo Leaf Clusters -->
+      
+    <g transform="translate(356,218) rotate(-12) scale(1.1)">
+      <path d="M0,0 Q-24,-10 -52,-4 Q-26,4 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-20,12 -46,24 Q-18,18 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-8,22 -18,46 Q-2,24 0,0 Z" fill="#0F2D25" stroke="#86DBC4" stroke-width="1"/>
+      <path d="M0,0 Q-30,-24 -54,-28 Q-28,-12 0,0 Z" stroke="#EFF3EE" stroke-width="0.9" opacity="0.7"/>
+    </g>
+      
+    <g transform="translate(338,114) rotate(8) scale(1.0)">
+      <path d="M0,0 Q-24,-10 -52,-4 Q-26,4 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-20,12 -46,24 Q-18,18 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-8,22 -18,46 Q-2,24 0,0 Z" fill="#0F2D25" stroke="#86DBC4" stroke-width="1"/>
+      <path d="M0,0 Q-30,-24 -54,-28 Q-28,-12 0,0 Z" stroke="#EFF3EE" stroke-width="0.9" opacity="0.7"/>
+    </g>
+      
+    <g transform="translate(315,32) rotate(18) scale(0.9)">
+      <path d="M0,0 Q-24,-10 -52,-4 Q-26,4 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-20,12 -46,24 Q-18,18 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-8,22 -18,46 Q-2,24 0,0 Z" fill="#0F2D25" stroke="#86DBC4" stroke-width="1"/>
+      <path d="M0,0 Q-30,-24 -54,-28 Q-28,-12 0,0 Z" stroke="#EFF3EE" stroke-width="0.9" opacity="0.7"/>
+    </g>
+      
+    <g transform="translate(398,250) rotate(-25) scale(0.95)">
+      <path d="M0,0 Q-24,-10 -52,-4 Q-26,4 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-20,12 -46,24 Q-18,18 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-8,22 -18,46 Q-2,24 0,0 Z" fill="#0F2D25" stroke="#86DBC4" stroke-width="1"/>
+      <path d="M0,0 Q-30,-24 -54,-28 Q-28,-12 0,0 Z" stroke="#EFF3EE" stroke-width="0.9" opacity="0.7"/>
+    </g>
+      
+    <g transform="translate(378,146) rotate(-8) scale(0.92)">
+      <path d="M0,0 Q-24,-10 -52,-4 Q-26,4 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-20,12 -46,24 Q-18,18 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-8,22 -18,46 Q-2,24 0,0 Z" fill="#0F2D25" stroke="#86DBC4" stroke-width="1"/>
+      <path d="M0,0 Q-30,-24 -54,-28 Q-28,-12 0,0 Z" stroke="#EFF3EE" stroke-width="0.9" opacity="0.7"/>
+    </g>
+      
+    <g transform="translate(332,382) rotate(-18) scale(1.05)">
+      <path d="M0,0 Q-24,-10 -52,-4 Q-26,4 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-20,12 -46,24 Q-18,18 0,0 Z" fill="#165950" stroke="#86DBC4" stroke-width="1.1"/>
+      <path d="M0,0 Q-8,22 -18,46 Q-2,24 0,0 Z" fill="#0F2D25" stroke="#86DBC4" stroke-width="1"/>
+      <path d="M0,0 Q-30,-24 -54,-28 Q-28,-12 0,0 Z" stroke="#EFF3EE" stroke-width="0.9" opacity="0.7"/>
+    </g>
+
+      <!-- Floating Mid-Autumn Star Lanterns (Đèn Ông Sao) -->
+      
+    <g transform="translate(185,338) rotate(-12) scale(1.12)">
+      <circle cx="0" cy="0" r="52" fill="url(#lanternGlow)"/>
+      <polygon points="0.00,-34.00 7.94,-10.92 32.34,-10.51 12.84,4.17 19.98,27.51 0.00,13.50 -19.98,27.51 -12.84,4.17 -32.34,-10.51 -7.94,-10.92" fill="#E0B658" fill-opacity="0.28" stroke="#E0B658" stroke-width="1.8" stroke-linejoin="round"/>
+      <polyline points="0.00,-34.00 19.98,27.51 -32.34,-10.51 32.34,-10.51 -19.98,27.51 0.00,-34.00" stroke="#985821" stroke-width="1.1" opacity="0.85"/>
+      <circle cx="0" cy="0" r="9" fill="#EFF3EE" fill-opacity="0.75"/>
+      <!-- Fluttering lantern tassels -->
+      <path d="M19.98,27.51 C14,42 8,54 2,64 M-19.98,27.51 C-14,44 -20,56 -26,65"
+            stroke="#E0B658" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+    </g>
+      
+    <g transform="translate(112,248) rotate(14) scale(0.72)">
+      <circle cx="0" cy="0" r="52" fill="url(#lanternGlow)"/>
+      <polygon points="0.00,-34.00 7.94,-10.92 32.34,-10.51 12.84,4.17 19.98,27.51 0.00,13.50 -19.98,27.51 -12.84,4.17 -32.34,-10.51 -7.94,-10.92" fill="#E0B658" fill-opacity="0.28" stroke="#E0B658" stroke-width="1.8" stroke-linejoin="round"/>
+      <polyline points="0.00,-34.00 19.98,27.51 -32.34,-10.51 32.34,-10.51 -19.98,27.51 0.00,-34.00" stroke="#985821" stroke-width="1.1" opacity="0.85"/>
+      <circle cx="0" cy="0" r="9" fill="#EFF3EE" fill-opacity="0.75"/>
+      <!-- Fluttering lantern tassels -->
+      <path d="M19.98,27.51 C14,42 8,54 2,64 M-19.98,27.51 C-14,44 -20,56 -26,65"
+            stroke="#E0B658" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+    </g>
+      
+    <g transform="translate(228,198) rotate(-6) scale(0.52)">
+      <circle cx="0" cy="0" r="52" fill="url(#lanternGlow)"/>
+      <polygon points="0.00,-34.00 7.94,-10.92 32.34,-10.51 12.84,4.17 19.98,27.51 0.00,13.50 -19.98,27.51 -12.84,4.17 -32.34,-10.51 -7.94,-10.92" fill="#E0B658" fill-opacity="0.28" stroke="#E0B658" stroke-width="1.8" stroke-linejoin="round"/>
+      <polyline points="0.00,-34.00 19.98,27.51 -32.34,-10.51 32.34,-10.51 -19.98,27.51 0.00,-34.00" stroke="#985821" stroke-width="1.1" opacity="0.85"/>
+      <circle cx="0" cy="0" r="9" fill="#EFF3EE" fill-opacity="0.75"/>
+      <!-- Fluttering lantern tassels -->
+      <path d="M19.98,27.51 C14,42 8,54 2,64 M-19.98,27.51 C-14,44 -20,56 -26,65"
+            stroke="#E0B658" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+    </g>
+
+      <!-- Gentle night wind wisps around lanterns -->
+      <path d="M48,298 C98,282 145,292 192,276 M82,382 C138,370 186,386 242,366" stroke="#E0B658" stroke-width="1.1" stroke-linecap="round" opacity="0.52"/>
+    </svg>

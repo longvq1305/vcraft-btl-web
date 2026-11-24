@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" fill="none">
+      <defs>
+        <radialGradient id="waterMoonGlow" cx="50%" cy="48%" r="45%">
+          <stop offset="0%" stop-color="#EFF3EE" stop-opacity="0.82"/>
+          <stop offset="38%" stop-color="#86DBC4" stop-opacity="0.38"/>
+          <stop offset="75%" stop-color="#165950" stop-opacity="0.14"/>
+          <stop offset="100%" stop-color="#0B1520" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Shimmering Moon Reflection in Water ("Bóng Trăng Đáy Nước") -->
+      <ellipse cx="320" cy="205" rx="165" ry="72" fill="url(#waterMoonGlow)"/>
+      <ellipse cx="320" cy="196" rx="58" ry="44" fill="#EFF3EE" fill-opacity="0.72" stroke="#86DBC4" stroke-width="1.4"/>
+      <path d="M276,198 Q320,206 364,198 M286,210 Q320,217 354,210 M298,222 Q320,226 342,222" stroke="#0B1520" stroke-width="1.5" stroke-linecap="round" opacity="0.45"/>
+
+      <!-- Concentric water ripples -->
+      <ellipse cx="320" cy="215" rx="78" ry="22" stroke="#EFF3EE" stroke-width="1.4" stroke-dasharray="28 10 16 8" opacity="0.78"/><ellipse cx="320" cy="215" rx="108" ry="30" stroke="#86DBC4" stroke-width="1.4" stroke-dasharray="28 10 16 8" opacity="0.68"/><ellipse cx="320" cy="215" rx="145" ry="40" stroke="#86DBC4" stroke-width="1.4" stroke-dasharray="28 10 16 8" opacity="0.52"/><ellipse cx="320" cy="215" rx="188" ry="52" stroke="#E0B658" stroke-width="1.4" stroke-dasharray="28 10 16 8" opacity="0.42"/><ellipse cx="320" cy="215" rx="236" ry="65" stroke="#165950" stroke-width="1.4" stroke-dasharray="28 10 16 8" opacity="0.65"/><ellipse cx="320" cy="215" rx="285" ry="78" stroke="#86DBC4" stroke-width="1.4" stroke-dasharray="28 10 16 8" opacity="0.28"/>
+
+      <!-- Horizontal shimmering water lines -->
+      <path d="M120,152 L225,152 M415,152 L525,152 M85,255 L178,255 M465,258 L560,258" stroke="#86DBC4" stroke-width="1.1" stroke-linecap="round" opacity="0.45"/>
+
+      <!-- Pair of Lý Ngư Carp gazing toward the Moon Reflection -->
+      
+    <g transform="translate(175,286) rotate(32) scale(0.96, 0.96)">
+      <!-- Graceful S-curved carp body -->
+      <path d="M0,-62 C18,-54 28,-28 24,4 C20,32 6,56 -8,78 C-14,88 -24,106 -42,118 C-26,98 -22,82 -26,74 C-34,84 -48,92 -64,94 C-46,80 -34,66 -26,52 C-18,28 -22,-2 -16,-30 C-12,-46 -6,-56 0,-62 Z"
+            fill="#165950" fill-opacity="0.55" stroke="#EFF3EE" stroke-width="1.8" stroke-linejoin="round"/>
+      <!-- Pectoral & pelvic flowing fins -->
+      <path d="M22,-16 C44,-8 56,8 50,24 C38,14 28,4 22,-4" fill="#86DBC4" fill-opacity="0.25" stroke="#86DBC4" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M-19,-14 C-40,-6 -50,10 -44,24 C-34,14 -24,4 -18,-4" fill="#86DBC4" fill-opacity="0.22" stroke="#86DBC4" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M14,32 C30,42 36,54 30,64 C22,56 16,46 10,38" stroke="#86DBC4" stroke-width="1.3" stroke-linecap="round"/>
+      <!-- Dorsal ridge & gilded spine line -->
+      <path d="M2,-46 C6,-18 2,16 -12,56" stroke="#E0B658" stroke-width="1.6" stroke-linecap="round"/>
+      <!-- Delicate carp scale arcs -->
+      <path d="M-6,-24 Q4,-18 12,-24 M-8,-10 Q2,-4 12,-10 M-10,4 Q0,10 10,4 M-12,18 Q-2,24 6,18 M-15,32 Q-6,38 2,32"
+            stroke="#EFF3EE" stroke-width="1.1" stroke-linecap="round" opacity="0.78"/>
+      <!-- Carp whiskers (barbels) gazing toward the moon reflection -->
+      <path d="M-4,-60 C-14,-74 -28,-78 -38,-72 M4,-60 C16,-74 30,-76 40,-68" stroke="#E0B658" stroke-width="1.3" stroke-linecap="round"/>
+      <circle cx="-6" cy="-48" r="2" fill="#EFF3EE"/>
+      <circle cx="8" cy="-48" r="2" fill="#EFF3EE"/>
+    </g>
+      
+    <g transform="translate(468,282) rotate(-30) scale(-0.92, 0.92)">
+      <!-- Graceful S-curved carp body -->
+      <path d="M0,-62 C18,-54 28,-28 24,4 C20,32 6,56 -8,78 C-14,88 -24,106 -42,118 C-26,98 -22,82 -26,74 C-34,84 -48,92 -64,94 C-46,80 -34,66 -26,52 C-18,28 -22,-2 -16,-30 C-12,-46 -6,-56 0,-62 Z"
+            fill="#165950" fill-opacity="0.55" stroke="#EFF3EE" stroke-width="1.8" stroke-linejoin="round"/>
+      <!-- Pectoral & pelvic flowing fins -->
+      <path d="M22,-16 C44,-8 56,8 50,24 C38,14 28,4 22,-4" fill="#86DBC4" fill-opacity="0.25" stroke="#86DBC4" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M-19,-14 C-40,-6 -50,10 -44,24 C-34,14 -24,4 -18,-4" fill="#86DBC4" fill-opacity="0.22" stroke="#86DBC4" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M14,32 C30,42 36,54 30,64 C22,56 16,46 10,38" stroke="#86DBC4" stroke-width="1.3" stroke-linecap="round"/>
+      <!-- Dorsal ridge & gilded spine line -->
+      <path d="M2,-46 C6,-18 2,16 -12,56" stroke="#E0B658" stroke-width="1.6" stroke-linecap="round"/>
+      <!-- Delicate carp scale arcs -->
+      <path d="M-6,-24 Q4,-18 12,-24 M-8,-10 Q2,-4 12,-10 M-10,4 Q0,10 10,4 M-12,18 Q-2,24 6,18 M-15,32 Q-6,38 2,32"
+            stroke="#EFF3EE" stroke-width="1.1" stroke-linecap="round" opacity="0.78"/>
+      <!-- Carp whiskers (barbels) gazing toward the moon reflection -->
+      <path d="M-4,-60 C-14,-74 -28,-78 -38,-72 M4,-60 C16,-74 30,-76 40,-68" stroke="#E0B658" stroke-width="1.3" stroke-linecap="round"/>
+      <circle cx="-6" cy="-48" r="2" fill="#EFF3EE"/>
+      <circle cx="8" cy="-48" r="2" fill="#EFF3EE"/>
+    </g>
+    </svg>
