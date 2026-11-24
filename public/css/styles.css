@@ -320,6 +320,17 @@ body.site-body {
 /* ==========================================================================
    2a. Multi-Element Responsive Heritage Background & Day-Night Dissolve
    ========================================================================== */
+.heritage-ambient-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 40;
+  pointer-events: none;
+  display: block;
+}
+
 .heritage-bg-stage {
   position: fixed;
   inset: 0;
@@ -7940,6 +7951,7 @@ html[data-theme="dark"] .theme-icon-sun {
 }
 
 @media print {
+  .heritage-ambient-canvas,
   .heritage-bg-stage,
   .site-header,
   .site-footer,
