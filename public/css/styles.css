@@ -660,6 +660,48 @@ html[data-theme="dark"] .heritage-reading-veil {
   }
 }
 
+/* --- Translucent 100vw Full-Bleed Bands & Synchronized Watermark Overlay ---
+   Allows background cultural motifs to shine seamlessly across all 100vw bands
+   (Heroes, Header, Alt Sections, Footer) while keeping cards/photos/text crisp above. */
+.heritage-watermark-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+
+.heritage-watermark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+/* Converts dark-ink/oxblood Day strokes into luminous Antique Gold filigree over dark Hero/Footer bands,
+   while remaining imperceptible (<1% delta) over light Dó paper! */
+.heritage-watermark--day {
+  opacity: 0.42;
+  transform: scale(1);
+  filter: invert(1) sepia(1) saturate(2.8) hue-rotate(6deg) brightness(0.96);
+}
+
+html[data-theme="dark"] .heritage-watermark--day {
+  opacity: 0;
+  transform: scale(0.985);
+}
+
+.heritage-watermark--night {
+  opacity: 0;
+  transform: scale(1.015);
+}
+
+html[data-theme="dark"] .heritage-watermark--night {
+  opacity: 0.38;
+  transform: scale(1);
+}
+
 /* --- Sequential Two-Phase Day <-> Night Cross-Dissolve Transition ---
    Outgoing realm fades out FIRST (0s -> 0.62s) into Twilight,
    then Incoming realm fades in CLEARLY (0.38s -> 1.25s). */
@@ -668,24 +710,28 @@ html.theme-transitioning .heritage-bg-stage {
 }
 
 /* Switching TO Dark Mode (Day fades out immediately; Night fades in after dusk) */
-html.theme-transitioning[data-theme="dark"] .heritage-realm--day {
+html.theme-transitioning[data-theme="dark"] .heritage-realm--day,
+html.theme-transitioning[data-theme="dark"] .heritage-watermark--day {
   transition:
     opacity 0.62s cubic-bezier(0.4, 0, 0.2, 1) 0s,
     transform 0.72s ease-in 0s;
 }
-html.theme-transitioning[data-theme="dark"] .heritage-realm--night {
+html.theme-transitioning[data-theme="dark"] .heritage-realm--night,
+html.theme-transitioning[data-theme="dark"] .heritage-watermark--night {
   transition:
     opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.38s,
     transform 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
 }
 
 /* Switching TO Light Mode (Night fades out immediately; Day fades in after dawn) */
-html.theme-transitioning[data-theme="light"] .heritage-realm--night {
+html.theme-transitioning[data-theme="light"] .heritage-realm--night,
+html.theme-transitioning[data-theme="light"] .heritage-watermark--night {
   transition:
     opacity 0.62s cubic-bezier(0.4, 0, 0.2, 1) 0s,
     transform 0.72s ease-in 0s;
 }
-html.theme-transitioning[data-theme="light"] .heritage-realm--day {
+html.theme-transitioning[data-theme="light"] .heritage-realm--day,
+html.theme-transitioning[data-theme="light"] .heritage-watermark--day {
   transition:
     opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.38s,
     transform 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
@@ -7315,6 +7361,98 @@ html[data-theme="dark"] .theme-icon-sun {
   color: var(--text-secondary);
 }
 
+/* --- 24n. Translucent 100vw Bands & Foreground Content Elevation (Option 2 Watermark) --- */
+.site-header {
+  background-color: rgba(255, 249, 225, 0.78);
+  background-image: none;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+html[data-theme="dark"] .site-header {
+  background-color: rgba(21, 38, 56, 0.78);
+  background-image: none;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.bg-alt,
+.bg-parchment,
+.section-categories,
+.formation-section,
+.related-news-section,
+.map-view-header {
+  background-color: rgba(243, 236, 224, 0.50);
+  background-image: none;
+}
+
+html[data-theme="dark"] .bg-alt,
+html[data-theme="dark"] .bg-parchment,
+html[data-theme="dark"] .section-categories,
+html[data-theme="dark"] .formation-section,
+html[data-theme="dark"] .related-news-section,
+html[data-theme="dark"] .map-view-header {
+  background-color: rgba(16, 30, 45, 0.50);
+  background-image: none;
+}
+
+.paper-panel:not(.map-sidebar) {
+  background-color: rgba(255, 253, 248, 0.86);
+  background-image: radial-gradient(
+    ellipse at top,
+    rgba(255, 249, 225, 0.82) 0%,
+    rgba(244, 232, 199, 0.68) 100%
+  );
+}
+
+html[data-theme="dark"] .paper-panel:not(.map-sidebar) {
+  background-color: rgba(21, 38, 56, 0.84);
+  background-image: radial-gradient(
+    ellipse at top,
+    rgba(28, 49, 71, 0.82) 0%,
+    rgba(16, 30, 45, 0.78) 100%
+  );
+}
+
+/* Ensure hero banners do NOT trap stacking context so .heritage-watermark-stage (z-index: 2)
+   shines across dark 100vw hero/footer bands while inner foreground elements sit cleanly at z-index: 3 */
+.editorial-page-hero,
+.container > .editorial-page-hero,
+.heritage-hero,
+.workshop-detail-hero,
+.site-footer,
+.quote-cta-box {
+  z-index: auto;
+}
+
+.editorial-page-hero .container,
+.editorial-page-hero__inner,
+.editorial-page-hero__visual,
+.editorial-page-hero .breadcrumb-nav,
+.heritage-hero__inner,
+.heritage-hero__scroll,
+.workshop-hero-content-wrap,
+.footer-closing-inner,
+.footer-container,
+.footer-bottom-container,
+.card,
+.paper-panel:not(.map-sidebar),
+.product-card,
+.workshop-card,
+.news-card,
+.pillar-card,
+.formation-step,
+.craft-story-card,
+.culture-photo,
+.image-frame,
+.table-responsive,
+.map-layout-container,
+.quote-cta-box .quote-cta-text,
+.quote-cta-box .quote-cta-btn-wrap {
+  position: relative;
+  z-index: 3;
+}
+
 
 /* ==========================================================================
    22. Responsive Breakpoints & Accessibility
@@ -7952,6 +8090,7 @@ html[data-theme="dark"] .theme-icon-sun {
 
 @media print {
   .heritage-ambient-canvas,
+  .heritage-watermark-stage,
   .heritage-bg-stage,
   .site-header,
   .site-footer,
