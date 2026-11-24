@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" fill="none">
+      <defs>
+        <radialGradient id="moonHalo" cx="57%" cy="46%" r="52%">
+          <stop offset="0%" stop-color="#EFF3EE" stop-opacity="0.34"/>
+          <stop offset="42%" stop-color="#86DBC4" stop-opacity="0.18"/>
+          <stop offset="72%" stop-color="#E0B658" stop-opacity="0.07"/>
+          <stop offset="100%" stop-color="#0B1520" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="moonSurface" cx="42%" cy="36%" r="65%">
+          <stop offset="0%" stop-color="#F8FAF5"/>
+          <stop offset="68%" stop-color="#E6F2EC"/>
+          <stop offset="100%" stop-color="#BCE6D8"/>
+        </radialGradient>
+        <clipPath id="moonClip">
+          <circle cx="310" cy="215" r="138"/>
+        </clipPath>
+      </defs>
+
+      <!-- Luminous celestial aura -->
+      <circle cx="310" cy="215" r="245" fill="url(#moonHalo)"/>
+      <circle cx="310" cy="215" r="148" stroke="#E0B658" stroke-width="1.1" stroke-dasharray="4 6" opacity="0.55"/>
+      <circle cx="310" cy="215" r="141" stroke="#86DBC4" stroke-width="1.5" opacity="0.65"/>
+
+      <!-- Full Moon Disc -->
+      <circle cx="310" cy="215" r="138" fill="url(#moonSurface)"/>
+      <!-- Subtle moon mare texture -->
+      <circle cx="262" cy="155" r="24" fill="#86DBC4" fill-opacity="0.16"/>
+      <circle cx="356" cy="192" r="32" fill="#86DBC4" fill-opacity="0.13"/>
+      <circle cx="285" cy="242" r="19" fill="#86DBC4" fill-opacity="0.12"/>
+
+      <!-- Silhouette of Giant Banyan Tree (Cây Đa) & Chú Cuội inside the Moon -->
+      <g clip-path="url(#moonClip)">
+        <!-- Moonlit hillock -->
+        <path d="M185,342 C235,308 282,298 335,304 C378,309 415,326 448,352 L448,370 L185,370 Z" fill="#0B1520"/>
+        <path d="M202,332 C248,304 292,298 342,305" stroke="#86DBC4" stroke-width="1.2" opacity="0.65"/>
+
+        <!-- Gnarled Banyan trunk & spreading roots -->
+        <path d="M262,312 C280,295 292,272 294,238 C295,212 282,194 258,178 L270,174 C290,188 302,204 306,216 C310,196 326,180 350,168 L358,175 C334,188 320,208 318,238 C316,272 325,294 344,310 C324,306 312,304 304,308 C292,305 278,307 262,312 Z" fill="#0B1520"/>
+        <!-- Hanging Banyan aerial roots (rễ đa buông) -->
+        <path d="M254,184 C252,212 248,236 250,258 M268,188 C266,218 269,245 266,268 M344,184 C346,208 343,228 346,248 M362,186 C364,205 362,222 365,236" stroke="#0B1520" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Rich layered Banyan leaf canopy -->
+        <ellipse cx="265" cy="145" rx="36" ry="22" fill="#0B1520"/>
+<ellipse cx="305" cy="128" rx="44" ry="26" fill="#0B1520"/>
+<ellipse cx="348" cy="142" rx="38" ry="23" fill="#0B1520"/>
+<ellipse cx="238" cy="168" rx="32" ry="20" fill="#0B1520"/>
+<ellipse cx="288" cy="158" rx="42" ry="24" fill="#0B1520"/>
+<ellipse cx="332" cy="162" rx="40" ry="24" fill="#0B1520"/>
+<ellipse cx="372" cy="168" rx="30" ry="19" fill="#0B1520"/>
+<ellipse cx="255" cy="186" rx="28" ry="17" fill="#0B1520"/>
+<ellipse cx="355" cy="185" rx="28" ry="17" fill="#0B1520"/>
+        <path d="M235,141 Q265,120 295,141" stroke="#86DBC4" stroke-width="1.1" opacity="0.55"/>
+<path d="M267,124 Q305,99 343,124" stroke="#86DBC4" stroke-width="1.1" opacity="0.55"/>
+<path d="M316,138 Q348,116 380,138" stroke="#86DBC4" stroke-width="1.1" opacity="0.55"/>
+<path d="M212,164 Q238,145 264,164" stroke="#86DBC4" stroke-width="1.1" opacity="0.55"/>
+<path d="M252,154 Q288,131 324,154" stroke="#86DBC4" stroke-width="1.1" opacity="0.55"/>
+<path d="M298,158 Q332,135 366,158" stroke="#86DBC4" stroke-width="1.1" opacity="0.55"/>
+
+        <!-- Silhouette of Chú Cuội sitting peacefully under the Banyan tree -->
+        <g transform="translate(324, 266)">
+          <!-- Head with traditional topknot -->
+          <circle cx="8" cy="4" r="7.5" fill="#0B1520"/>
+          <circle cx="3" cy="-2" r="3.2" fill="#0B1520"/>
+          <!-- Seated torso, bent knees & folded arms gazing at the night -->
+          <path d="M3,12 C-2,20 -2,32 4,38 L24,38 C26,33 22,26 16,25 L25,19 C27,17 26,14 23,14 L13,18 C11,13 7,11 3,12 Z" fill="#0B1520"/>
+          <path d="M18,25 L29,37 L35,35" stroke="#0B1520" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Subtle rim light on Chú Cuội -->
+          <path d="M14,1 C17,5 16,10 13,13" stroke="#E0B658" stroke-width="1" stroke-linecap="round" opacity="0.8"/>
+        </g>
+      </g>
+
+      <!-- Gilded Pháp Lam rim around Moon -->
+      <circle cx="310" cy="215" r="138" stroke="#EFF3EE" stroke-width="1.6" opacity="0.9"/>
+
+      <!-- Drifting nocturnal Dong Son cloud scrolls cradling the Moon -->
+      <path d="M72,292 C125,288 162,262 205,260 C235,259 252,276 240,290 C230,300 212,294 216,282" stroke="#E0B658" stroke-width="1.7" stroke-linecap="round" opacity="0.85"/>
+      <path d="M105,312 C158,308 198,286 248,285 C282,284 312,302 355,298" stroke="#86DBC4" stroke-width="1.4" stroke-linecap="round" opacity="0.75"/>
+      <path d="M388,282 C425,274 456,255 485,258 C504,260 512,276 498,285 C488,292 475,284 480,275" stroke="#86DBC4" stroke-width="1.5" stroke-linecap="round" opacity="0.78"/>
+      <path d="M125,135 C158,128 182,112 198,118 C210,122 208,136 196,138 C188,139 186,130 192,127" stroke="#E0B658" stroke-width="1.3" stroke-linecap="round" opacity="0.7"/>
+
+      <!-- Twinkling four-point heritage stars -->
+      <path d="M115,92 L118,100 L126,103 L118,106 L115,114 L112,106 L104,103 L112,100 Z" fill="#E0B658" opacity="0.85"/>
+      <path d="M468,108 L470,114 L476,116 L470,118 L468,124 L466,118 L460,116 L466,114 Z" fill="#EFF3EE" opacity="0.85"/>
+      <circle cx="152" cy="76" r="2" fill="#86DBC4" opacity="0.8"/>
+      <circle cx="436" cy="72" r="2.2" fill="#E0B658" opacity="0.8"/>
+      <circle cx="92" cy="188" r="1.8" fill="#EFF3EE" opacity="0.7"/>
+    </svg>

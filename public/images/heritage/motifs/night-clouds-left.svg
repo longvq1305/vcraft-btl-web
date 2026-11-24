@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 340" fill="none">
+      <!-- Flowing nocturnal cloud ribbons -->
+      <path d="M-15,95 C65,88 128,122 198,118 C242,115 268,88 250,68 C236,54 212,62 216,78 C219,88 232,88 235,80" stroke="#86DBC4" stroke-width="1.7" stroke-linecap="round" opacity="0.78"/>
+      <path d="M-10,128 C78,120 148,152 232,146 C295,141 345,108 418,96" stroke="#E0B658" stroke-width="1.4" stroke-linecap="round" opacity="0.72"/>
+      <path d="M25,168 C95,165 152,192 218,186 C255,182 276,162 264,148 C255,138 238,144 242,155" stroke="#165950" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+      <path d="M65,52 C112,46 146,66 185,62 C210,59 222,42 210,32 C202,25 190,31 194,39" stroke="#EFF3EE" stroke-width="1.2" stroke-linecap="round" opacity="0.58"/>
+      <!-- Starlight sparkles -->
+      <path d="M312,56 L315,64 L323,67 L315,70 L312,78 L309,70 L301,67 L309,64 Z" fill="#E0B658" opacity="0.82"/>
+      <path d="M128,222 L130,228 L136,230 L130,232 L128,238 L126,232 L120,230 L126,228 Z" fill="#86DBC4" opacity="0.75"/>
+      <circle cx="368" cy="134" r="2.2" fill="#EFF3EE" opacity="0.75"/>
+      <circle cx="84" cy="84" r="2" fill="#E0B658" opacity="0.75"/>
+      <circle cx="278" cy="198" r="1.8" fill="#86DBC4" opacity="0.7"/>
+    </svg>
