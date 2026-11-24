@@ -3,7 +3,8 @@
  * Master Stylesheet: Presentation Editorial Design System
  * 
  * Visual Grammar grounded in PowerPoint evidence:
- * - Light palette: ivory, oxblood and antique gold. Dark palette: navy, teal and indigo.
+ * - Light palette: ivory, oxblood and antique gold ("Giấy Dó & Đất Lửa").
+ * - Dark palette: warm ebony, cinnabar vermilion and gold leaf ("Sơn Mài & Gỗ Mun").
  * - Typography: Bricolage Grotesque (body/UI), Calistoga (heritage display), Allison (calligraphic accent)
  * - Texture: Subtle handmade paper texture (paper-texture.webp)
  * - Minimal rounding: 0-4px radii, hard/offset editorial borders/shadows, rectangular burgundy caption tabs
@@ -161,120 +162,120 @@
 }
 
 /* ==========================================================================
-   1b. Dark Theme Palette (Navy / Teal / Indigo)
+   1b. Dark Theme Palette ("Sơn Mài & Gỗ Mun" — Lacquer Ebony, Vermilion & Gold)
    ========================================================================== */
 html[data-theme="dark"] {
   color-scheme: dark;
 
-  /* Legacy color-named tokens also serve brand roles: teal replaces oxblood,
-     mint replaces gold, and indigo replaces terracotta in this theme. */
-  --oxblood: #115E59;
-  --oxblood-hover: #0F4C49;
-  --oxblood-dark: #042F2E;
-  --wine: #164E63;
-  --parchment: #E2F8F5;
-  --parchment-light: #152D40;
-  --aged-paper: #11243A;
-  --aged-paper-border: #2E5264;
-  --ink: #062923;
-  --ink-secondary: #CBD5E1;
-  --ink-muted: #A5B4C4;
-  --antique-gold: #5EEAD4;
-  --antique-gold-hover: #99F6E4;
-  --antique-gold-light: #103E42;
-  --antique-gold-border: #237F7C;
-  --primary: #115E59;
-  --primary-hover: #0F4C49;
-  --primary-light: #103E42;
-  --primary-focus: rgba(94, 234, 212, 0.25);
-  --primary-border: #2DD4BF;
-  --terracotta: #4338CA;
-  --terracotta-hover: #3730A3;
-  --terracotta-light: #25274C;
-  --terracotta-border: #818CF8;
-  --gold: #5EEAD4;
-  --gold-light: #103E42;
-  --gold-border: #237F7C;
+  /* Traditional Vietnamese lacquerware palette: warm ebony ("sơn then"),
+     cinnabar vermilion ("sơn son"), gold leaf ("thếp vàng quỳ"), and fired clay */
+  --oxblood: #8E1D1A;
+  --oxblood-hover: #A92521;
+  --oxblood-dark: #240A09;
+  --wine: #4A1311;
+  --parchment: #F5ECD7;
+  --parchment-light: #2B201C;
+  --aged-paper: #241B17;
+  --aged-paper-border: #4D3A2F;
+  --ink: #16100E;
+  --ink-secondary: #D7C7B2;
+  --ink-muted: #B5A28C;
+  --antique-gold: #D8AD42;
+  --antique-gold-hover: #EBC35E;
+  --antique-gold-light: #2E2314;
+  --antique-gold-border: #7A5D20;
+  --primary: #8E1D1A;
+  --primary-hover: #A92521;
+  --primary-light: #2D1917;
+  --primary-focus: rgba(216, 173, 66, 0.28);
+  --primary-border: #C4453E;
+  --terracotta: #A34122;
+  --terracotta-hover: #BE4E2B;
+  --terracotta-light: #2F1B15;
+  --terracotta-border: #8C442B;
+  --gold: #D8AD42;
+  --gold-light: #2E2314;
+  --gold-border: #7A5D20;
 
-  --bg-primary: #08111F;
-  --bg-secondary: #0D1B2D;
-  --bg-card: #11243A;
-  --bg-surface-raised: #183149;
-  --bg-alt: #0F2034;
-  --bg-dark: #050D19;
-  --bg-wine: #0D3F4D;
-  --bg-input: #0A1728;
+  --bg-primary: #16100E;
+  --bg-secondary: #1E1613;
+  --bg-card: #241B17;
+  --bg-surface-raised: #2D221D;
+  --bg-alt: #1B1411;
+  --bg-dark: #100B09;
+  --bg-wine: #3B1110;
+  --bg-input: #1A1310;
 
-  --text-primary: #E2E8F0;
-  --text-secondary: #CBD5E1;
-  --text-muted: #A5B4C4;
-  --text-light: #E2F8F5;
-  --text-inverse: #08111F;
-  --text-gold: #5EEAD4;
-  --text-gold-accessible: #5EEAD4;
-  --heading-color: #DFF7F4;
-  --link-color: #5EEAD4;
-  --link-hover: #99F6E4;
-  --on-brand: #E2F8F5;
+  --text-primary: #F5ECD7;
+  --text-secondary: #D7C7B2;
+  --text-muted: #B5A28C;
+  --text-light: #FFF9E1;
+  --text-inverse: #16100E;
+  --text-gold: #D8AD42;
+  --text-gold-accessible: #E2B94E;
+  --heading-color: #F3D486;
+  --link-color: #E2B94E;
+  --link-hover: #F7D983;
+  --on-brand: #FFF9E1;
 
-  --border-color: #2C435A;
-  --border-subtle: #1D344A;
-  --border-strong: #58738C;
-  --border-burgundy: rgba(45, 212, 191, 0.35);
-  --border-input: #58738C;
-  --focus-color: #5EEAD4;
-  --focus-ring: rgba(94, 234, 212, 0.35);
+  --border-color: #3D2E26;
+  --border-subtle: #2F231D;
+  --border-strong: #6B5344;
+  --border-burgundy: rgba(216, 173, 66, 0.32);
+  --border-input: #6B5344;
+  --focus-color: #D8AD42;
+  --focus-ring: rgba(216, 173, 66, 0.32);
 
-  --status-success-bg: #0D2E27;
+  --status-success-bg: #132A1E;
   --status-success-text: #86EFAC;
-  --status-success-border: #23775F;
-  --status-warning-bg: #302612;
+  --status-success-border: #276749;
+  --status-warning-bg: #2F2310;
   --status-warning-text: #FDE68A;
-  --status-warning-border: #85641E;
-  --status-danger-bg: #351C2B;
-  --status-danger-text: #FDA4AF;
-  --status-danger-border: #A33E61;
-  --status-info-bg: #0D2B45;
-  --status-info-text: #7DD3FC;
-  --status-info-border: #326A99;
-  --btn-success-bg: #047857;
-  --btn-success-hover: #06654E;
+  --status-warning-border: #8A651B;
+  --status-danger-bg: #361619;
+  --status-danger-text: #FCA5A5;
+  --status-danger-border: #9B2C2C;
+  --status-info-bg: #142638;
+  --status-info-text: #93C5FD;
+  --status-info-border: #315B85;
+  --btn-success-bg: #15803D;
+  --btn-success-hover: #166534;
   --btn-success-text: #FFFFFF;
-  --btn-success-border: #34D399;
-  --btn-danger-bg: #9F1239;
-  --btn-danger-hover: #881337;
+  --btn-success-border: #4ADE80;
+  --btn-danger-bg: #B91C1C;
+  --btn-danger-hover: #991B1B;
   --btn-danger-text: #FFFFFF;
-  --btn-danger-border: #FB7185;
+  --btn-danger-border: #F87171;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.55);
-  --shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.65);
-  --shadow-editorial: 4px 4px 0px rgba(0, 0, 0, 0.5);
-  --shadow-editorial-gold: 4px 4px 0px rgba(94, 234, 212, 0.25);
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-header: 0 2px 12px rgba(0, 0, 0, 0.4);
-  --shadow-image: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.65);
+  --shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.72);
+  --shadow-editorial: 4px 4px 0px rgba(0, 0, 0, 0.55);
+  --shadow-editorial-gold: 4px 4px 0px rgba(216, 173, 66, 0.28);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-header: 0 2px 12px rgba(0, 0, 0, 0.5);
+  --shadow-image: 0 2px 8px rgba(0, 0, 0, 0.45);
 
-  --paper-gradient-start: #142B40;
-  --paper-gradient-end: #102131;
-  --paper-texture: none;
-  --brand-rgb: 45, 212, 191;
-  --on-brand-rgb: 226, 248, 245;
-  --home-veil: linear-gradient(135deg, rgba(8, 18, 36, 0.96) 0%, rgba(9, 74, 78, 0.90) 50%, rgba(12, 30, 54, 0.96) 100%);
-  --hero-deep: #081224;
-  --hero-mid: #0D3F4D;
-  --hero-end: #123B66;
-  --hero-workshops-end: #153A4B;
-  --hero-map-start: #071526;
-  --hero-story-start: #070F21;
-  --caption-bg: rgba(8, 18, 36, 0.94);
-  --workshop-overlay: linear-gradient(180deg, rgba(13, 27, 45, 0.75) 0%, rgba(13, 27, 45, 0.97) 100%);
-  --map-pin-fill: #0F766E;
-  --map-pin-muted-fill: #475569;
-  --map-pin-dot: #5EEAD4;
-  --map-pin-muted-dot: #94A3B8;
-  --map-pin-ring: #E2F8F5;
+  --paper-gradient-start: rgba(45, 34, 29, 0.94);
+  --paper-gradient-end: rgba(28, 20, 17, 0.98);
+  --paper-texture: radial-gradient(circle at 18% 12%, rgba(216, 173, 66, 0.045) 0%, transparent 52%), radial-gradient(circle at 84% 82%, rgba(142, 29, 26, 0.07) 0%, transparent 55%);
+  --brand-rgb: 216, 173, 66;
+  --on-brand-rgb: 245, 236, 215;
+  --home-veil: linear-gradient(135deg, rgba(22, 10, 9, 0.95) 0%, rgba(74, 19, 17, 0.86) 52%, rgba(18, 12, 10, 0.95) 100%);
+  --hero-deep: #1E0807;
+  --hero-mid: #4A1311;
+  --hero-end: #631815;
+  --hero-workshops-end: #3D120F;
+  --hero-map-start: #190908;
+  --hero-story-start: #180706;
+  --caption-bg: rgba(24, 12, 10, 0.94);
+  --workshop-overlay: linear-gradient(180deg, rgba(24, 16, 14, 0.72) 0%, rgba(22, 16, 14, 0.96) 100%);
+  --map-pin-fill: #8E1D1A;
+  --map-pin-muted-fill: #5C4A42;
+  --map-pin-dot: #D8AD42;
+  --map-pin-muted-dot: #A89585;
+  --map-pin-ring: #F5ECD7;
 }
 
 /* ==========================================================================
@@ -1682,31 +1683,31 @@ img.image-preview-error {
   border: 1px solid var(--aged-paper-border);
 }
 
-/* Dark Badges & Status */
+/* Dark Badges & Status (Lacquerware Warm Tones) */
 html[data-theme="dark"] .badge-admin {
-  background-color: #25274C;
-  color: #C7D2FE;
-  border-color: #5B65A5;
+  background-color: #321C29;
+  color: #F5D0FE;
+  border-color: #7A3E65;
 }
 
 html[data-theme="dark"] .badge-artisan {
-  background-color: var(--primary-light);
-  color: var(--link-color);
+  background-color: var(--antique-gold-light);
+  color: var(--heading-color);
   border-color: var(--antique-gold-border);
 }
 
 html[data-theme="dark"] .badge-buyer {
-  background-color: #102F4C;
+  background-color: #1A2736;
   color: #93C5FD;
-  border-color: #326A99;
+  border-color: #3B5F85;
 }
 
-html[data-theme="dark"] .badge-draft { background-color: #1E2B3D; color: #CBD5E1; border-color: #64748B; }
-html[data-theme="dark"] .badge-sent { background-color: #172A46; color: #93C5FD; border-color: #1E40AF; }
+html[data-theme="dark"] .badge-draft { background-color: #2A201B; color: #D7C7B2; border-color: #6B5344; }
+html[data-theme="dark"] .badge-sent { background-color: #1A2736; color: #93C5FD; border-color: #3B5F85; }
 html[data-theme="dark"] .badge-bidding { background-color: var(--status-warning-bg); color: var(--status-warning-text); border-color: var(--status-warning-border); }
 html[data-theme="dark"] .badge-accepted { background-color: var(--status-success-bg); color: var(--status-success-text); border-color: var(--status-success-border); }
-html[data-theme="dark"] .badge-in_production { background-color: #25274C; color: #C7D2FE; border-color: #5B65A5; }
-html[data-theme="dark"] .badge-delivered { background-color: var(--status-success-bg); color: #6EE7B7; border-color: var(--status-success-border); }
+html[data-theme="dark"] .badge-in_production { background-color: #2E1D2B; color: #E9D5FF; border-color: #7E4A77; }
+html[data-theme="dark"] .badge-delivered { background-color: var(--status-success-bg); color: #86EFAC; border-color: var(--status-success-border); }
 html[data-theme="dark"] .badge-rejected { background-color: var(--status-danger-bg); color: var(--status-danger-text); border-color: var(--status-danger-border); }
 html[data-theme="dark"] .badge-submitted { background-color: var(--status-success-bg); color: var(--status-success-text); border-color: var(--status-success-border); }
 html[data-theme="dark"] .badge-pending { background-color: var(--status-warning-bg); color: var(--status-warning-text); border-color: var(--status-warning-border); }
@@ -1726,10 +1727,11 @@ html[data-theme="dark"] .workshop-status-tag.status-closed {
 }
 
 html[data-theme="dark"] .category-tag,
-html[data-theme="dark"] .quote-id-tag {
-  background-color: #17364A;
-  color: #99F6E4;
-  border-color: #237F7C;
+html[data-theme="dark"] .quote-id-tag,
+html[data-theme="dark"] .bid-count-badge {
+  background-color: var(--antique-gold-light);
+  color: var(--heading-color);
+  border-color: var(--antique-gold-border);
 }
 
 /* ==========================================================================
@@ -4894,9 +4896,9 @@ html[data-theme="dark"] .quote-id-tag {
 }
 
 html[data-theme="dark"] .badge-production {
-  background-color: #25274C;
-  color: #C7D2FE;
-  border-color: #5B65A5;
+  background-color: #2E1D2B;
+  color: #E9D5FF;
+  border-color: #7E4A77;
 }
 
 .badge-default {
@@ -6859,6 +6861,68 @@ html[data-theme="dark"] .text-terracotta {
 
 .p-4 {
   padding: 1.5rem;
+}
+
+/* --- 24m. Proactive Light / Dark Theme Switcher & Pagination --- */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  padding: 0;
+  background-color: var(--bg-card);
+  color: var(--heading-color);
+  border: 1px solid var(--aged-paper-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--primary-light);
+  border-color: var(--antique-gold);
+  color: var(--link-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle-mobile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+.theme-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.theme-icon-sun {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-icon-moon {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-icon-sun {
+  display: block;
+  color: var(--antique-gold);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 
