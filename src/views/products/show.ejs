@@ -17,10 +17,11 @@
     <!-- Product Top Section: Media & Primary Info -->
     <div class="product-showcase-grid">
       <!-- Media Gallery Column -->
+      <% const heroImageSrc = product.hero_image || '/images/heritage/vintage-pottery.webp'; %>
       <div class="product-gallery-column">
         <div class="main-image-wrap image-frame" id="main-image-wrap">
           <img
-            src="<%= product.hero_image || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1200&q=80' %>"
+            src="<%= heroImageSrc %>"
             alt="<%= product.name %>"
             id="main-product-image"
             class="main-image"
@@ -36,10 +37,10 @@
             <button
               type="button"
               class="thumb-btn active"
-              data-img-src="<%= product.hero_image %>"
+              data-img-src="<%= heroImageSrc %>"
               aria-label="Xem ảnh chính"
             >
-              <img src="<%= product.hero_image %>" alt="<%= product.name %> - Ảnh chính" class="thumb-img">
+              <img src="<%= heroImageSrc %>" alt="<%= product.name %> - Ảnh chính" class="thumb-img">
             </button>
             <% product.images.forEach(function(img, idx) { %>
               <button
@@ -149,12 +150,29 @@
 
         <!-- Action CTAs -->
         <div class="product-action-buttons">
-          <a href="/quotes/new" class="btn btn-primary btn-lg btn-block">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-            Yêu cầu Báo giá & Đặt làm riêng
-          </a>
+          <% if (!currentUser || currentUser.role === 'buyer') { %>
+            <%
+              const productQuoteParams = [
+                product.category ? 'category=' + encodeURIComponent(product.category) : '',
+                product.name ? 'product=' + encodeURIComponent(product.name) : '',
+                product.workshop_name ? 'workshop=' + encodeURIComponent(product.workshop_name) : '',
+                product.slug ? 'ref=' + encodeURIComponent(product.slug) : ''
+              ].filter(Boolean).join('&');
+            %>
+            <a href="/quotes/new<%= productQuoteParams ? '?' + productQuoteParams : '' %>" class="btn btn-primary btn-lg btn-block">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Yêu cầu Báo giá & Đặt làm riêng
+            </a>
+          <% } else { %>
+            <a href="/quotes" class="btn btn-primary btn-lg btn-block">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <%= currentUser.role === 'artisan' ? 'Xem Yêu cầu Báo giá tại Xưởng' : 'Điều phối Yêu cầu Báo giá' %>
+            </a>
+          <% } %>
 
           <div class="secondary-actions-row">
             <a href="/products/<%= product.slug %>/story" class="btn btn-outline btn-block">
@@ -253,7 +271,7 @@
             <article class="product-card">
               <a href="/products/<%= rel.slug %>" class="product-card-media">
                 <img
-                  src="<%= rel.hero_image || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80' %>"
+                  src="<%= rel.hero_image || '/images/heritage/vintage-pottery.webp' %>"
                   alt="<%= rel.name %>"
                   class="product-card-img"
                   loading="lazy"

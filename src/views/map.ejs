@@ -54,6 +54,7 @@
         <% if (workshops && workshops.length > 0) { %>
           <% workshops.forEach(function(ws, index) { %>
             <div
+              id="workshop-<%= ws.slug %>"
               class="map-workshop-item"
               data-id="<%= ws.id %>"
               data-slug="<%= ws.slug %>"

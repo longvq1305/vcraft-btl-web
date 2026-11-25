@@ -2,12 +2,24 @@
 <%- include('../partials/header') %>
 <%- include('../partials/flash') %>
 
+<%
+  const primaryWorkshopCategory = workshop.categories ? workshop.categories.split(',')[0].trim() : '';
+  const workshopQuoteParams = [
+    primaryWorkshopCategory ? 'category=' + encodeURIComponent(primaryWorkshopCategory) : '',
+    workshop.workshop_name ? 'workshop=' + encodeURIComponent(workshop.workshop_name) : '',
+    workshop.slug ? 'ref=' + encodeURIComponent(workshop.slug) : ''
+  ].filter(Boolean).join('&');
+  const canCreateQuote = !currentUser || currentUser.role === 'buyer';
+  const workshopQuoteHref = canCreateQuote
+    ? '/quotes/new' + (workshopQuoteParams ? '?' + workshopQuoteParams : '')
+    : '/quotes';
+%>
 <main class="site-main workshop-detail-page">
   <!-- Workshop Hero Banner -->
   <section class="workshop-detail-hero">
     <div class="workshop-hero-backdrop">
       <img
-        src="<%= workshop.cover_image || 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1600&q=80' %>"
+        src="<%= workshop.cover_image || '/images/heritage/pottery-kiln.webp' %>"
         alt="<%= workshop.workshop_name %>"
         class="workshop-hero-img"
       >
@@ -68,7 +80,7 @@
         </div>
 
         <div class="workshop-header-actions">
-          <a href="/quotes/new" class="btn btn-primary">Yêu cầu Chế tác Độc bản</a>
+          <a href="<%= workshopQuoteHref %>" class="btn btn-primary"><%= canCreateQuote ? 'Yêu cầu Chế tác Độc bản' : 'Xem Yêu cầu Báo giá' %></a>
           <% if (workshop.latitude && workshop.longitude) { %>
             <a href="/map#workshop-<%= workshop.slug %>" class="btn btn-outline">Xem vị trí trên Bản đồ</a>
           <% } %>
@@ -127,7 +139,7 @@
               <article class="product-card">
                 <a href="/products/<%= product.slug %>" class="product-card-media">
                   <img
-                    src="<%= product.hero_image || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80' %>"
+                    src="<%= product.hero_image || '/images/heritage/vintage-pottery.webp' %>"
                     alt="<%= product.name %>"
                     class="product-card-img"
                     loading="lazy"
@@ -179,7 +191,7 @@
         <p class="quote-card-desc">
           Bạn cần đặt làm quà tặng doanh nghiệp, đồ gốm thờ cúng, tượng khắc gỗ hoặc sản phẩm theo kích cỡ riêng?
         </p>
-        <a href="/quotes/new" class="btn btn-primary btn-block">Gửi yêu cầu báo giá</a>
+        <a href="<%= workshopQuoteHref %>" class="btn btn-primary btn-block"><%= canCreateQuote ? 'Gửi yêu cầu báo giá' : 'Xem danh sách báo giá' %></a>
       </div>
 
       <!-- Workshop Contact & Location Card -->
@@ -208,7 +220,7 @@
           </li>
         </ul>
         <% if (workshop.latitude && workshop.longitude) { %>
-          <a href="/map" class="btn btn-outline btn-block btn-sm">Xem bản đồ chỉ đường</a>
+          <a href="/map#workshop-<%= workshop.slug %>" class="btn btn-outline btn-block btn-sm">Xem bản đồ chỉ đường</a>
         <% } %>
       </div>
     </aside>
