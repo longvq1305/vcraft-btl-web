@@ -26,10 +26,25 @@
       </p>
     </div>
 
+    <% if (typeof prefillSource !== 'undefined' && prefillSource) { %>
+      <div class="alert alert-info" role="status">
+        <span class="alert-icon">ℹ</span>
+        <span class="alert-text">
+          Đã điền sẵn thông tin tham khảo từ
+          <strong><%= prefillSource.product || prefillSource.workshop %></strong><%= prefillSource.product && prefillSource.workshop ? ' — ' + prefillSource.workshop : '' %>.
+          <% if (prefillSource.backUrl) { %>
+            <a href="<%= prefillSource.backUrl %>" class="link-primary">Quay lại trang tham khảo &rarr;</a>
+          <% } %>
+        </span>
+        <button type="button" class="alert-close" aria-label="Đóng thông báo" title="Đóng thông báo">&times;</button>
+      </div>
+    <% } %>
+
     <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
       <div class="alert alert-error" role="alert">
         <span class="alert-icon">!</span>
         <span class="alert-text"><%= errorMessage %></span>
+        <button type="button" class="alert-close" aria-label="Đóng thông báo" title="Đóng thông báo">&times;</button>
       </div>
     <% } %>
 

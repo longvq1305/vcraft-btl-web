@@ -61,7 +61,7 @@
                 class="form-control"
               >
               <% if (searchQuery) { %>
-                <a href="/workshops<%= selectedCategory ? '?category=' + encodeURIComponent(selectedCategory) : '' %>" class="clear-search-btn" title="Xóa tìm kiếm">&times;</a>
+                <a href="/workshops<%= selectedCategory ? '?category=' + encodeURIComponent(selectedCategory) : '' %>" class="clear-search-btn" aria-label="Xóa từ khóa tìm kiếm" title="Xóa tìm kiếm">&times;</a>
               <% } %>
             </div>
           </div>
@@ -95,7 +95,7 @@
           <article class="workshop-card">
             <a href="/workshops/<%= ws.slug %>" class="workshop-card-media">
               <img
-                src="<%= ws.cover_image || 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1000&q=80' %>"
+                src="<%= ws.cover_image || '/images/heritage/pottery-kiln.webp' %>"
                 alt="<%= ws.workshop_name %>"
                 class="workshop-card-img"
                 loading="lazy"

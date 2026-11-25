@@ -91,7 +91,7 @@
       && /^(?:\/(?!\/)|https:\/\/)/i.test(coverImage)
       && !/[\\\p{Cc}]/u.test(coverImage)
       ? coverImage
-      : 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=400&q=80';
+      : '/images/heritage/pottery-kiln.webp';
     const workshopName = escapeHtml(ws.workshop_name);
 
     return `
@@ -180,17 +180,28 @@
     });
   }
 
-  // Check URL hash (e.g. #workshop-bat-trang)
-  if (window.location.hash) {
-    const slug = window.location.hash.replace('#workshop-', '').replace('#', '');
-    const marker = markersMap.get(slug);
-    if (marker) {
-      const item = document.querySelector(`.map-workshop-item[data-slug="${slug}"]`);
-      if (item) {
-        item.click();
+  // Check URL hash (e.g. #workshop-gom-su-bat-trang) and keep in sync on hash navigation
+  function activateWorkshopFromHash() {
+    if (!window.location.hash) return;
+    let rawSlug = window.location.hash.replace(/^#(?:workshop-)?/, '');
+    try {
+      rawSlug = decodeURIComponent(rawSlug);
+    } catch (_) {
+      // Ignore malformed URI sequences in hash
+    }
+    if (!rawSlug || !markersMap.has(rawSlug)) return;
+
+    const item = Array.from(workshopItems).find((el) => el.getAttribute('data-slug') === rawSlug);
+    if (item) {
+      item.click();
+      if (typeof item.scrollIntoView === 'function') {
+        item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }
     }
   }
+
+  activateWorkshopFromHash();
+  window.addEventListener('hashchange', activateWorkshopFromHash);
 
   window.addEventListener('resize', function() {
     map.invalidateSize();

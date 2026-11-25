@@ -36,12 +36,17 @@ function handleDetailError(req, res, next, err) {
   }
 }
 
+function cleanQueryText(value, maxLen = 150) {
+  if (typeof value !== 'string') return '';
+  return value.replace(/[\p{Cc}]/gu, ' ').replace(/\s+/g, ' ').trim().slice(0, maxLen);
+}
+
 /**
  * Hiển thị biểu mẫu tạo hoặc sửa, giữ lại dữ liệu đã nhập nếu kiểm tra thất bại.
  * @param {import('express').Response} res
- * @param {{quote?: Object, formData?: Object, errorMessage?: string}} [options]
+ * @param {{quote?: Object, formData?: Object, prefillSource?: Object|null, errorMessage?: string}} [options]
  */
-function renderQuoteForm(res, { quote, formData = {}, errorMessage = null } = {}) {
+function renderQuoteForm(res, { quote, formData = {}, prefillSource = null, errorMessage = null } = {}) {
   const categories = [...DEFAULT_CATEGORIES];
   if (typeof formData.category === 'string' && formData.category && !categories.includes(formData.category)) {
     categories.push(formData.category);
@@ -50,6 +55,7 @@ function renderQuoteForm(res, { quote, formData = {}, errorMessage = null } = {}
     title: quote ? `Sửa yêu cầu báo giá #${quote.id}` : 'Tạo Yêu cầu Báo giá Mới',
     quote,
     formData,
+    prefillSource,
     categories,
     minDate: todayInVietnam(),
     errorMessage
@@ -73,10 +79,37 @@ const quoteController = {
   },
 
   /**
-   * GET /quotes/new — biểu mẫu tạo yêu cầu.
+   * GET /quotes/new — biểu mẫu tạo yêu cầu (hỗ trợ điền sẵn ngữ cảnh từ trang tác phẩm/xưởng).
    */
   newForm(req, res) {
-    return renderQuoteForm(res);
+    const category = cleanQueryText(req.query.category, 80);
+    const product = cleanQueryText(req.query.product, 150);
+    const workshop = cleanQueryText(req.query.workshop, 150);
+    const ref = cleanQueryText(req.query.ref, 120);
+
+    const formData = {};
+    if (category) {
+      formData.category = category;
+    }
+    if (product) {
+      formData.title = `Đặt chế tác theo mẫu: ${product}`.slice(0, 200);
+      formData.description = `Tham khảo tác phẩm mẫu: ${product}${workshop ? ' (' + workshop + ')' : ''}.\nYêu cầu chi tiết về kích thước, chất liệu, họa tiết: `;
+    } else if (workshop) {
+      formData.title = `Đặt chế tác riêng tại ${workshop}`.slice(0, 200);
+      formData.description = `Mong muốn đặt chế tác thủ công (tham khảo phong cách ${workshop}).\nYêu cầu chi tiết về sản phẩm, kích thước, số lượng dự kiến: `;
+    }
+
+    const prefillSource = (product || workshop)
+      ? {
+          product,
+          workshop,
+          backUrl: /^[a-z0-9-]+$/i.test(ref)
+            ? (product ? `/products/${ref}` : `/workshops/${ref}`)
+            : ''
+        }
+      : null;
+
+    return renderQuoteForm(res, { formData, prefillSource });
   },
 
   /**

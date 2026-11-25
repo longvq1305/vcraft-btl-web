@@ -37,6 +37,25 @@
       </div>
     </section>
 
+    <%
+      function buildCatalogUrl(overrides) {
+        const state = Object.assign({
+          category: selectedCategory || '',
+          workshop: selectedWorkshop || '',
+          q: searchQuery || '',
+          sort: (selectedSort && selectedSort !== 'newest') ? selectedSort : ''
+        }, overrides || {});
+        const pairs = [];
+        if (state.category) pairs.push('category=' + encodeURIComponent(state.category));
+        if (state.workshop) pairs.push('workshop=' + encodeURIComponent(state.workshop));
+        if (state.q) pairs.push('q=' + encodeURIComponent(state.q));
+        if (state.sort && state.sort !== 'newest') pairs.push('sort=' + encodeURIComponent(state.sort));
+        return '/catalog' + (pairs.length ? '?' + pairs.join('&') : '');
+      }
+      const activeWorkshopObj = selectedWorkshop && workshops
+        ? workshops.find(function(ws) { return ws.slug === selectedWorkshop; })
+        : null;
+    %>
     <!-- Filter & Search Toolbar -->
     <section class="catalog-filters-section paper-panel" aria-label="Bộ lọc tìm kiếm">
       <form action="/catalog" method="GET" class="filter-form">
@@ -54,7 +73,7 @@
                 class="form-control"
               >
               <% if (searchQuery) { %>
-                <a href="/catalog<%= selectedCategory ? '?category=' + encodeURIComponent(selectedCategory) : '' %>" class="clear-search-btn" title="Xóa tìm kiếm">&times;</a>
+                <a href="<%= buildCatalogUrl({ q: '' }) %>" class="clear-search-btn" aria-label="Xóa từ khóa tìm kiếm" title="Xóa tìm kiếm">&times;</a>
               <% } %>
             </div>
           </div>
@@ -106,12 +125,12 @@
       <!-- Category quick pills -->
       <% if (categories && categories.length > 0) { %>
         <div class="category-quick-pills">
-          <a href="/catalog<%= selectedWorkshop ? '?workshop=' + encodeURIComponent(selectedWorkshop) : '' %>" class="quick-pill <%= !selectedCategory ? 'active' : '' %>">
-            Tất cả (<%= totalCount %>)
+          <a href="<%= buildCatalogUrl({ category: '' }) %>" class="quick-pill <%= !selectedCategory ? 'active' : '' %>">
+            Tất cả<%= !selectedCategory ? ' (' + totalCount + ')' : '' %>
           </a>
           <% categories.forEach(function(cat) { %>
             <a
-              href="/catalog?category=<%= encodeURIComponent(cat) %><%= selectedWorkshop ? '&workshop=' + encodeURIComponent(selectedWorkshop) : '' %>"
+              href="<%= buildCatalogUrl({ category: cat }) %>"
               class="quick-pill <%= selectedCategory === cat ? 'active' : '' %>"
             >
               <%= cat %>
@@ -126,6 +145,7 @@
       <span class="results-count">
         Tìm thấy <strong><%= totalCount %></strong> tác phẩm phù hợp
         <% if (selectedCategory) { %> trong danh mục "<em><%= selectedCategory %></em>"<% } %>
+        <% if (activeWorkshopObj) { %> thuộc xưởng "<em><%= activeWorkshopObj.workshop_name %></em>"<% } %>
         <% if (searchQuery) { %> với từ khóa "<em><%= searchQuery %></em>"<% } %>
       </span>
     </div>
@@ -137,7 +157,7 @@
           <article class="product-card">
             <a href="/products/<%= product.slug %>" class="product-card-media">
               <img
-                src="<%= product.hero_image || 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80' %>"
+                src="<%= product.hero_image || '/images/heritage/vintage-pottery.webp' %>"
                 alt="<%= product.name %>"
                 class="product-card-img"
                 loading="lazy"

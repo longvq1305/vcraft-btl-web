@@ -43,9 +43,23 @@
     <div class="footer-col">
       <h4 class="footer-title">Dịch vụ & Nghệ nhân</h4>
       <ul class="footer-links">
-        <li><a href="/quotes/new">Đặt chế tác theo yêu cầu</a></li>
-        <li><a href="/auth/register?role=artisan">Đăng ký mở xưởng thủ công</a></li>
-        <li><a href="/auth/login">Đăng nhập tài khoản</a></li>
+        <% if (!currentUser) { %>
+          <li><a href="/quotes/new">Đặt chế tác theo yêu cầu</a></li>
+          <li><a href="/auth/register?role=artisan">Đăng ký mở xưởng thủ công</a></li>
+          <li><a href="/auth/login">Đăng nhập tài khoản</a></li>
+        <% } else if (currentUser.role === 'buyer') { %>
+          <li><a href="/quotes/new">Đặt chế tác theo yêu cầu</a></li>
+          <li><a href="/quotes">Yêu cầu báo giá của tôi</a></li>
+          <li><a href="/orders">Đơn hàng của tôi</a></li>
+        <% } else if (currentUser.role === 'artisan') { %>
+          <li><a href="/artisan/dashboard">Bàn làm việc Nghệ nhân</a></li>
+          <li><a href="/quotes">Yêu cầu báo giá gửi tới xưởng</a></li>
+          <li><a href="/orders">Đơn hàng của xưởng</a></li>
+        <% } else { %>
+          <li><a href="/admin">Bàn làm việc Quản trị</a></li>
+          <li><a href="/quotes">Điều phối Yêu cầu báo giá</a></li>
+          <li><a href="/orders">Quản lý Đơn hàng</a></li>
+        <% } %>
       </ul>
     </div>
 
