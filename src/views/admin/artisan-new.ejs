@@ -4,14 +4,15 @@
 
 <main class="site-main admin-main">
   <div class="container container-form">
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/admin">Bàn làm việc Quản trị</a></li>
+        <li aria-current="page">Tạo tài khoản nghệ nhân mới</li>
+      </ol>
+    </nav>
+
     <div class="admin-page-header">
       <div>
-        <nav class="breadcrumb-nav" aria-label="Đường dẫn">
-          <ol class="breadcrumb-list">
-            <li><a href="/admin">Bàn làm việc Quản trị</a></li>
-            <li aria-current="page">Tạo tài khoản nghệ nhân mới</li>
-          </ol>
-        </nav>
         <span class="slide-kicker">Quản Trị Nghệ Nhân</span>
         <h1 class="page-title">Cấp Tài Khoản Nghệ Nhân Trực Tiếp</h1>
         <div class="editorial-rule"></div>
@@ -194,8 +195,8 @@
         </div>
 
         <div class="form-actions-bar">
-          <a href="/admin" class="btn btn-secondary">Hủy bỏ</a>
           <button type="submit" class="btn btn-primary btn-lg">Tạo & Phê Duyệt Tài Khoản Ngay</button>
+          <a href="/admin" class="btn btn-outline btn-lg">Hủy bỏ</a>
         </div>
       </form>
     </div>

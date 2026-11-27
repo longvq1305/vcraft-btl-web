@@ -36,17 +36,19 @@
       </nav>
 
       <div class="workshop-header-card paper-panel">
-        <span class="slide-kicker">Hồ Sơ Xưởng Thủ Công</span>
+        <div class="product-badges-row">
           <span class="status-badge <%= workshop.is_open ? 'status-approved' : 'status-suspended' %>">
             <%= workshop.is_open ? 'Đang mở cửa đón khách' : 'Tạm đóng cửa tham quan' %>
           </span>
           <% if (workshop.categories) { %>
             <span class="category-pill"><%= workshop.categories %></span>
           <% } %>
+        </div>
+        <span class="slide-kicker">Hồ Sơ Xưởng Thủ Công</span>
 
         <h1 class="workshop-title"><%= workshop.workshop_name %></h1>
         <div class="editorial-rule"></div>
-        <p class="workshop-artisan-name">Nghệ nhân chủ nhiệm: <strong><%= workshop.artisan_name %></strong></p>
+        <p class="workshop-artisan-name">Nghệ nhân chủ nhiệm: <strong><%= String(workshop.artisan_name || '').replace(/^Nghệ nhân\s+/i, '') %></strong></p>
 
         <div class="workshop-quick-info">
           <% if (workshop.address) { %>

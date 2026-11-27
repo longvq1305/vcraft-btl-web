@@ -382,12 +382,12 @@ function seedDatabase(target = adapter) {
       '08:00 - 17:30 (Hằng ngày)',
       'Gốm sứ, Mỹ nghệ',
       '0912345678',
-      'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=1200&q=80',
+      '/images/heritage/tho-ha-pottery.webp',
       JSON.stringify([
-        'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80'
+        '/images/heritage/pottery-hands.webp',
+        '/images/heritage/vintage-pottery.webp'
       ]),
-      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80'
+      '/images/heritage/pottery-kiln.webp'
     );
 
     insertProfile.run(
@@ -402,11 +402,12 @@ function seedDatabase(target = adapter) {
       '08:30 - 18:00 (Thứ 2 - Chủ Nhật)',
       'Lụa tơ tằm, Dệt thủ công',
       '0987654321',
-      'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=1200&q=80',
+      '/images/heritage/loom-artisan.webp',
       JSON.stringify([
-        'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=800&q=80'
+        '/images/heritage/loom-detail.webp',
+        '/images/heritage/silk-yarn.webp'
       ]),
-      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80'
+      '/images/heritage/textile-shop.webp'
     );
 
     insertProfile.run(
@@ -421,7 +422,7 @@ function seedDatabase(target = adapter) {
       '08:00 - 17:00 (Chờ duyệt)',
       'Mây tre đan, Thủ công mỹ nghệ',
       '0901234567',
-      'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=1200&q=80',
+      '/images/heritage/phu-vinh-rattan.webp',
       '[]',
       null
     );
@@ -441,7 +442,7 @@ function seedDatabase(target = adapter) {
       'Bình hoa được tạo hình thủ công vuốt tay trên bàn xoay, tráng lớp men rạn bài cổ và nung củi ở nhiệt độ 1250 độ C. Họa tiết hoa sen được nghệ nhân khắc chìm thủ công từng đường nét tinh xảo.',
       1850000,
       8,
-      'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80',
+      '/images/heritage/vintage-pottery.webp',
       'published'
     ).lastInsertId;
 
@@ -453,7 +454,7 @@ function seedDatabase(target = adapter) {
       'Bộ ấm chén cao cấp chế tác từ đất sét son Bát Tràng, giữ nhiệt vượt trội và lưu hương trà tinh tế. Men hoàng thổ trầm ấm mang đậm phong vị trà Việt xưa.',
       1200000,
       15,
-      'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=800&q=80',
+      '/images/heritage/tho-ha-pottery.webp',
       'published'
     ).lastInsertId;
 
@@ -465,7 +466,7 @@ function seedDatabase(target = adapter) {
       'Khăn choàng lụa 100% sợi tơ tằm tự nhiên, dệt vân mây cổ truyền trên khung dệt gỗ cổ. Nhuộm chàm thủ công 8 nước tạo chiều sâu màu sắc tự nhiên và mềm mại tuyệt đối.',
       950000,
       20,
-      'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=800&q=80',
+      '/images/heritage/silk-yarn.webp',
       'published'
     ).lastInsertId;
 
@@ -480,7 +481,7 @@ function seedDatabase(target = adapter) {
       'Chuẩn bị và lọc đất sét cao lanh',
       'Đất sét sông Hồng được tuyển chọn kỹ, ngâm lắng qua 4 bể lọc để loại bỏ hoàn toàn tạp chất.',
       '2024-03-01T08:00:00.000Z',
-      'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=600&q=80',
+      '/images/heritage/tho-ha-pottery.webp',
       1
     );
 
@@ -489,7 +490,7 @@ function seedDatabase(target = adapter) {
       'Vuốt tay trên bàn xoay thủ công',
       'Nghệ nhân trực tiếp vuốt dáng bình hoa cân đối, duy trì độ dày thành gốm chuẩn xác 6mm.',
       '2024-03-05T10:30:00.000Z',
-      'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=600&q=80',
+      '/images/heritage/pottery-hands.webp',
       2
     );
 
@@ -498,7 +499,7 @@ function seedDatabase(target = adapter) {
       'Khắc họa tiết hoa sen và phủ men rạn',
       'Khắc tay họa tiết cánh sen Thăng Long, nhúng lớp men rạn gia truyền từ tro vỏ đỗ và đá son.',
       '2024-03-10T14:00:00.000Z',
-      'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=600&q=80',
+      '/images/heritage/vintage-pottery.webp',
       3
     );
 
@@ -507,7 +508,7 @@ function seedDatabase(target = adapter) {
       'Nung củi lò bầu 3 ngày 3 đêm',
       'Nung ở 1250 độ C và hạ nhiệt chậm tự nhiên tạo nên các vân rạn sắc nét và độc bản.',
       '2024-03-15T09:00:00.000Z',
-      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80',
+      '/images/heritage/pottery-kiln.webp',
       4
     );
 
@@ -517,7 +518,7 @@ function seedDatabase(target = adapter) {
       'Tuyển kén và ươm tơ tự nhiên',
       'Lựa chọn kén tằm vàng tươi nõn, ươm tơ trong nước nóng để thu sợi tơ óng ả.',
       '2024-02-10T08:00:00.000Z',
-      null,
+      '/images/heritage/silk-yarn.webp',
       1
     );
 
@@ -526,7 +527,7 @@ function seedDatabase(target = adapter) {
       'Mắc cửi và dệt vân mây trên khung dệt cổ',
       'Dệt từng sợi ngang sợi dọc theo hoa văn vân mây cung đình xưa.',
       '2024-02-18T11:00:00.000Z',
-      null,
+      '/images/heritage/loom-detail.webp',
       2
     );
 
@@ -535,7 +536,7 @@ function seedDatabase(target = adapter) {
       'Nhuộm chàm tự nhiên và phơi nắng sớm',
       'Nhuộm thảo mộc từ cao chàm tự nhiên qua nhiều lượt nắng để đạt sắc xanh biếc đặc trưng.',
       '2024-02-25T15:30:00.000Z',
-      null,
+      '/images/heritage/textile-shop.webp',
       3
     );
 
@@ -547,14 +548,14 @@ function seedDatabase(target = adapter) {
 
     insertImage.run(
       p1Id,
-      'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80',
-      'Bình hoa men rạn Bát Tràng góc nhìn chính',
+      '/images/heritage/pottery-hands.webp',
+      'Bình hoa men rạn Bát Tràng chế tác thủ công',
       1
     );
     insertImage.run(
       p1Id,
-      'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=800&q=80',
-      'Chi tiết men rạn và họa tiết hoa sen khắc chìm',
+      '/images/heritage/pottery-kiln.webp',
+      'Lò nung gốm truyền thống và mẻ gốm men cổ',
       2
     );
 
@@ -569,7 +570,7 @@ function seedDatabase(target = adapter) {
       'hanh-trinh-gin-giu-hon-gom-viet-cung-lang-nghe-bat-trang',
       'Khám phá câu chuyện bền bỉ của những nghệ nhân gốm nung củi Bát Tràng trong kỷ nguyên công nghệ số và kết nối thương mại minh bạch.',
       '<p>Làng gốm Bát Tràng nằm bên bờ tả ngạn sông Hồng đã trải qua hơn 700 năm lịch sử gìn giữ ngọn lửa nghề. Từng thớ đất sét cao lanh, từng mẻ men tro cổ truyền đều đọng lại bàn tay khéo léo và tấm lòng kiên định của người nghệ nhân Việt.</p><p>Tại vCraft, chúng tôi đồng hành cùng các xưởng thủ công tiêu biểu để số hóa quy trình chế tác, mang đến cho người yêu thủ công câu chuyện minh bạch về nguồn gốc xuất xứ qua mã QR định danh và hành trình sản xuất tỉ mỉ.</p><p>Hãy cùng đến thăm các xưởng gốm vào dịp cuối tuần, trực tiếp trải nghiệm vuốt gốm và lắng nghe câu chuyện thổi hồn vào đất của nghệ nhân.</p>',
-      'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=1200&q=80',
+      '/images/heritage/pottery-kiln.webp',
       1,
       '2024-03-01 08:00:00'
     );
@@ -579,7 +580,7 @@ function seedDatabase(target = adapter) {
       'suc-song-manh-liet-cua-lang-lua-van-phuc-ngan-nam-tuoi',
       'Từ tơ tằm thiên nhiên đến những tấm lụa mềm mại như mây, làng lụa Vạn Phúc vẫn âm vang tiếng thoi đưa qua bao thăng trầm thời gian.',
       '<p>Nằm bên bờ sông Nhuệ hiền hòa, làng lụa Vạn Phúc từ xa xưa đã nổi tiếng với câu ca: "Chiếu Nga Sơn, gạch Bát Tràng / Vải tơ Nam Định, lụa hàng Vạn Phúc". Nghệ nhân nơi đây giữ gìn từng kỹ thuật luồn sợi, mắc cửi và nhuộm thảo mộc tự nhiên.</p><p>Sản phẩm lụa Vạn Phúc tại vCraft luôn đi kèm thông tin minh bạch về nghệ nhân chế tác và quy trình thủ công nguyên bản.</p>',
-      'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=1200&q=80',
+      '/images/heritage/loom-artisan.webp',
       1,
       '2024-03-10 09:30:00'
     );

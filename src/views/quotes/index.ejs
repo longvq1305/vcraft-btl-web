@@ -38,7 +38,14 @@
 
     <% if (!quotes || quotes.length === 0) { %>
       <div class="empty-state card paper-panel">
-        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-icon" aria-hidden="true">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+        </div>
         <h2 class="empty-state-title">Chưa có yêu cầu báo giá nào</h2>
         <p class="empty-state-text">
           <% if (currentUser && currentUser.role === 'buyer') { %>
@@ -127,17 +134,19 @@
                   <td>
                     <time datetime="<%= q.created_at %>"><%= formatDate(q.created_at) %></time>
                   </td>
-                  <td class="text-right">
-                    <a href="/quotes/<%= q.id %>" class="btn btn-outline btn-sm">
-                      <% if (currentUser && currentUser.role === 'artisan' && !q.my_bid_id && (q.status === 'sent' || q.status === 'bidding')) { %>
-                        Chào giá ngay &rarr;
-                      <% } else { %>
-                        Xem chi tiết &rarr;
+                  <td class="text-right action-cell">
+                    <div class="action-btn-group">
+                      <a href="/quotes/<%= q.id %>" class="btn btn-outline btn-sm">
+                        <% if (currentUser && currentUser.role === 'artisan' && !q.my_bid_id && (q.status === 'sent' || q.status === 'bidding')) { %>
+                          Chào giá ngay &rarr;
+                        <% } else { %>
+                          Xem chi tiết &rarr;
+                        <% } %>
+                      </a>
+                      <% if (currentUser.role === 'buyer' && q.status === 'draft') { %>
+                        <a href="/quotes/<%= q.id %>/edit" class="btn btn-outline btn-sm">Sửa nháp</a>
                       <% } %>
-                    </a>
-                    <% if (currentUser.role === 'buyer' && q.status === 'draft') { %>
-                      <a href="/quotes/<%= q.id %>/edit" class="btn btn-outline btn-sm">Sửa nháp</a>
-                    <% } %>
+                    </div>
                   </td>
                 </tr>
               <% }); %>

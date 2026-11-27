@@ -61,11 +61,18 @@
           <% }); %>
         </div>
       <% } else { %>
-        <div class="empty-state">
-          <div class="empty-icon">📰</div>
-          <h2 class="empty-title">Chưa có bài viết bản tin nào</h2>
-          <p class="empty-desc">Các câu chuyện làng nghề và tin tức văn hóa đang được biên tập và sẽ sớm cập nhật.</p>
-          <a href="/" class="btn btn-primary">Về trang chủ</a>
+        <div class="empty-state card paper-panel">
+          <div class="empty-state-icon" aria-hidden="true">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </div>
+          <h2 class="empty-state-title">Chưa có bài viết bản tin nào</h2>
+          <p class="empty-state-text">Các câu chuyện làng nghề và tin tức văn hóa đang được biên tập và sẽ sớm cập nhật.</p>
+          <div class="empty-state-actions">
+            <a href="/" class="btn btn-primary">Về trang chủ</a>
+          </div>
         </div>
       <% } %>
     </div>

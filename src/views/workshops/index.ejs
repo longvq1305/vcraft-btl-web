@@ -105,7 +105,7 @@
               </div>
             </a>
             <div class="workshop-card-body">
-              <div class="workshop-artisan-sub">Nghệ nhân phụ trách: <strong><%= ws.artisan_name %></strong></div>
+              <div class="workshop-artisan-sub">Nghệ nhân phụ trách: <strong><%= String(ws.artisan_name || '').replace(/^Nghệ nhân\s+/i, '') %></strong></div>
               <h2 class="workshop-card-title">
                 <a href="/workshops/<%= ws.slug %>"><%= ws.workshop_name %></a>
               </h2>

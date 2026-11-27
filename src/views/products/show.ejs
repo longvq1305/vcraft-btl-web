@@ -88,7 +88,7 @@
                   <span><%= product.artisan_name %></span>
                 <% } %>
               </h3>
-              <span class="artisan-name">Nghệ nhân: <%= product.artisan_name %></span>
+              <span class="artisan-name">Nghệ nhân: <%= String(product.artisan_name || '').replace(/^Nghệ nhân\s+/i, '') %></span>
             </div>
           </div>
         </div>
@@ -108,22 +108,24 @@
         <% if (product.status === 'published' && product.artisan_status === 'approved' && product.inventory > 0) { %>
           <% if (currentUser?.role === 'buyer') { %>
             <% const fields = orderError?.formData || {}; %>
-            <form action="/orders" method="POST" class="form-standard card paper-panel">
+            <form action="/orders" method="POST" class="form-standard card paper-panel quick-order-card">
               <h2 class="card-title">Đặt mua ngay</h2>
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <input type="hidden" name="productId" value="<%= product.id %>">
               <input type="hidden" name="requestToken" value="<%= orderRequestToken %>">
-              <div class="form-group">
-                <label for="order-quantity" class="form-label">Số lượng</label>
-                <input id="order-quantity" name="quantity" class="form-control" type="number" min="1" step="1" max="<%= product.inventory %>" value="<%= fields.quantity ?? 1 %>" required>
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label for="order-quantity" class="form-label">Số lượng</label>
+                  <input id="order-quantity" name="quantity" class="form-control" type="number" min="1" step="1" max="<%= product.inventory %>" value="<%= fields.quantity ?? 1 %>" required>
+                </div>
+                <div class="form-group">
+                  <label for="order-phone" class="form-label">Số điện thoại</label>
+                  <input id="order-phone" name="phone" class="form-control" type="tel" autocomplete="shipping tel" value="<%= fields.phone ?? '' %>" required>
+                </div>
               </div>
               <div class="form-group">
                 <label for="order-recipient" class="form-label">Tên người nhận</label>
                 <input id="order-recipient" name="recipientName" class="form-control" autocomplete="shipping name" value="<%= fields.recipientName ?? '' %>" required>
-              </div>
-              <div class="form-group">
-                <label for="order-phone" class="form-label">Số điện thoại</label>
-                <input id="order-phone" name="phone" class="form-control" type="tel" autocomplete="shipping tel" value="<%= fields.phone ?? '' %>" required>
               </div>
               <div class="form-group">
                 <label for="order-address" class="form-label">Địa chỉ giao hàng</label>
@@ -133,7 +135,7 @@
                 <label for="order-note" class="form-label">Ghi chú (không bắt buộc)</label>
                 <textarea id="order-note" name="note" class="form-control" rows="2"><%= fields.note ?? '' %></textarea>
               </div>
-              <button type="submit" class="btn btn-primary">Đặt mua</button>
+              <button type="submit" class="btn btn-primary btn-lg btn-block">Đặt mua tác phẩm</button>
             </form>
           <% } else if (!currentUser) { %>
             <a href="/auth/login?returnTo=<%= encodeURIComponent('/products/' + product.slug) %>" class="btn btn-outline">Đăng nhập để đặt mua</a>

@@ -194,10 +194,10 @@
                             <% } %>
                           </h3>
                           <span class="artisan-contact text-muted text-sm block">
-                            Nghệ nhân: <%= b.artisan_name %> &bull; SĐT: <%= b.artisan_phone || 'Đã xác thực' %>
+                            Nghệ nhân: <%= String(b.artisan_name || '').replace(/^Nghệ nhân\s+/i, '') %> &bull; SĐT: <%= b.artisan_phone || 'Đã xác thực' %>
                           </span>
                         </div>
-                        <div class="bid-price-tag mt-2">
+                        <div class="bid-price-tag">
                           <span class="price-amount text-primary font-bold text-lg"><%= formatCurrency(b.unit_price) %></span>
                           <span class="price-unit text-muted text-sm">/ sản phẩm</span>
                         </div>
@@ -263,7 +263,7 @@
                   </span>
                 </div>
 
-                <div class="my-bid-summary card mb-3 p-3">
+                <div class="my-bid-summary mb-3">
                   <div class="bid-meta-grid">
                     <div class="bid-meta-item">
                       <span class="meta-label text-muted text-xs block">Đơn giá đã chào:</span>
@@ -514,7 +514,7 @@
             <h3 class="card-subtitle">Xưởng được Mời Chào giá (<%= targets.length %>)</h3>
             <ul class="targets-list mt-2">
               <% targets.forEach(function(t) { %>
-                <li class="target-item p-2 border-bottom">
+                <li class="target-item border-bottom">
                   <div class="target-name font-medium">
                     <%= t.workshop_name || t.artisan_name %>
                   </div>

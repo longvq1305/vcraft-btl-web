@@ -4,15 +4,16 @@
 
 <main class="site-main admin-main">
   <div class="container container-form">
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/admin">Quản trị</a></li>
+        <li><a href="/admin/news">Quản lý bản tin</a></li>
+        <li aria-current="page"><%= article ? 'Chỉnh sửa bài viết' : 'Soạn bài mới' %></li>
+      </ol>
+    </nav>
+
     <div class="admin-page-header">
       <div>
-        <nav class="breadcrumb-nav" aria-label="Đường dẫn">
-          <ol class="breadcrumb-list">
-            <li><a href="/admin">Quản trị</a></li>
-            <li><a href="/admin/news">Quản lý bản tin</a></li>
-            <li aria-current="page"><%= article ? 'Chỉnh sửa bài viết' : 'Soạn bài mới' %></li>
-          </ol>
-        </nav>
         <span class="slide-kicker">Biên Tập Truyền Thông</span>
         <h1 class="page-title"><%= article ? 'Chỉnh Sửa Bản Tin' : 'Soạn Bản Tin Làng Nghề Mới' %></h1>
         <div class="editorial-rule"></div>
@@ -121,10 +122,10 @@
         </div>
 
         <div class="form-actions-bar">
-          <a href="/admin/news" class="btn btn-secondary">Hủy bỏ</a>
           <button type="submit" class="btn btn-primary btn-lg">
             <%= article ? 'Cập Nhật Bản Tin' : 'Lưu & Đăng Bài' %>
           </button>
+          <a href="/admin/news" class="btn btn-outline btn-lg">Hủy bỏ</a>
         </div>
       </form>
     </div>

@@ -2,50 +2,95 @@
 <%- include('../partials/header') %>
 <%- include('../partials/flash') %>
 
-<main class="site-main">
+<main class="site-main orders-page">
   <div class="container">
-    <div class="page-header">
-      <h1 class="page-title">Đơn hàng</h1>
-      <p class="page-subtitle">
+    <nav class="breadcrumb-nav" aria-label="Đường dẫn">
+      <ol class="breadcrumb-list">
+        <li><a href="/">Trang chủ</a></li>
+        <li aria-current="page">Đơn hàng</li>
+      </ol>
+    </nav>
+
+    <section class="editorial-page-hero editorial-page-hero--quotes">
+      <div class="editorial-page-hero__inner">
+        <span class="editorial-page-hero__eyebrow slide-kicker">Giao Dịch &amp; Đơn Mua Sẵn</span>
+        <h1 class="editorial-page-hero__title">
+          Đơn hàng Thủ công
+          <span class="editorial-page-hero__script display-script">Giao ước</span>
+        </h1>
+        <div class="editorial-rule"></div>
+        <p class="editorial-page-hero__desc">
+          <% if (currentUser.role === 'buyer') { %>
+            Theo dõi đơn mua tác phẩm có sẵn và tình trạng giao nhận của bạn.
+          <% } else if (currentUser.role === 'artisan') { %>
+            Danh sách các đơn đặt mua trực tiếp sản phẩm thuộc xưởng của bạn.
+          <% } else { %>
+            Giám sát toàn bộ đơn đặt mua nhanh sản phẩm có sẵn trên hệ thống vCraft.
+          <% } %>
+        </p>
         <% if (currentUser.role === 'buyer') { %>
-          Theo dõi đơn mua sản phẩm có sẵn của bạn.
-        <% } else if (currentUser.role === 'artisan') { %>
-          Các đơn đặt mua sản phẩm của xưởng bạn.
-        <% } else { %>
-          Tất cả đơn mua nhanh trên vCraft.
+          <div class="editorial-page-hero__actions">
+            <a href="/catalog" class="btn btn-primary btn-lg">Khám phá Bộ sưu tập</a>
+          </div>
         <% } %>
-      </p>
-    </div>
+      </div>
+    </section>
 
     <% if (items.length) { %>
-      <div class="card paper-panel table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">Mã đơn</th><th scope="col">Sản phẩm</th><th scope="col">Số lượng</th>
-              <th scope="col">Tổng tiền</th><th scope="col">Trạng thái</th><th scope="col">Ngày đặt</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (const order of items) { %>
-              <% const badge = getStatusBadge(order.status); %>
+      <div class="card table-card paper-panel">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
               <tr>
-                <th scope="row"><a href="/orders/<%= order.id %>">#<%= order.id %></a></th>
-                <td><%= order.product_name %></td>
-                <td><%= order.quantity %></td>
-                <td><%= formatCurrency(order.total_amount) %></td>
-                <td><span class="badge <%= badge.className %>"><%= badge.label %></span></td>
-                <td><time datetime="<%= order.created_at %>"><%= formatDate(order.created_at, true) %></time></td>
+                <th scope="col">Mã đơn</th>
+                <th scope="col">Sản phẩm</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Tổng tiền</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Ngày đặt</th>
+                <th scope="col" class="text-right">Thao tác</th>
               </tr>
-            <% } %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <% for (const order of items) { %>
+                <% const badge = getStatusBadge(order.status); %>
+                <tr>
+                  <td><a href="/orders/<%= order.id %>" class="link-primary font-semibold">#<%= order.id %></a></td>
+                  <td class="font-medium"><%= order.product_name %></td>
+                  <td><%= order.quantity %> chiếc</td>
+                  <td class="font-semibold text-primary"><%= formatCurrency(order.total_amount) %></td>
+                  <td><span class="badge <%= badge.className %>"><%= badge.label %></span></td>
+                  <td><time datetime="<%= order.created_at %>"><%= formatDate(order.created_at, true) %></time></td>
+                  <td class="text-right action-cell">
+                    <a href="/orders/<%= order.id %>" class="btn btn-outline btn-sm">Xem chi tiết &rarr;</a>
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
       </div>
     <% } else { %>
-      <div class="card paper-panel empty-state">
-        <p><%= pagination.total ? 'Không có đơn hàng trên trang này.' : 'Chưa có đơn hàng nào.' %></p>
+      <div class="empty-state card paper-panel">
+        <div class="empty-state-icon" aria-hidden="true">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </div>
+        <h2 class="empty-state-title"><%= pagination.total ? 'Không có đơn hàng trên trang này' : 'Chưa có đơn hàng nào' %></h2>
+        <p class="empty-state-text">
+          <% if (currentUser.role === 'buyer') { %>
+            Bạn chưa đặt mua tác phẩm có sẵn nào. Hãy ghé thăm bộ sưu tập làng nghề để chọn tác phẩm ưng ý.
+          <% } else { %>
+            Hiện chưa ghi nhận đơn đặt mua trực tiếp nào trong mục này.
+          <% } %>
+        </p>
         <% if (!pagination.total && currentUser.role === 'buyer') { %>
-          <a href="/catalog" class="btn btn-primary">Xem bộ sưu tập</a>
+          <div class="empty-state-actions">
+            <a href="/catalog" class="btn btn-primary">Xem bộ sưu tập</a>
+          </div>
         <% } %>
       </div>
     <% } %>

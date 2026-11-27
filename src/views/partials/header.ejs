@@ -1,4 +1,4 @@
-<header class="site-header">
+<header class="site-header<%= currentUser ? ' site-header--auth' : '' %>">
   <div class="container header-container">
     <div class="header-brand-wrap">
       <a href="/" class="brand-logo" aria-label="vCraft - Tinh hoa Làng nghề Việt Nam">
@@ -42,7 +42,7 @@
         <% } else { %>
           <div class="user-menu">
             <span class="user-greeting">
-              <span class="user-name"><%= currentUser.fullName %></span>
+              <span class="user-name"><%= currentUser.role === 'artisan' ? currentUser.fullName.replace(/^Nghệ nhân\s+/i, '') : currentUser.fullName %></span>
               <span class="badge badge-<%= currentUser.role %>">
                 <%= currentUser.role === 'admin' ? 'Quản trị' : (currentUser.role === 'artisan' ? 'Nghệ nhân' : 'Khách hàng') %>
               </span>
@@ -59,7 +59,9 @@
           <% } else if (currentUser.role === 'artisan') { %>
             <a href="/artisan/dashboard" class="btn btn-outline btn-sm">Bàn làm việc</a>
             <a href="/quotes" class="btn btn-outline btn-sm">Yêu cầu báo giá</a>
-            <a href="/artisan/products/new" class="btn btn-primary btn-sm">+ Đăng tác phẩm</a>
+            <% if (currentUser.status === 'approved') { %>
+              <a href="/artisan/products/new" class="btn btn-primary btn-sm">+ Đăng tác phẩm</a>
+            <% } %>
           <% } else if (currentUser.role === 'admin') { %>
             <a href="/quotes" class="btn btn-outline btn-sm">Báo giá</a>
             <a href="/admin" class="btn btn-outline btn-sm">Quản trị</a>
@@ -92,58 +94,86 @@
     </nav>
 
     <div class="header-actions">
-      <button
-        type="button"
-        class="theme-toggle-btn"
-        data-theme-toggle
-        aria-label="Chuyển sang giao diện Men lam (Tối)"
-        aria-pressed="false"
-        title="Chuyển sang giao diện Men lam (Tối)"
-      >
-        <svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-        <svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="1" x2="12" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="23"></line>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-          <line x1="1" y1="12" x2="3" y2="12"></line>
-          <line x1="21" y1="12" x2="23" y2="12"></line>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-      </button>
       <% if (!currentUser) { %>
+        <button
+          type="button"
+          class="theme-toggle-btn"
+          data-theme-toggle
+          aria-label="Chuyển sang giao diện Men lam (Tối)"
+          aria-pressed="false"
+          title="Chuyển sang giao diện Men lam (Tối)"
+        >
+          <svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
         <a href="/quotes/new" class="btn btn-outline btn-sm">Đặt chế tác</a>
         <a href="/auth/login" class="btn btn-ghost btn-sm">Đăng nhập</a>
         <a href="/auth/register" class="btn btn-primary btn-sm">Đăng ký</a>
       <% } else { %>
-        <a href="/orders" class="btn btn-outline btn-sm">Đơn hàng</a>
-        <% if (currentUser.role === 'buyer') { %>
-          <a href="/quotes" class="btn btn-outline btn-sm">Báo giá của tôi</a>
-          <a href="/quotes/new" class="btn btn-primary btn-sm">+ Đặt chế tác</a>
-        <% } else if (currentUser.role === 'artisan') { %>
-          <a href="/artisan/dashboard" class="btn btn-outline btn-sm">Bàn làm việc</a>
-          <a href="/quotes" class="btn btn-outline btn-sm">Yêu cầu báo giá</a>
-          <a href="/artisan/products/new" class="btn btn-primary btn-sm">+ Đăng tác phẩm</a>
-        <% } else if (currentUser.role === 'admin') { %>
-          <a href="/quotes" class="btn btn-outline btn-sm">Báo giá</a>
-          <a href="/admin" class="btn btn-outline btn-sm">Quản trị</a>
-        <% } %>
-
-        <div class="user-menu">
-          <span class="user-greeting">
-            <span class="user-name"><%= currentUser.fullName %></span>
-            <span class="badge badge-<%= currentUser.role %>">
-              <%= currentUser.role === 'admin' ? 'Quản trị' : (currentUser.role === 'artisan' ? 'Nghệ nhân' : 'Khách hàng') %>
+        <div class="header-account-bar">
+          <button
+            type="button"
+            class="theme-toggle-btn"
+            data-theme-toggle
+            aria-label="Chuyển sang giao diện Men lam (Tối)"
+            aria-pressed="false"
+            title="Chuyển sang giao diện Men lam (Tối)"
+          >
+            <svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+          <div class="user-menu">
+            <span class="user-greeting">
+              <span class="user-name"><%= currentUser.role === 'artisan' ? currentUser.fullName.replace(/^Nghệ nhân\s+/i, '') : currentUser.fullName %></span>
+              <span class="badge badge-<%= currentUser.role %>">
+                <%= currentUser.role === 'admin' ? 'Quản trị' : (currentUser.role === 'artisan' ? 'Nghệ nhân' : 'Khách hàng') %>
+              </span>
             </span>
-          </span>
-          <form action="/auth/logout" method="POST" class="inline-form">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button type="submit" class="btn btn-ghost btn-sm btn-logout" title="Đăng xuất khỏi hệ thống">Đăng xuất</button>
-          </form>
+            <form action="/auth/logout" method="POST" class="inline-form">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" class="btn btn-ghost btn-sm btn-logout" title="Đăng xuất khỏi hệ thống">Đăng xuất</button>
+            </form>
+          </div>
+        </div>
+        <div class="header-workspace-nav">
+          <a href="/orders" class="btn btn-outline btn-sm <%= currentPath.startsWith('/orders') ? 'active' : '' %>">Đơn hàng</a>
+          <% if (currentUser.role === 'buyer') { %>
+            <a href="/quotes" class="btn btn-outline btn-sm <%= currentPath === '/quotes' ? 'active' : '' %>">Báo giá của tôi</a>
+            <a href="/quotes/new" class="btn btn-primary btn-sm">+ Đặt chế tác</a>
+          <% } else if (currentUser.role === 'artisan') { %>
+            <a href="/artisan/dashboard" class="btn btn-outline btn-sm <%= currentPath.startsWith('/artisan/dashboard') ? 'active' : '' %>">Bàn làm việc</a>
+            <a href="/quotes" class="btn btn-outline btn-sm <%= currentPath.startsWith('/quotes') ? 'active' : '' %>">Yêu cầu báo giá</a>
+            <% if (currentUser.status === 'approved') { %>
+              <a href="/artisan/products/new" class="btn btn-primary btn-sm">+ Đăng tác phẩm</a>
+            <% } %>
+          <% } else if (currentUser.role === 'admin') { %>
+            <a href="/quotes" class="btn btn-outline btn-sm <%= currentPath.startsWith('/quotes') ? 'active' : '' %>">Báo giá</a>
+            <a href="/admin" class="btn btn-outline btn-sm <%= currentPath.startsWith('/admin') ? 'active' : '' %>">Quản trị</a>
+          <% } %>
         </div>
       <% } %>
     </div>

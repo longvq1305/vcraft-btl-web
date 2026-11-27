@@ -101,7 +101,7 @@
           <span class="popup-status-badge ${statusClass}">${statusText}</span>
         </div>
         <div class="map-popup-body">
-          <div class="map-popup-artisan">Nghệ nhân: ${escapeHtml(ws.artisan_name)}</div>
+          <div class="map-popup-artisan">Nghệ nhân: ${escapeHtml(String(ws.artisan_name || '').replace(/^Nghệ nhân\s+/i, ''))}</div>
           <h4 class="map-popup-title">${workshopName}</h4>
           ${ws.address ? `<p class="map-popup-address">${escapeHtml(ws.address)}</p>` : ''}
           ${ws.visiting_hours ? `<p class="map-popup-hours">Giờ mở cửa: ${escapeHtml(ws.visiting_hours)}</p>` : ''}

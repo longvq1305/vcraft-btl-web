@@ -6,13 +6,13 @@
 <main class="site-main map-page-main">
   <section class="editorial-page-hero editorial-page-hero--map">
     <div class="container">
-      <nav class="breadcrumb-nav light-breadcrumb" aria-label="Đường dẫn">
-        <ol class="breadcrumb-list">
-          <li><a href="/">Trang chủ</a></li>
-          <li aria-current="page">Bản đồ Làng nghề</li>
-        </ol>
-      </nav>
       <div class="editorial-page-hero__inner">
+        <nav class="breadcrumb-nav light-breadcrumb" aria-label="Đường dẫn">
+          <ol class="breadcrumb-list">
+            <li><a href="/">Trang chủ</a></li>
+            <li aria-current="page">Bản đồ Làng nghề</li>
+          </ol>
+        </nav>
         <span class="editorial-page-hero__eyebrow slide-kicker">Tọa độ Di sản &amp; Không gian Nghề</span>
         <h1 class="editorial-page-hero__title">
           Bản đồ Làng nghề &amp; Xưởng Thủ công
@@ -70,7 +70,7 @@
                 <h3 class="item-title"><%= ws.workshop_name %></h3>
                 <span class="status-dot <%= ws.is_open ? 'dot-open' : 'dot-closed' %>" title="<%= ws.is_open ? 'Đang mở cửa' : 'Tạm đóng cửa' %>"></span>
               </div>
-              <div class="item-artisan">Nghệ nhân: <%= ws.artisan_name %></div>
+              <div class="item-artisan">Nghệ nhân: <%= String(ws.artisan_name || '').replace(/^Nghệ nhân\s+/i, '') %></div>
               <% if (ws.address) { %>
                 <div class="item-address"><%= ws.address %></div>
               <% } %>

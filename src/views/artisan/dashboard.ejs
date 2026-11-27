@@ -31,8 +31,11 @@
       </div>
     <% } else if (currentUser && currentUser.status === 'suspended') { %>
       <div class="alert alert-danger" role="alert">
-        <h4 class="alert-heading">Tài khoản Nghệ nhân tạm thời bị khóa</h4>
-        <p>Vui lòng liên hệ với ban quản trị hệ thống để biết thêm chi tiết.</p>
+        <div class="alert-icon">!</div>
+        <div class="alert-content">
+          <h4 class="alert-heading">Tài khoản Nghệ nhân tạm thời bị khóa</h4>
+          <p>Vui lòng liên hệ với ban quản trị hệ thống để biết thêm chi tiết.</p>
+        </div>
       </div>
     <% } %>
 
@@ -46,7 +49,7 @@
         <div class="editorial-rule"></div>
         <p class="editorial-page-hero__desc">
           <% if (profile && profile.workshop_name) { %>
-            Xưởng: <strong><%= profile.workshop_name %></strong> — Nghệ nhân <%= currentUser ? currentUser.fullName : '' %>
+            Xưởng: <strong><%= profile.workshop_name %></strong> — Nghệ nhân <%= String(currentUser ? currentUser.fullName : '').replace(/^Nghệ nhân\s+/i, '') %>
           <% } else { %>
             Chào mừng bạn đến với khu vực quản lý xưởng nghệ nhân vCraft.
           <% } %>
@@ -106,8 +109,8 @@
       <div class="stat-card paper-panel">
         <div class="stat-label">Trạng thái tài khoản</div>
         <div class="stat-value">
-          <span class="badge <%= currentUser && currentUser.status === 'approved' ? 'badge-success' : 'badge-warning' %>">
-            <%= currentUser && currentUser.status === 'approved' ? 'Đã phê duyệt' : 'Chờ duyệt' %>
+          <span class="badge <%= currentUser && currentUser.status === 'approved' ? 'badge-success' : (currentUser && currentUser.status === 'suspended' ? 'badge-suspended' : 'badge-warning') %>">
+            <%= currentUser && currentUser.status === 'approved' ? 'Đã phê duyệt' : (currentUser && currentUser.status === 'suspended' ? 'Tạm ngưng' : 'Chờ duyệt') %>
           </span>
         </div>
         <div class="stat-sub">
